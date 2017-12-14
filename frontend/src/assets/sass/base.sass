@@ -1,0 +1,42 @@
+@charset "utf-8"
+@import "./mixin.sass"
+/* custom */
+html
+  font-size: 62.5%
+@media (min-width: 768px) and (max-width: 1440px)
+  html
+    font-size: 50%
+html
+  width: 100%
+  margin: 0
+  padding: 0
+body
+  background: $body-background
+  background-size: 100% 100%
+  font-size: 1.6rem
+  color: $color
+@media (max-width: 768px)
+  // 移动端高度自动流
+  body
+    height: auto
+  // 登录界面兼容
+  .login-body-wrapper
+    height: 100%
+    background-attachment: fixed
+  body
+    position: relative
+    left: 0
+    top: 0
+a
+  color: $color
+  text-decoration: none
+  -webkit-backface-visibility: hidden
+  &:focus, &:hover
+    text-decoration: none
+ul, ol
+  padding: 0
+  margin: 0
+li
+  list-style: none
+#app
+  height: 100%

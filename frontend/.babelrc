@@ -1,0 +1,21 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions"]
+      }
+    }]
+  ],
+  "plugins": ["transform-runtime"],
+  "comments": false,
+  "env": {
+    "test": {
+      "presets": ["env", {
+        "targets": {
+          "browsers": ["last 2 versions"]
+        }
+      }],
+      "plugins": [ "istanbul" ]
+    }
+  }
+}

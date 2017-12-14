@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <!-- 自动扫描且只扫描@Controller -->
+    <context:component-scan base-package="airport.web.restful.controller"
+                            use-default-filters="false">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <!-- 开启aop，对类代理 -->
+    <aop:config proxy-target-class="true"></aop:config>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 定义JSP文件的位置 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <!-- 	<mvc:default-servlet-handler/> -->
+    <mvc:resources mapping="/static/**" location="/static/" cache-period="31556926"/>
+    <mvc:resources mapping="/static-gexf/**" location="/static/gexf/" cache-period="31556926"/>
+    <mvc:resources mapping="/mapfiles/**" location="/static/mapfiles/" cache-period="31556926"/>
+
+    <!-- 定义无需Controller的url<->view直接映射 -->
+    <!-- <mvc:view-controller path="/" view-name="redirect:/search"/> -->
+
+    <!--将Controller抛出的异常转到特定View, 保持SiteMesh的装饰效果 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!-- Shiro授权失败自动跳转到登录页 -->
+                <prop key="org.apache.shiro.authz.UnauthorizedException">
+                    redirect:/account/
+                </prop>
+                <prop key="org.apache.shiro.authz.UnauthenticatedException">
+                    redirect:/account/
+                </prop>
+                <!-- 其他500异常 -->
+                <prop key="java.lang.Throwable">error/500</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
