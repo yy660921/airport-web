@@ -1,4 +1,4 @@
-package airport.web.data.sql;
+package airport.web.restful.service.sql;
 
 import java.io.IOException;
 import java.io.InputStream;

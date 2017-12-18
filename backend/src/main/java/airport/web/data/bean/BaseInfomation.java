@@ -42,8 +42,8 @@ public class BaseInfomation {
         }
     }
 
-    public void setCreateTime(long timeStamp) {
-        this.createTime = new Date(timeStamp);
+    public void setCreateTime(Date timeStamp) {
+        this.createTime = timeStamp;
     }
 
     public double getRiskIndex() {
