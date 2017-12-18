@@ -2,31 +2,18 @@
 @import "./mixin.sass"
 /* custom */
 html
-  font-size: 62.5%
-@media (min-width: 768px) and (max-width: 1440px)
-  html
-    font-size: 50%
-html
+  font-size: 10px
+  font-size: 125%
   width: 100%
+  height: 100%
   margin: 0
   padding: 0
 body
-  background: $body-background
-  background-size: 100% 100%
-  font-size: 1.6rem
+  height: 100%
   color: $color
-@media (max-width: 768px)
-  // 移动端高度自动流
-  body
-    height: auto
-  // 登录界面兼容
-  .login-body-wrapper
-    height: 100%
-    background-attachment: fixed
-  body
-    position: relative
-    left: 0
-    top: 0
+  font-size: .8rem
+  background-size: 100% 100%
+  background: url("~assets/images/main-bg.jpg") no-repeat center center
 a
   color: $color
   text-decoration: none
@@ -40,3 +27,6 @@ li
   list-style: none
 #app
   height: 100%
+.real-body
+  padding: 2.5rem
+  position: relative

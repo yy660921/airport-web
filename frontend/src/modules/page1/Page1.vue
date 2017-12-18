@@ -1,4 +1,5 @@
 <template>
+	<div>aaa</div>
 </template>
 
 <script type="text/javascript">
