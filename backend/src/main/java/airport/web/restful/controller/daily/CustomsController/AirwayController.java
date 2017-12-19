@@ -9,27 +9,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedList;
 
-import static airport.web.restful.service.sql.Query.getDeviceCountDist;
+import airport.web.data.bean.TourTrips;
+
+import static airport.web.restful.service.sql.Query.getAirwayTrip;
 
 /**
- * Created by Machenike on 2017/12/18.
+ * Created by Machenike on 2017/12/19.
  */
 @Controller
-public class DeviceCountDistController {
-    private final static Logger LOG = LoggerFactory.getLogger(DeviceCountDistController.class);
+public class AirwayController {
+    private final static Logger LOG = LoggerFactory.getLogger(AirwayController.class);
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = {
-        "/api/getDCD",
+        "/api/getAirway",
     })
 
-    public HashMap<String, String> getDCD(
+    public LinkedList<TourTrips> getAirway(
         @RequestParam(value = "date", defaultValue = "1509811200") long date) {
-        HashMap Result = getDeviceCountDist(new Date(date));
+        LinkedList Result = getAirwayTrip(new Date(date));
         if(Result.size() == 0){
-            return getDeviceCountDist();
+            return getAirwayTrip();
         }
         else {
             return Result;

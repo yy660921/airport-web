@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import airport.web.data.bean.BaseInfomation;
+import airport.web.data.bean.CustomsTouristMessage;
+import airport.web.data.bean.TourTrips;
 
 /**
  * Created by Machenike on 2017/12/18.
@@ -84,20 +86,67 @@ public class Query {
     }
 
     /*
-     * @description: 查询date时间的TOP10高风险旅客名单及风险值
+     * @description: 查询date时间的设备24小时运行情况
      * @param date: 查询日期
      */
-    public static HashMap<String, String> DeviceCountDist(Date date){
+    public static HashMap<String, String> getDeviceCountDist(Date date){
         String sql = "SELECT DeviceCountDist,createDate FROM customs_top WHERE createDate = \""+ dateFormat.format(date) + "\" LIMIT 1";
-        return DeviceCountDistBySQL(sql);
+        return getDeviceCountDistBySQL(sql);
     }
 
     /*
-     * @description: 查询最新TOP10的高风险旅客名单及风险值
+     * @description: 查询最新TOP10的设备24小时运行情况
      */
-    public static HashMap<String, String> DeviceCountDist(){
+    public static HashMap<String, String> getDeviceCountDist(){
         String sql = "SELECT DeviceCountDist,createDate FROM customs_top ORDER BY createDate DESC LIMIT 1";
-        return DeviceCountDistBySQL(sql);
+        return getDeviceCountDistBySQL(sql);
+    }
+
+    /*
+     * @description: 查询date时间的航线
+     * @param date: 查询日期
+     */
+    public static LinkedList<TourTrips> getAirwayTrip(Date date){
+        String sql = "SELECT createDate,warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
+                     + "FROM customs_touristmessage\n"
+                     + "INNER JOIN city_longlati AS city_dep\n"
+                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
+                     + "INNER JOIN city_longlati AS city_dest\n"
+                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
+                     + "WHERE createDate = \"" + dateFormat.format(date) + "\"";
+        return getAirwayTripBySQL(sql);
+    }
+
+    /*
+     * @description: 查询最新的航线
+     */
+    public static LinkedList<TourTrips> getAirwayTrip(){
+        String sql = "SELECT createDate,warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
+                     + "FROM customs_touristmessage\n"
+                     + "INNER JOIN city_longlati AS city_dep\n"
+                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
+                     + "INNER JOIN city_longlati AS city_dest\n"
+                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
+                     + "GROUP BY warningTourist_departure,warningTourist_destination\n"
+                     + "ORDER BY createDate DESC LIMIT 10";
+        return getAirwayTripBySQL(sql);
+    }
+
+    /*
+     * @description: 查询date时间的高危旅客信息
+     * @param date: 查询日期
+     */
+    public static LinkedList<CustomsTouristMessage> getTouristMessage(Date date){
+        String sql = "SELECT * FROM customs_touristmessage WHERE createDate = \""+ dateFormat.format(date) + "\"";
+        return getTouristMessageBySQL(sql);
+    }
+
+    /*
+     * @description: 查询最新的高危旅客信息
+     */
+    public static LinkedList<CustomsTouristMessage> getTouristMessage(){
+        String sql = "SELECT * FROM customs_touristmessage ORDER BY createDate DESC LIMIT 10";
+        return getTouristMessageBySQL(sql);
     }
 
     private static LinkedList<BaseInfomation> getRiskTouristsAndSeizureNumberBySQL(String sql){
@@ -184,7 +233,7 @@ public class Query {
         }
     }
 
-    private static HashMap<String, String> DeviceCountDistBySQL(String sql){
+    private static HashMap<String, String> getDeviceCountDistBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -196,6 +245,86 @@ public class Query {
             while (rs.next()) {
                 result.put("DeviceCountDist",rs.getString("DeviceCountDist"));
                 result.put("createDate",dateFormat.format(rs.getDate("createDate")));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    private static LinkedList<TourTrips> getAirwayTripBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        LinkedList<TourTrips> result = new LinkedList<>();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                TourTrips TourTrip = new TourTrips();
+                TourTrip.setDeparture(rs.getString("warningTourist_departure"));
+                TourTrip.setDepartureLong(rs.getDouble("deplon"));
+                TourTrip.setDepartureLati(rs.getDouble("deplat"));
+                TourTrip.setDestination(rs.getString("warningTourist_destination"));
+                TourTrip.setDestinationLong(rs.getDouble("destlon"));
+                TourTrip.setDestinationLati(rs.getDouble("destlat"));
+                TourTrip.setCreateDate(rs.getDate("createDate"));
+                TourTrip.setWeight(rs.getInt("weight"));
+                if(TourTrip.getWeight()!=0) {
+                    result.add(TourTrip);
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    private static LinkedList<CustomsTouristMessage> getTouristMessageBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        LinkedList<CustomsTouristMessage> result = new LinkedList<>();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                CustomsTouristMessage CT = new CustomsTouristMessage();
+                CT.setId(rs.getInt("id"));
+                CT.setCreateTime(rs.getDate("createTime"));
+                CT.setWarningTourist_name(rs.getString("warningTourist_name"));
+                CT.setWarningTourist_country(rs.getString("warningTourist_country"));
+                CT.setWarningTourist_sex(rs.getString("warningTourist_sex"));
+                CT.setWarningTourist_riskIndex(rs.getString("warningTourist_riskIndex"));
+                CT.setWarningTourist_passport(rs.getString("warningTourist_passport"));
+                CT.setWarningTourist_IDtype(rs.getString("warningTourist_IDtype"));
+                CT.setWarningTourist_birthday(rs.getDate("warningTourist_birthday"));
+                CT.setWarningTourist_departure(rs.getString("warningTourist_departure"));
+                CT.setWarningTourist_destination(rs.getString("warningTourist_destination"));
+                CT.setWarningTourist_flight_number(rs.getString("warningTourist_flight_number"));
+                CT.setWarningTourist_flight_type(rs.getString("warningTourist_flight_type"));
+                CT.setWarningTourist_time(rs.getDate("warningTourist_time"));
+                CT.setWarningTourist_historyTime(rs.getString("warningTourist_historyTime"));
+                CT.setWarningTourist_place(rs.getString("warningTourist_place"));
+                CT.setFellowTourist_list(rs.getString("fellowTourist_list"));
+                CT.setCreateDate(rs.getDate("createDate"));
+                result.add(CT);
             }
         }catch (Exception e) {
             e.printStackTrace();
