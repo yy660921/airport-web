@@ -1,5 +1,9 @@
 package airport.web.restful.service.sql;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,7 +93,7 @@ public class Query {
      * @description: 查询date时间的设备24小时运行情况
      * @param date: 查询日期
      */
-    public static HashMap<String, String> getDeviceCountDist(Date date){
+    public static JsonNode getDeviceCountDist(Date date){
         String sql = "SELECT DeviceCountDist,createDate FROM customs_top WHERE createDate = \""+ dateFormat.format(date) + "\" LIMIT 1";
         return getDeviceCountDistBySQL(sql);
     }
@@ -97,7 +101,7 @@ public class Query {
     /*
      * @description: 查询最新TOP10的设备24小时运行情况
      */
-    public static HashMap<String, String> getDeviceCountDist(){
+    public static JsonNode getDeviceCountDist(){
         String sql = "SELECT DeviceCountDist,createDate FROM customs_top ORDER BY createDate DESC LIMIT 1";
         return getDeviceCountDistBySQL(sql);
     }
@@ -233,18 +237,19 @@ public class Query {
         }
     }
 
-    private static HashMap<String, String> getDeviceCountDistBySQL(String sql){
+    private static JsonNode getDeviceCountDistBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        HashMap<String, String> result = new HashMap<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                result.put("DeviceCountDist",rs.getString("DeviceCountDist"));
-                result.put("createDate",dateFormat.format(rs.getDate("createDate")));
+                result.put("DeviceCountDist", objectMapper.readTree(rs.getString("DeviceCountDist")));
+                result.put("createDate", dateFormat.format(rs.getDate("createDate")));
             }
         }catch (Exception e) {
             e.printStackTrace();

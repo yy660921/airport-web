@@ -1,5 +1,7 @@
 package airport.web.restful.controller.daily.CustomsController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -25,9 +27,9 @@ public class DeviceCountDistController {
         "/api/getDCD",
     })
 
-    public HashMap<String, String> getDCD(
+    public JsonNode getDCD(
         @RequestParam(value = "date", defaultValue = "1509811200") long date) {
-        HashMap Result = getDeviceCountDist(new Date(date));
+        JsonNode Result = getDeviceCountDist(new Date(date));
         if(Result.size() == 0){
             return getDeviceCountDist();
         }
