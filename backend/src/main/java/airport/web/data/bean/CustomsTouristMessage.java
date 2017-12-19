@@ -27,6 +27,10 @@ public class CustomsTouristMessage {
     private String fellowTourist_list;
     private Date createDate;
 
+    public CustomsTouristMessage(){
+
+    }
+
     public int getId() {
         return id;
     }
