@@ -6,7 +6,9 @@
     <div class="con-box r-t-box">
       <Echarts theme="ring" :option="r_t_option" className="chart" ></Echarts>
     </div>
-    <div class="center-box">地球仪</div>
+    <div class="center-box">
+      <div class="chart" id="echarts-globe"></div>
+    </div>
   </div>
 </template>
 
@@ -17,8 +19,20 @@ import 'components/charts/theme/Ring.js'
 import Graphic from 'echarts/lib/util/graphic'
 import Echarts from 'vue-echarts-v3/src/full.js'
 
-/* Globally bus for Non Parent-Child Communication */
-window.bus = new Vue();
+import echarts from 'echarts'
+require('echarts-gl')
+
+const baseTexture = new Image();
+baseTexture.src = require('../../assets/map-rc/data-1491890179041-Hkj-elqpe.jpg');
+
+const heightTexture = new Image();
+heightTexture.src = require('../../assets/map-rc/data-1491889019097-rJQYikcpl.jpg');
+
+const blendTexture = new Image();
+blendTexture.src = require('../../assets/map-rc/data-1491890291849-rJ2uee5ag.jpg')
+
+const overlayTexture = new Image();
+overlayTexture.src = require('../../assets/map-rc/data-1491890092270-BJEhJg96l.png')
 
 export default {
   data () {
@@ -229,8 +243,68 @@ export default {
             data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
           }
         ]
-      }
+      },
+      globe_t_option: {
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        globe: {
+          baseTexture: baseTexture.src,
+          heightTexture: heightTexture.src,
+          displacementScale: 0.1,
+          shading: 'lambert',
+          light: {
+            ambient: {
+              intensity: 0.5
+            },
+            main: {
+              intensity: 1.25
+            }
+          },
+          layers: [{
+            type: 'blend',
+            blendTo: 'emission',
+            texture: blendTexture.src,
+          }],
+          viewControl: {
+            alpha: 30,
+            beta: -160,
+            autoRotate: true,
+          },
+        },
+        series: [{
+          type: 'lines3D',
+          coordinateSystem: 'globe',
+          name: '航线',
+          lineStyle: {
+            color: '#0087f4',
+            opacity: 0,
+            width: 1,
+          },
+          effect: {
+            show: true,
+            period: 2,
+            trailWidth: 3,
+            trailLength: 0.5,
+            trailOpacity: 1,
+            trailColor: '#0087f4'
+          },
+          data: [
+            [[-72, 38], [109.21, 27.73]],
+            [[109.22, 27.73], [37, 55]],
+            [[109.22, 27.73], [98, 55]],
+            [[109.22, 27.73], [80, 10]],
+          ],
+        }]
+      },
     }
+  },
+  mounted () {
+    this.echartsGlobe();
+  },
+  methods: {
+    echartsGlobe () {
+      let globediv = echarts.init(document.getElementById('echarts-globe'));
+      globediv.setOption(this.globe_t_option);
+    },
   },
   components: {
     'Echarts': Echarts,
@@ -262,5 +336,8 @@ export default {
     bottom: 0
     right: 0
     margin: auto  
-    z-index: 1000 
+    z-index: 1000
+    .chart
+      height: inherit
+      width: inherit
 </style>
