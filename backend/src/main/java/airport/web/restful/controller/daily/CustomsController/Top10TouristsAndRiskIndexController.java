@@ -1,5 +1,7 @@
 package airport.web.restful.controller.daily.CustomsController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import static airport.web.restful.service.sql.Query.getTop10TouristsAndRiskIndex
 
 /**
  * Created by Machenike on 2017/12/18.
+ * 提供总体态势统计页面左下角风险旅客TOP10风险旅客姓名及风险值数据
  */
 @Controller
 public class Top10TouristsAndRiskIndexController {
@@ -25,14 +28,7 @@ public class Top10TouristsAndRiskIndexController {
         "/api/getTAndRI",
     })
 
-    public HashMap<String, String> getTAndRI(
-        @RequestParam(value = "date", defaultValue = "1509811200") long date) {
-        HashMap Result = getTop10TouristsAndRiskIndex(new Date(date));
-        if(Result.size() == 0){
-            return getTop10TouristsAndRiskIndex();
-        }
-        else {
-            return Result;
-        }
+    public JsonNode getTAndRI() {
+        return getTop10TouristsAndRiskIndex();
     }
 }

@@ -17,8 +17,14 @@ public class MySQL {
     private static String username;
 
     static {
-        InputStream stream = MySQL.class.getResourceAsStream("/application.properties");
-        Properties properties = new Properties();
+        InputStream stream = null;
+        Properties properties = null;
+        try {
+            stream = MySQL.class.getResourceAsStream("/application.properties");
+            properties = new Properties();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         try {
             properties.load(stream);
             String driver = properties.getProperty("jdbc.driver");

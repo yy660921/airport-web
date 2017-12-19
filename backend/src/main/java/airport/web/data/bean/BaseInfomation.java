@@ -37,7 +37,7 @@ public class BaseInfomation {
     public void setCreateTime(String createTime) {
         try {
             this.createTime = DateUtils.parseDate(createTime,"yyyy-MM-dd HH:mm:ss");
-        } catch (ParseException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -51,7 +51,11 @@ public class BaseInfomation {
     }
 
     public void setRiskIndex(String riskIndex) {
-        this.riskIndex = Double.parseDouble(riskIndex);
+        try {
+            this.riskIndex = Double.parseDouble(riskIndex);
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
     }
 
     public int getTourist_warningEvents() {

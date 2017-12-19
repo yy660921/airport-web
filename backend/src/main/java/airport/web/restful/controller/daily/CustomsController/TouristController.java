@@ -15,6 +15,7 @@ import static airport.web.restful.service.sql.Query.getTouristMessage;
 
 /**
  * Created by Machenike on 2017/12/19.
+ * 提供一组高风险旅客数据
  */
 @Controller
 public class TouristController {
