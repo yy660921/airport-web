@@ -6,6 +6,7 @@
     <div class="con-box r-t-box">
       <Echarts theme="ring" :option="r_t_option" className="chart" ></Echarts>
     </div>
+    <div class="center-box">地球仪</div>
   </div>
 </template>
 
@@ -251,5 +252,15 @@ export default {
       top: 2.5rem
     &.r-t-box
       right: 2.5rem
-      top: 2.5rem    
+      top: 2.5rem
+  .center-box
+    position: absolute
+    width: 36rem
+    height: 34rem
+    left: 0
+    top: 0
+    bottom: 0
+    right: 0
+    margin: auto  
+    z-index: 1000 
 </style>
