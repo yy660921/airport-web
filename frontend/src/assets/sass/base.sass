@@ -40,6 +40,7 @@ li
   padding: 2.5rem
   position: relative
   
+// 分值悬转外框
 @keyframes rotate_1
   0%
     transform: rotate(0deg)
@@ -65,3 +66,21 @@ li
     transform: rotate(0deg)
   100%
       transform: rotate(360deg)
+// 滚动条
+::-webkit-scrollbar
+  width: 9px
+  height: 9px
+// 凹槽设置
+::-webkit-scrollbar-track-piece
+  background-color: rgba(32, 82, 211, .3)
+  -webkit-border-radius: 9px
+// 竖向设置
+::-webkit-scrollbar-thumb:vertical
+  height: 20px
+  background-color: rgba(32, 82, 211, .9)
+  -webkit-border-radius: 9px
+// 横向设置
+::-webkit-scrollbar-thumb:horizontal
+  width: 5px
+  background-color: rgba(125, 125, 125, 0.2)
+  -webkit-border-radius: 6px
