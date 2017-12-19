@@ -13,7 +13,7 @@ body
   color: $color
   font-size: .8rem
   background-size: 100% 100%
-  background: url("~assets/images/main-bg.jpg") no-repeat center center
+  background: url("~assets/images/main-bg.jpg") repeat center center
 a
   color: $color
   text-decoration: none
@@ -25,8 +25,43 @@ ul, ol
   margin: 0
 li
   list-style: none
+.clearfix
+  clear: both
+  &:after
+    display: block
+    content: ''
+    clear: both
+    height: 0
+    font-size: 0
+    visibility: hidden
 #app
   height: 100%
 .real-body
   padding: 2.5rem
   position: relative
+  
+@keyframes rotate_1
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+@keyframes rotate_2
+  0%
+    transform: rotate(360deg)
+  100%
+    transform: rotate(0deg)
+@keyframes rotate_3
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+@keyframes rotate_4
+  0%
+    transform: rotate(360deg)
+  100%
+    transform: rotate(0deg)
+@keyframes rotate_5
+  0%
+    transform: rotate(0deg)
+  100%
+      transform: rotate(360deg)
