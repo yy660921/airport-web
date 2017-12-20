@@ -198,7 +198,7 @@
               }
             },
             boundaryGap: false,
-//            data: this.page1_hotDeparture_y
+            // data: this.page1_hotDeparture_y
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
@@ -248,7 +248,7 @@
                   barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
-//              data: this.page1_hotDeparture_x
+              // data: this.page1_hotDeparture_x
               data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
             }
           ]
@@ -308,7 +308,7 @@
               }
             },
             boundaryGap: false,
-//            data: this.page1_hotDeparture_y
+            // data: this.page1_hotDeparture_y
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
@@ -358,7 +358,7 @@
                   barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
-//              data: this.page1_hotDeparture_x
+              // data: this.page1_hotDeparture_x
               data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
             }
           ]
@@ -398,7 +398,7 @@
               }
             },
             boundaryGap: false,
-//            data: this.page1_hotDeparture_y
+            // data: this.page1_hotDeparture_y
             data: ["0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]
           },
           yAxis: {
@@ -494,8 +494,8 @@
               texture: blendTexture.src,
             }],
             viewControl: {
-              alpha: 30,
-              beta: -160,
+              // alpha: 30,
+              // beta: -160,
               autoRotate: true,
             },
           },
@@ -504,20 +504,13 @@
             type: 'scatter3D',
             coordinateSystem: 'globe',
             zlevel: 100,
-            label: {
-              emphasis: {
-                show: true,
-                position: 'right',
-                formatter: '{b}'
-              },
-            },
-            animation: true,
-            blendMode: 'lighter',
-            symbol: 'circle',
-            symbolSize: 100,
+            animation: false,
+            blendMode: 'source-over',
+            symbol: 'pin',
+            symbolSize: 10,
             itemStyle: {
               normal: {
-                color: '#F58158',
+                color: '#fa3434',
               },
             },
             data: [],
@@ -540,20 +533,17 @@
               trailOpacity: 1,
               trailColor: '#0087f4'
             },
-            data: [
-              [[-72, 38], [109.21, 27.73]],
-              [[109.22, 27.73], [37, 55]],
-              [[109.22, 27.73], [98, 55]],
-              [[109.22, 27.73], [80, 10]],
-            ],
+            data: [],
           }]
         },
+        globe: null,
       }
     },
     mounted () {
       this.echartsGlobe();
     },
     created () {
+      this.updateData()
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 5000);
@@ -567,8 +557,8 @@
         this.update_globe_option();
       },
       echartsGlobe () {
-        let globediv = echarts.init(document.getElementById('echarts-globe'));
-        globediv.setOption(this.globe_t_option);
+        this.globe = echarts.init(document.getElementById('echarts-globe'));
+        this.globe.setOption(this.globe_t_option);
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {
@@ -617,12 +607,16 @@
           let cities = [];
           let lines = [];
           _.each(response.data, item => {
-            cities.push({name: item.departure, value: [item.departureLati, item.departureLong]});
-            cities.push({name: item.destination, value: [item.destinationLati, item.destinationLong]});
-            lines.push([[item.departureLati, item.departureLong], [item.destinationLati, item.destinationLong]]);
+            cities.push({name: item.departure.CityName, value: item.departure.Coordinate});
+            cities.push({name: item.destination.CityName, value: item.destination.Coordinate});
+            lines.push([item.departure.Coordinate, item.destination.Coordinate]);
           });
+          console.log(cities);
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
+          if (this.globe) {
+            this.globe.setOption(this.globe_t_option);
+          }
         });
       }
     },
