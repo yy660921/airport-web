@@ -49,10 +49,8 @@
 import Vue from 'vue'
 import 'components/charts/theme/Ring.js'
 import Graphic from 'echarts/lib/util/graphic'
-import Echarts from 'vue-echarts-v3/src/full.js'
-
-/* Globally bus for Non Parent-Child Communication */
-window.bus = new Vue();
+import Echarts from 'vue-echarts-v3/src/full'
+import 'echarts/map/js/world'
 
 export default {
   name: 'app',
@@ -180,115 +178,91 @@ export default {
       },
       center_option: {
         title: {
-          text: 'iphone销量',
-          subtext: '纯属虚构',
-          left: 'center'
+          text: '地理活动轨迹分析',
+          left: 'center',
+          textStyle: {
+            color: '#b5eaff'
+          }
         },
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: ['iphone3','iphone4','iphone5']
+        geo: {
+          map: 'world',
+          label: {
+            emphasis: {
+              show: false
+            },
+          },
+          roam: false,
+          layoutCenter: ['50%', '53%'],
+          layoutSize: "150%",
+          itemStyle: {
+            normal: {
+              color: 'rgba(51, 69, 89, .5)',
+              borderColor: 'rgba(100,149,237,1)'
+            },
+            emphasis: {
+              color: 'rgba(37, 43, 61, .5)'
+            },
+          },
         },
         visualMap: {
+          type: 'continuous',
           min: 0,
-          max: 2500,
-          left: 'left',
-          top: 'bottom',
-          text: ['高','低'],           // 文本，默认为数值文本
-          calculable: true
-        },
-        toolbox: {
-          show: true,
-          orient: 'vertical',
-          left: 'right',
-          top: 'center',
-          feature: {
-            mark: {show: true},
-            dataView: {show: true, readOnly: false},
-            restore: {show: true},
-            saveAsImage: {show: true}
-          }
-        },
-        series: [
-          {
-            name: 'iphone3',
-            type: 'map',
-            mapType: 'china',
-            roam: false,
-            label: {
-              normal: {
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            data: [
-              {name: '北京',value: Math.round(Math.random() * 1000)},
-              {name: '天津',value: Math.round(Math.random() * 1000)},
-              {name: '澳门',value: Math.round(Math.random() * 1000)}
-            ]
+          max: 100,
+          show: false,
+          calculable: false,
+          color: ['#ff3333', 'orange', 'yellow', 'lime', 'aqua'],
+          textStyle: {
+            color: '#fff',
           },
-          {
-            name: 'iphone4',
-            type: 'map',
-            mapType: 'china',
-            label: {
-              normal: {
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            data: [
-              {name: '北京',value: Math.round(Math.random() * 1000)},
-              {name: '天津',value: Math.round(Math.random() * 1000)},
-              {name: '上海',value: Math.round(Math.random() * 1000)},
-              {name: '重庆',value: Math.round(Math.random() * 1000)},
-              {name: '河北',value: Math.round(Math.random() * 1000)},
-              {name: '安徽',value: Math.round(Math.random() * 1000)},
-              {name: '新疆',value: Math.round(Math.random() * 1000)},
-              {name: '浙江',value: Math.round(Math.random() * 1000)},
-              {name: '江西',value: Math.round(Math.random() * 1000)},
-              {name: '山西',value: Math.round(Math.random() * 1000)},
-              {name: '内蒙古',value: Math.round(Math.random() * 1000)},
-              {name: '吉林',value: Math.round(Math.random() * 1000)},
-              {name: '福建',value: Math.round(Math.random() * 1000)},
-              {name: '广东',value: Math.round(Math.random() * 1000)},
-              {name: '西藏',value: Math.round(Math.random() * 1000)},
-              {name: '四川',value: Math.round(Math.random() * 1000)},
-              {name: '宁夏',value: Math.round(Math.random() * 1000)},
-              {name: '香港',value: Math.round(Math.random() * 1000)},
-              {name: '澳门',value: Math.round(Math.random() * 1000)}
-            ]
+        },
+        series: [{
+          type: 'lines',
+          zlevel: 2,
+          effect: {
+            show: true,
+            period: 4,
+            trailLength: 0.02,
+            symbol: 'arrow',
+            symbolSize: 5,
           },
-          {
-            name: 'iphone5',
-            type: 'map',
-            mapType: 'china',
-            label: {
-              normal: {
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
+          lineStyle: {
+            normal: {
+              width: 1,
+              opacity: 0.6,
+              curveness: 0.2
+            }
+          },
+          data: [],
+        }, {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: {
+            period: 4,
+            brushType: 'stroke',
+            scale: 4
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right',
+              offset: [5, 0],
+              formatter: '{b}'
             },
-            data: [
-              {name: '北京',value: Math.round(Math.random() * 1000)},
-              {name: '天津',value: Math.round(Math.random() * 1000)},
-              {name: '上海',value: Math.round(Math.random() * 1000)},
-              {name: '广东',value: Math.round(Math.random() * 1000)},
-              {name: '台湾',value: Math.round(Math.random() * 1000)},
-              {name: '香港',value: Math.round(Math.random() * 1000)},
-              {name: '澳门',value: Math.round(Math.random() * 1000)}
-            ]
-          }
-        ]
+            emphasis: {
+              show: true
+            }
+          },
+          symbol: 'circle',
+          symbolSize: 6,
+          itemStyle: {
+            normal: {
+              show: false,
+              color: '#f00'
+            }
+          },
+          data: [],
+        }],
       },
       right_option: {
         title: {
@@ -544,7 +518,27 @@ export default {
       }
     },
     update_center_option: function (data) {
-
+      let cities = [];
+      let lines = [];
+      _.each(data, item => {
+        cities.push({name: item.departure.CityName, value: item.departure.Coordinate});
+        cities.push({name: item.destination.CityName, value: item.destination.Coordinate});
+      });
+      let citycounts = _.countBy(cities, 'name');
+      console.log(citycounts);
+      _.each(cities, city => {
+        city.value.push(citycounts[city.name]);
+      });
+      _.each(data, item => {
+        lines.push([
+          {coord: item.departure.Coordinate, value: citycounts[item.departure.CityName]},
+          {coord: item.destination.Coordinate}
+        ]);
+      });
+      this.center_option.visualMap.min = _.min(_.values(citycounts))
+      this.center_option.visualMap.max = _.max(_.values(citycounts))
+      this.center_option.series[0].data = lines;
+      this.center_option.series[1].data = cities;
     },
     update_right_option: function (data) {
       var namedata = [{
