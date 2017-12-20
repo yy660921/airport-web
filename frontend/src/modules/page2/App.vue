@@ -58,6 +58,10 @@ export default {
   name: 'app',
   data () {
     return {
+      intervalID: null,
+      number_all: 0,
+      number_now: 0,
+      resData: [],
       username: '张三',
       sex: '男',
       country: '中国',
@@ -102,7 +106,7 @@ export default {
             }
           },
           boundaryGap: false,
-          data: ['2017-06','2017-07','2017-08','2017-09','2017-10','2017-11','2017-12']
+          data: ['2017-06', '2017-07', '2017-08', '2017-09', '2017-10', '2017-11', '2017-12']
         },
         yAxis: {
           type: 'value',
@@ -143,7 +147,7 @@ export default {
             },
             // TODO: 动态获取坐标轴的最大值
             // data: data.map(function() {return xMax})
-            data: [10,10,10,10,10,10,10]
+            data: [10, 10, 10, 10, 10, 10, 10]
           },
           {
             name: '设备查验次数',
@@ -170,103 +174,119 @@ export default {
                 }])
               }
             },
-            data: [7,6,5,4,3,2,1]
+            data: [7, 6, 5, 4, 3, 2, 1]
           }
         ]
       },
       center_option: {
         title: {
-          text: '地理活动轨迹分析',
-          left: 'center',
-          textStyle: {
-            color: '#b5eaff'
+          text: 'iphone销量',
+          subtext: '纯属虚构',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['iphone3','iphone4','iphone5']
+        },
+        visualMap: {
+          min: 0,
+          max: 2500,
+          left: 'left',
+          top: 'bottom',
+          text: ['高','低'],           // 文本，默认为数值文本
+          calculable: true
+        },
+        toolbox: {
+          show: true,
+          orient: 'vertical',
+          left: 'right',
+          top: 'center',
+          feature: {
+            mark: {show: true},
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
           }
-        },
-        tooltip: {},
-        xAxis: {
-          data: ['12-01', '12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
-          // 坐标轴轴线
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          boundaryGap: false,
-        },
-        yAxis: {
-          // 坐标轴轴线
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              // type: 'solid',
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          splitLine: {
-            lineStyle: {
-              color: '#1a41ac'
-            }
-          }
-        },
-        grid: {
-          top: 50,
-          left: 30,
-          right: 20,
-          bottom: 25
         },
         series: [
           {
-            name: '选项B',
-            type: 'line',
-            itemStyle: {
+            name: 'iphone3',
+            type: 'map',
+            mapType: 'china',
+            roam: false,
+            label: {
               normal: {
-                color: 'rgba(252, 143, 47, .8)'
+                show: false
+              },
+              emphasis: {
+                show: true
               }
             },
-            areaStyle: {
-              normal: {
-                color: new Graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: 'rgba(252, 143, 47, .9)'
-                }, {
-                  offset: 1,
-                  color: 'rgba(252, 143, 47, .3)'
-                }])
-              }
-            },
-            data: [20, 10, 20, 30, 35, 26, 36, 30]
+            data: [
+              {name: '北京',value: Math.round(Math.random() * 1000)},
+              {name: '天津',value: Math.round(Math.random() * 1000)},
+              {name: '澳门',value: Math.round(Math.random() * 1000)}
+            ]
           },
           {
-            name: '选项A',
-            type: 'line',
-            itemStyle: {
+            name: 'iphone4',
+            type: 'map',
+            mapType: 'china',
+            label: {
               normal: {
-                color: 'rgba(41, 202, 255, .8)'
+                show: false
+              },
+              emphasis: {
+                show: true
               }
             },
-            areaStyle: {
+            data: [
+              {name: '北京',value: Math.round(Math.random() * 1000)},
+              {name: '天津',value: Math.round(Math.random() * 1000)},
+              {name: '上海',value: Math.round(Math.random() * 1000)},
+              {name: '重庆',value: Math.round(Math.random() * 1000)},
+              {name: '河北',value: Math.round(Math.random() * 1000)},
+              {name: '安徽',value: Math.round(Math.random() * 1000)},
+              {name: '新疆',value: Math.round(Math.random() * 1000)},
+              {name: '浙江',value: Math.round(Math.random() * 1000)},
+              {name: '江西',value: Math.round(Math.random() * 1000)},
+              {name: '山西',value: Math.round(Math.random() * 1000)},
+              {name: '内蒙古',value: Math.round(Math.random() * 1000)},
+              {name: '吉林',value: Math.round(Math.random() * 1000)},
+              {name: '福建',value: Math.round(Math.random() * 1000)},
+              {name: '广东',value: Math.round(Math.random() * 1000)},
+              {name: '西藏',value: Math.round(Math.random() * 1000)},
+              {name: '四川',value: Math.round(Math.random() * 1000)},
+              {name: '宁夏',value: Math.round(Math.random() * 1000)},
+              {name: '香港',value: Math.round(Math.random() * 1000)},
+              {name: '澳门',value: Math.round(Math.random() * 1000)}
+            ]
+          },
+          {
+            name: 'iphone5',
+            type: 'map',
+            mapType: 'china',
+            label: {
               normal: {
-                color: new Graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: 'rgba(59, 159, 237, .9)'
-                }, {
-                  offset: 1,
-                  color: 'rgba(59, 159, 237, .3)'
-                }])
+                show: false
+              },
+              emphasis: {
+                show: true
               }
             },
-            data: [10, 20, 30, 15, 12, 20, 38, 20]
+            data: [
+              {name: '北京',value: Math.round(Math.random() * 1000)},
+              {name: '天津',value: Math.round(Math.random() * 1000)},
+              {name: '上海',value: Math.round(Math.random() * 1000)},
+              {name: '广东',value: Math.round(Math.random() * 1000)},
+              {name: '台湾',value: Math.round(Math.random() * 1000)},
+              {name: '香港',value: Math.round(Math.random() * 1000)},
+              {name: '澳门',value: Math.round(Math.random() * 1000)}
+            ]
           }
         ]
       },
@@ -279,119 +299,233 @@ export default {
           }
         },
         tooltip: {},
-        xAxis: {
-          data: ['12-01', '12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
-          // 坐标轴轴线
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          boundaryGap: false,
-        },
-        yAxis: {
-          // 坐标轴轴线
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              // type: 'solid',
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          splitLine: {
-            lineStyle: {
-              color: '#1a41ac'
-            }
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        label: {
+          normal: {
+            show: true,
+            textStyle: {
+              fontSize: 12
+            },
           }
         },
-        grid: {
-          top: 50,
-          left: 30,
-          right: 20,
-          bottom: 25
+        legend: {
+          x: "center",
+          show: false,
+          data: ["朋友", "战友", '亲戚']
         },
         series: [
           {
-            name: '选项B',
-            type: 'line',
-            itemStyle: {
+            type: 'graph',
+            layout: 'force',
+            symbolSize: 45,
+            focusNodeAdjacency: true,
+            roam: true,
+            categories: [{
+              name: '朋友',
+              itemStyle: {
+                normal: {
+                  color: "#009800",
+                }
+              }
+            }, {
+              name: '战友',
+              itemStyle: {
+                normal: {
+                  color: "#4592FF",
+                }
+              }
+            }, {
+              name: '亲戚',
+              itemStyle: {
+                normal: {
+                  color: "#3592F",
+                }
+              }
+            }],
+            label: {
               normal: {
-                color: 'rgba(252, 143, 47, .8)'
+                show: true,
+                textStyle: {
+                  fontSize: 12
+                },
               }
             },
-            areaStyle: {
+            force: {
+              repulsion: 1000
+            },
+            edgeSymbolSize: [4, 50],
+            edgeLabel: {
               normal: {
-                color: new Graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: 'rgba(252, 143, 47, .9)'
-                }, {
-                  offset: 1,
-                  color: 'rgba(252, 143, 47, .3)'
-                }])
+                show: true,
+                textStyle: {
+                  fontSize: 10
+                },
+                formatter: "{c}"
               }
             },
-            data: [20, 10, 20, 30, 35, 26, 36, 30]
-          },
-          {
-            name: '选项A',
-            type: 'line',
-            itemStyle: {
+            data: [{
+              name: '徐贱云',
+              draggable: true,
+            }, {
+              name: '冯可梁',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '邓志荣',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '李荣庆',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '郑志勇',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '赵英杰',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '王承军',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '陈卫东',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '邹劲松',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '赵成',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '陈现忠',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '陶泳',
+              category: 1,
+              draggable: true,
+            }, {
+              name: '王德福',
+              category: 1,
+              draggable: true,
+            }],
+            links: [{
+              source: 0,
+              target: 1,
+              category: 0,
+              value: '朋友'
+            }, {
+              source: 0,
+              target: 2,
+              value: '战友'
+            }, {
+              source: 0,
+              target: 3,
+              value: '房东'
+            }, {
+              source: 0,
+              target: 4,
+              value: '朋友'
+            }, {
+              source: 1,
+              target: 2,
+              value: '表亲'
+            }, {
+              source: 0,
+              target: 5,
+              value: '朋友'
+            }, {
+              source: 4,
+              target: 5,
+              value: '姑姑'
+            }, {
+              source: 2,
+              target: 8,
+              value: '叔叔'
+            }, {
+              source: 0,
+              target: 12,
+              value: '朋友'
+            }, {
+              source: 6,
+              target: 11,
+              value: '爱人'
+            }, {
+              source: 6,
+              target: 3,
+              value: '朋友'
+            }, {
+              source: 7,
+              target: 5,
+              value: '朋友'
+            }, {
+              source: 9,
+              target: 10,
+              value: '朋友'
+            }, {
+              source: 3,
+              target: 10,
+              value: '朋友'
+            }, {
+              source: 2,
+              target: 11,
+              value: '同学'
+            }],
+            lineStyle: {
               normal: {
-                color: 'rgba(41, 202, 255, .8)'
+                opacity: 0.9,
+                width: 2,
+                curveness: 0
               }
-            },
-            areaStyle: {
-              normal: {
-                color: new Graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: 'rgba(59, 159, 237, .9)'
-                }, {
-                  offset: 1,
-                  color: 'rgba(59, 159, 237, .3)'
-                }])
-              }
-            },
-            data: [10, 20, 30, 15, 12, 20, 38, 20]
+            }
           }
         ]
       }
     }
   },
   created () {
-    this.updateData();
+    this.updateData()
+    this.intervalID = setInterval(() => {
+      this.updateData()
+    }, 60 * 1000);
   },
   methods: {
     updateData: function () {
-      axios.get('/api/getTourist', {}).then(response => {
+      if (this.number_all <= 0 || this.number_now >= this.number_all) {
+        axios.get('/api/getTourist', {}).then(response => {
           if (response.data.length > 0) {
-            var res = response.data;
-            for (var i = 0; i < res.length; i++) {
-              var person = res[i]
-              this.username = person.warningTourist_name;
-              this.sex = person.warningTourist_sex;
-              this.country = person.warningTourist_country;
-              this.birth = person.warningTourist_birthday;
-              this.passportID = person.warningTourist_passport;
-              this.departure = person.warningTourist_departure;
-              this.destination = person.warningTourist_destination;
-              this.intime = person.warningTourist_time;
-              this.riskIndex = person.warningTourist_riskIndex;
-              this.update_left_option(person.warningTourist_historyTime);
-              break;
-            }
+            this.resData = response.data;
+            this.number_all = this.resData.length;
+            this.number_now = 0;
+            this.updatePerson();
           }
-        });
+        })
+      } else {
+        this.updatePerson()
+      }
+    },
+    updatePerson: function () {
+      var person = this.resData[this.number_now]
+      this.number_now = this.number_now + 1
+      this.username = person.warningTourist_name;
+      this.sex = person.warningTourist_sex;
+      this.country = person.warningTourist_country;
+      this.birth = person.warningTourist_birthday;
+      this.passportID = person.warningTourist_passport;
+      this.departure = person.warningTourist_departure;
+      this.destination = person.warningTourist_destination;
+      this.intime = person.warningTourist_time;
+      this.riskIndex = person.warningTourist_riskIndex;
+      this.update_left_option(person.warningTourist_historyTime);
+      this.update_center_option(person.warningTourist_place);
+      this.update_right_option(person.fellowTourist_list);
     },
     update_left_option: function (data) {
       for (var p in data) {
@@ -409,6 +543,27 @@ export default {
         break;
       }
     },
+    update_center_option: function (data) {
+
+    },
+    update_right_option: function (data) {
+      var namedata = [{
+        name: this.username,
+        draggable: true,
+      }]
+      var linkdata = []
+      var ii = 1;
+      for (var p in data) {
+        namedata.push({name: data[p].姓名 + ',' + data[p].国籍 + ',' + p, category: 1, draggable: true, country: data[p].国籍, passID: p})
+        linkdata.push({source: 0, target: ii, value: data[p].同行次数})
+        ii = ii + 1
+      }
+      this.right_option.series[0].data = namedata;
+      this.right_option.series[0].links = linkdata;
+    },
+  },
+  beforeDestroy () {
+    clearInterval(this.intervalID)
   },
   components: {
     Echarts
