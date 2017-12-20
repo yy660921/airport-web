@@ -17,6 +17,7 @@ import static airport.web.restful.service.sql.Query.getAirwayTrip;
 
 /**
  * Created by Machenike on 2017/12/19.
+ * 提供总体态势统计页面中部航线数据
  */
 @Controller
 public class AirwayController {
@@ -28,8 +29,9 @@ public class AirwayController {
     })
 
     public LinkedList<TourTrips> getAirway(
-        @RequestParam(value = "date", defaultValue = "1509811200") long date) {
-        LinkedList Result = getAirwayTrip(new Date(date));
+        @RequestParam(value = "from", defaultValue = "1509811200") long from,
+        @RequestParam(value = "to", defaultValue = "1509811200") long to) {
+        LinkedList Result = getAirwayTrip(new Date(from), new Date(to));
         if(Result.size() == 0){
             return getAirwayTrip();
         }

@@ -1,6 +1,8 @@
 package airport.web.restful.controller.daily.CustomsController;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import static airport.web.restful.service.sql.Query.getRiskTouristsAndSeizureNum
 
 /**
  * Created by Machenike on 2017/12/18.
+ * 提供总体态势统计页面左上角风险走势数据
  */
 
 @Controller
@@ -35,13 +38,12 @@ public class RiskTouristsAndSeizureNumberController {
         "/api/getRTAndSN",
     })
 
-    public LinkedList<BaseInfomation> getRTAndSN(
+    public JsonNode getRTAndSN(
         @RequestParam(value = "from", defaultValue = "1509811200") long from,
-        @RequestParam(value = "to", defaultValue = "1512403200") long to,
-        @RequestParam(value = "size", defaultValue = "10") int size) {
-        LinkedList<BaseInfomation> Result = getRiskTouristsAndSeizureNumber(new Date(from), new Date(to));
-        if(Result.size() == 0){
-            return getRiskTouristsAndSeizureNumber(size);
+        @RequestParam(value = "to", defaultValue = "1512403200") long to) {
+        JsonNode Result = getRiskTouristsAndSeizureNumber(new Date(from), new Date(to));
+        if(Result.get("createDate").size() == 0){
+            return getRiskTouristsAndSeizureNumber();
         }
         else {
             return Result;

@@ -20,7 +20,6 @@
 
 <script type="text/ecmascript-6">
 
-  import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
@@ -43,6 +42,7 @@
   export default {
     data () {
       return {
+        intervalID: null,
         l_t_option: {
           title: {
             text: '风险走势',
@@ -198,6 +198,7 @@
               }
             },
             boundaryGap: false,
+//            data: this.page1_hotDeparture_y
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
@@ -246,7 +247,225 @@
                   }])
                 }
               },
+//              data: this.page1_hotDeparture_x
               data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
+            }
+          ]
+        },
+        l_b_option: {
+          animation: true,
+          title: {
+            text: 'TOP10风险旅客名单',
+            left: 'center',
+            textStyle: {
+              color: '#b5eaff'
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+          },
+          xAxis: {
+            type: 'value',
+            position: 'top',
+            axisLine: {
+              lineStyle: {
+                width: 2,
+                color: '#1a41ac'
+              }
+            },
+            // 坐标轴刻度标签
+            axisLabel: {
+              color: '#fff',
+              fontSize: 14
+            },
+            splitLine: {
+              lineStyle: {
+                color: '#1a41ac'
+              }
+            }
+          },
+          yAxis: {
+            type: 'category',
+            axisLine: {
+              lineStyle: {
+                width: 2,
+                color: '#1a41ac'
+              }
+            },
+            // 坐标轴刻度标签
+            axisLabel: {
+              color: '#fff',
+              fontSize: 14
+            },
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              lineStyle: {
+                type: 'solid',
+                color: '#cfc3bd'
+              }
+            },
+            boundaryGap: false,
+//            data: this.page1_hotDeparture_y
+            data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
+          },
+          grid: {
+            top: 60,
+            left: 60,
+            right: 20,
+            bottom: 10
+          },
+          series: [
+            {
+              name: '',
+              type: 'bar',
+              barWidth: 14,
+              barGap: '-100%',
+              itemStyle: {
+                normal: {
+                  color: 'rgba(64, 42, 31, .8)',
+                }
+              },
+              // TODO: 动态获取坐标轴的最大值
+              // data: data.map(function() {return xMax})
+              data: ['3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000']
+            },
+            {
+              name: '旅客人数',
+              type: 'bar',
+              barWidth: 14,
+              label: {
+                normal: {
+                  textStyle: {
+                    color: '#682d19',
+                  },
+                  position: 'right',
+                  show: false,
+                  formatter: '{b}'
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                    offset: 0,
+                    color: 'rgba(255, 162, 82, 1)'
+                  }, {
+                    offset: 1,
+                    color: 'rgba(241, 90, 34, 1)'
+                  }])
+                }
+              },
+//              data: this.page1_hotDeparture_x
+              data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
+            }
+          ]
+        },
+        r_b_option: {
+          animation: true,
+          title: {
+            text: '设备总查验次数时段分布',
+            left: 'center',
+            textStyle: {
+              color: '#b5eaff'
+            }
+          },
+          tooltip: {
+            trigger: 'axis',
+          },
+          xAxis: {
+            type: 'category',
+            axisLine: {
+              lineStyle: {
+                width: 2,
+                color: '#1a41ac'
+              }
+            },
+            // 坐标轴刻度标签
+            axisLabel: {
+              color: '#fff',
+              fontSize: 14
+            },
+            axisTick: {
+              show: false
+            },
+            splitLine: {
+              lineStyle: {
+                type: 'solid',
+                color: '#cfc3bd'
+              }
+            },
+            boundaryGap: false,
+//            data: this.page1_hotDeparture_y
+            data: ["0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]
+          },
+          yAxis: {
+            type: 'value',
+            position: 'top',
+            axisLine: {
+              lineStyle: {
+                width: 2,
+                color: '#1a41ac'
+              }
+            },
+            // 坐标轴刻度标签
+            axisLabel: {
+              color: '#fff',
+              fontSize: 14
+            },
+            splitLine: {
+              lineStyle: {
+                color: '#1a41ac'
+              }
+            }
+          },
+          grid: {
+            top: 60,
+            left: 60,
+            right: 20,
+            bottom: 10
+          },
+          series: [
+            {
+              name: '',
+              type: 'bar',
+              barWidth: 14,
+              barGap: '-100%',
+              itemStyle: {
+                normal: {
+                  color: 'rgba(64, 42, 31, .8)',
+                }
+              },
+              // TODO: 动态获取坐标轴的最大值
+              // data: data.map(function() {return xMax})
+              data: [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150]
+            },
+            {
+              name: '设备查验次数',
+              type: 'bar',
+              barWidth: 14,
+              label: {
+                normal: {
+                  textStyle: {
+                    color: '#682d19',
+                  },
+                  position: 'right',
+                  show: false,
+                  formatter: '{b}'
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                    offset: 0,
+                    color: 'rgba(255, 162, 82, 1)'
+                  }, {
+                    offset: 1,
+                    color: 'rgba(241, 90, 34, 1)'
+                  }])
+                }
+              },
+              data: [0,0,67,0,30,0,140,20,112,127,113,20,5,101,90,77,116,28,68,80,30,61,88,93]
             }
           ]
         },
@@ -278,6 +497,28 @@
             },
           },
           series: [{
+            name: '城市',
+            type: 'scatter3D',
+            coordinateSystem: 'globe',
+            zlevel: 100,
+            label: {
+              emphasis: {
+                show: true,
+                position: 'right',
+                formatter: '{b}'
+              },
+            },
+            animation: true,
+            blendMode: 'lighter',
+            symbol: 'circle',
+            symbolSize: 100,
+            itemStyle: {
+              normal: {
+                color: '#F58158',
+              },
+            },
+            data: [],
+          }, {
             type: 'lines3D',
             coordinateSystem: 'globe',
             name: '航线',
@@ -289,8 +530,10 @@
             effect: {
               show: true,
               period: 2,
+              // constantSpeed: 30,
+              symbol: 'arrow',
               trailWidth: 3,
-              trailLength: 0.5,
+              trailLength: 0.8,
               trailOpacity: 1,
               trailColor: '#0087f4'
             },
@@ -307,11 +550,81 @@
     mounted () {
       this.echartsGlobe();
     },
+    created () {
+      this.intervalID = setInterval(() => {
+        this.updateData()
+      }, 5000);
+    },
     methods: {
+      updateData: function () {
+        this.update_r_t_option();
+        this.update_l_t_option();
+        this.update_l_b_option();
+        this.update_r_b_option();
+        this.update_globe_option();
+      },
       echartsGlobe () {
         let globediv = echarts.init(document.getElementById('echarts-globe'));
         globediv.setOption(this.globe_t_option);
       },
+      update_l_t_option: function () {
+        axios.get('/api/getRTAndSN', {params: {}}).then(response => {
+          if (response.data.createDate.length > 0 && response.data.tourist_warningEvents.length > 0 && response.data.seizure_number.length > 0) {
+            this.l_t_option.xAxis.data = response.data.createDate;
+            this.l_t_option.series[0].data = response.data.tourist_warningEvents;
+            this.l_t_option.series[1].data = response.data.seizure_number;
+          }
+        });
+      },
+      update_r_t_option: function () {
+        axios.get('/api/getDeparture', {params: {}}).then(response => {
+          if (response.data.Departures.length > 0 && response.data.DepartureCount.length > 0) {
+            this.r_t_option.yAxis.data = response.data.Departures;
+            this.r_t_option.series[1].data = response.data.DepartureCount;
+            var maxd = _.max(response.data.DepartureCount);
+            this.r_t_option.series[0].data = _.map(response.data.DepartureCount, (obj, idx) => { return maxd })
+          }
+        });
+      },
+      update_l_b_option: function () {
+        axios.get('/api/getTAndRI', {params: {}}).then(response => {
+          if (response.data.TouristName.length > 0 && response.data.TouristRiskIndex.length > 0) {
+            this.l_b_option.yAxis.data = response.data.TouristName;
+            this.l_b_option.series[1].data = response.data.TouristRiskIndex;
+            var maxd = _.max(response.data.TouristRiskIndex);
+            this.l_b_option.series[0].data = _.map(response.data.TouristRiskIndex, (obj, idx) => { return maxd })
+          }
+        });
+      },
+      update_r_b_option: function () {
+        axios.get('/api/getDCD', {params: {}}).then(response => {
+          if (response.data.TimeLine.length > 0 && response.data.Count.length > 0) {
+            this.r_b_option.xAxis.data = response.data.TimeLine;
+            this.r_b_option.series[1].data = response.data.Count;
+            var maxd = _.max(response.data.Count);
+            this.r_b_option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+          }
+        });
+      },
+      update_globe_option () {
+        axios.get('/api/getAirway', {params: {
+          from: Math.floor(new Date().getTime() / 1000) - 24 * 3600,
+          to: Math.floor(new Date().getTime() / 1000),
+        }}).then(response => {
+          let cities = [];
+          let lines = [];
+          _.each(response.data, item => {
+            cities.push({name: item.departure, value: [item.departureLati, item.departureLong]});
+            cities.push({name: item.destination, value: [item.destinationLati, item.destinationLong]});
+            lines.push([[item.departureLati, item.departureLong], [item.destinationLati, item.destinationLong]]);
+          });
+          this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
+          this.globe_t_option.series[1].data = lines;
+        });
+      }
+    },
+    beforeDestroy () {
+      clearInterval(this.intervalID)
     },
     components: {
       'Echarts': Echarts,
@@ -327,7 +640,7 @@
     width: 30%
     height: 35%
     padding: .7rem 1rem .8rem
-    background-image: url("~assets/images/box-bg.png") 
+    background-image: url("~assets/images/box-bg.png")
     background-size: 100% 100%
     z-index: 1000
     &.l-t-box

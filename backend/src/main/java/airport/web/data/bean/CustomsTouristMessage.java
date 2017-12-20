@@ -1,5 +1,8 @@
 package airport.web.data.bean;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Date;
 
 /**
@@ -22,13 +25,14 @@ public class CustomsTouristMessage {
     private String warningTourist_flight_number;
     private String warningTourist_flight_type;
     private Date warningTourist_time;
-    private String warningTourist_historyTime;
-    private String warningTourist_place;
-    private String fellowTourist_list;
+    private JsonNode warningTourist_historyTime;
+    private JsonNode warningTourist_place;
+    private JsonNode fellowTourist_list;
     private Date createDate;
+    private ObjectMapper objectMapper;
 
     public CustomsTouristMessage(){
-
+        this.objectMapper = new ObjectMapper();
     }
 
     public int getId() {
@@ -143,28 +147,36 @@ public class CustomsTouristMessage {
         this.warningTourist_time = warningTourist_time;
     }
 
-    public String getWarningTourist_historyTime() {
+    public JsonNode getWarningTourist_historyTime() {
         return warningTourist_historyTime;
     }
 
     public void setWarningTourist_historyTime(String warningTourist_historyTime) {
-        this.warningTourist_historyTime = warningTourist_historyTime;
+        try {
+            this.warningTourist_historyTime = objectMapper.readTree(warningTourist_historyTime);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    public String getWarningTourist_place() {
+    public JsonNode getWarningTourist_place() {
         return warningTourist_place;
     }
 
-    public void setWarningTourist_place(String warningTourist_place) {
+    public void setWarningTourist_place(JsonNode warningTourist_place) {
         this.warningTourist_place = warningTourist_place;
     }
 
-    public String getFellowTourist_list() {
+    public JsonNode getFellowTourist_list() {
         return fellowTourist_list;
     }
 
     public void setFellowTourist_list(String fellowTourist_list) {
-        this.fellowTourist_list = fellowTourist_list;
+        try {
+            this.fellowTourist_list = objectMapper.readTree(fellowTourist_list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public Date getCreateDate() {
