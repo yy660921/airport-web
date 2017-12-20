@@ -20,7 +20,6 @@
 
 <script type="text/ecmascript-6">
 
-  import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
@@ -498,6 +497,28 @@
             },
           },
           series: [{
+            name: '城市',
+            type: 'scatter3D',
+            coordinateSystem: 'globe',
+            zlevel: 100,
+            label: {
+              emphasis: {
+                show: true,
+                position: 'right',
+                formatter: '{b}'
+              },
+            },
+            animation: true,
+            blendMode: 'lighter',
+            symbol: 'circle',
+            symbolSize: 100,
+            itemStyle: {
+              normal: {
+                color: '#F58158',
+              },
+            },
+            data: [],
+          }, {
             type: 'lines3D',
             coordinateSystem: 'globe',
             name: '航线',
@@ -509,8 +530,10 @@
             effect: {
               show: true,
               period: 2,
+              // constantSpeed: 30,
+              symbol: 'arrow',
               trailWidth: 3,
-              trailLength: 0.5,
+              trailLength: 0.8,
               trailOpacity: 1,
               trailColor: '#0087f4'
             },
@@ -538,6 +561,7 @@
         this.update_l_t_option();
         this.update_l_b_option();
         this.update_r_b_option();
+        this.update_globe_option();
       },
       echartsGlobe () {
         let globediv = echarts.init(document.getElementById('echarts-globe'));
@@ -582,6 +606,22 @@
           }
         });
       },
+      update_globe_option () {
+        axios.get('/api/getAirway', {params: {
+          from: Math.floor(new Date().getTime() / 1000) - 24 * 3600,
+          to: Math.floor(new Date().getTime() / 1000),
+        }}).then(response => {
+          let cities = [];
+          let lines = [];
+          _.each(response.data, item => {
+            cities.push({name: item.departure, value: [item.departureLati, item.departureLong]});
+            cities.push({name: item.destination, value: [item.destinationLati, item.destinationLong]});
+            lines.push([[item.departureLati, item.departureLong], [item.destinationLati, item.destinationLong]]);
+          });
+          this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
+          this.globe_t_option.series[1].data = lines;
+        });
+      }
     },
     beforeDestroy () {
       clearInterval(this.intervalID)
