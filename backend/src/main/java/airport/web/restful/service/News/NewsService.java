@@ -112,12 +112,18 @@ public class NewsService {
         File newest = null;
         try {
             for (File directory : new File("../..").getCanonicalFile().listFiles()) {
-                System.out.println(directory);
-                if (directory.isDirectory() && DataPattern.matcher(directory.getName()).find()) {
-                    if (dateFormat.parse(directory.getName()).after(Newest)) {
-                        Newest = dateFormat.parse(directory.getName());
-                        newest = directory;
+                if(directory.getName().equals("yuqing")) {
+                    for(File subDirectory:directory.listFiles()) {
+                        System.out.println(subDirectory);
+                        if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
+                            .find()) {
+                            if (dateFormat.parse(subDirectory.getName()).after(Newest)) {
+                                Newest = dateFormat.parse(subDirectory.getName());
+                                newest = subDirectory;
+                            }
+                        }
                     }
+                    break;
                 }
             }
         }catch (Exception e){
