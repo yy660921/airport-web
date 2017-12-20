@@ -244,7 +244,8 @@
                   }, {
                     offset: 1,
                     color: 'rgba(241, 90, 34, 1)'
-                  }])
+                  }]),
+                  barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
 //              data: this.page1_hotDeparture_x
@@ -322,9 +323,10 @@
               type: 'bar',
               barWidth: 14,
               barGap: '-100%',
+              silent: true,
               itemStyle: {
                 normal: {
-                  color: 'rgba(64, 42, 31, .8)',
+                  color: 'rgba(42, 56, 144, .8)',
                 }
               },
               // TODO: 动态获取坐标轴的最大值
@@ -341,7 +343,6 @@
                     color: '#682d19',
                   },
                   position: 'right',
-                  show: false,
                   formatter: '{b}'
                 }
               },
@@ -349,11 +350,12 @@
                 normal: {
                   color: new Graphic.LinearGradient(1, 0, 0, 0, [{
                     offset: 0,
-                    color: 'rgba(255, 162, 82, 1)'
+                    color: 'rgba(129, 153, 255, 1)'
                   }, {
                     offset: 1,
-                    color: 'rgba(241, 90, 34, 1)'
-                  }])
+                    color: 'rgba(18, 34, 134, 1)'
+                  }]),
+                  barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
 //              data: this.page1_hotDeparture_x
@@ -420,10 +422,10 @@
             }
           },
           grid: {
-            top: 60,
-            left: 60,
+            top: 35,
+            left: 40,
             right: 20,
-            bottom: 10
+            bottom: 25
           },
           series: [
             {
@@ -433,7 +435,7 @@
               barGap: '-100%',
               itemStyle: {
                 normal: {
-                  color: 'rgba(64, 42, 31, .8)',
+                  color: 'rgba(24, 50, 117, .8)',
                 }
               },
               // TODO: 动态获取坐标轴的最大值
@@ -456,13 +458,14 @@
               },
               itemStyle: {
                 normal: {
-                  color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                  color: new Graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: 'rgba(255, 162, 82, 1)'
+                    color: 'rgba(38, 216, 255, 1)'
                   }, {
                     offset: 1,
-                    color: 'rgba(241, 90, 34, 1)'
-                  }])
+                    color: 'rgba(32, 84, 221, 1)'
+                  }]),
+                  barBorderRadius: [10, 10, 0, 0],  // 圆角
                 }
               },
               data: [0,0,67,0,30,0,140,20,112,127,113,20,5,101,90,77,116,28,68,80,30,61,88,93]
