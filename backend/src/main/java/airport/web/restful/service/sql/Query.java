@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +23,7 @@ import javax.print.attribute.standard.MediaSize;
 import airport.web.data.bean.BaseInfomation;
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
+import airport.web.restful.service.Constant;
 
 /**
  * Created by Machenike on 2017/12/18.
@@ -37,7 +40,7 @@ public class Query {
      * @param to:   截止日期
      */
     public static JsonNode getRiskTouristsAndSeizureNumber(Date from, Date to){
-        String sql = "";
+        String sql;
         if(from.before(to)) {
             sql =
                 "SELECT tourist_warningEvents,seizure_number,createDate FROM customs_top WHERE DATE(createDate) BETWEEN \""
@@ -144,6 +147,14 @@ public class Query {
     public static LinkedList<CustomsTouristMessage> getTouristMessage(){
         String sql = "SELECT * FROM customs_touristmessage ORDER BY createDate DESC LIMIT 10";
         return getTouristMessageBySQL(sql);
+    }
+
+    /*
+     * @description: 查询最新的首页信息
+     */
+    public static JsonNode getFirstPageCount(){
+        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index ORDER BY createDate DESC LIMIT 1";
+        return getFirstPageCountBySQL(sql);
     }
 
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
@@ -436,6 +447,52 @@ public class Query {
                     Coordinate.add(rs.getDouble("lon"));
                     Coordinate.add(rs.getDouble("lat"));
                     result.replace(rs.getString("cncity"),Coordinate);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    private static JsonNode getFirstPageCountBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                try {
+                    result.put("riskIndex", Double.parseDouble(rs.getString("riskIndex")));
+                }catch (Exception e){
+                    result.put("riskIndex", rs.getString("riskIndex"));
+                }
+                result.put("warningEvents_number", rs.getInt("warningEvents_number"));
+                result.put("tourist_warningEvents", rs.getInt("tourist_warningEvents"));
+                result.put("chinaTourist_warningEvents", rs.getInt("chinaTourist_warningEvents"));
+                result.put("overseasTourist_warningEvents", rs.getInt("overseasTourist_warningEvents"));
+                result.put("seizure_number", rs.getInt("seizure_number"));
+                result.put("contraband_number", rs.getInt("contraband_number"));
+                result.put("highTax_number", rs.getInt("highTax_number"));
+                result.put("governpeople_number", rs.getInt("governpeople_number"));
+                result.put("devicecount_number", rs.getInt("devicecount_number"));
+                result.put("yuqing_total", Constant.Baidu.getsize() + Constant.Weixin.getsize());
+                result.put("yuqing_media", Constant.Media.size());
+                result.put("yuqing_xinhua", Constant.Xinhua);
+                result.put("yuqing_zhongxin", Constant.Zhongxin);
+                result.put("yuqing_gzh", Constant.Gzh.size());
+                result.put("yuqing_tongrenga", Constant.TongrenGongan);
+                result.put("yuqing_tongrenwsh", Constant.TongrenWeishenghuo);
             }
         }catch (Exception e) {
             e.printStackTrace();

@@ -3,101 +3,79 @@ package airport.web.restful.service.News;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import airport.web.data.bean.News;
 import airport.web.restful.service.Constant;
 
+import static airport.web.restful.service.Constant.initial;
+
 /**
  * Created by Machenike on 2017/12/20.
  * 读取新闻Json文件
  */
-public class NewsService {
+public class NewsService implements Runnable{
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static Pattern DataPattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}");
 
-    public static ObjectNode ReadFile(String FilePath){
+    private static ArrayNode ReadFile(String FilePath){
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode NewsMap = objectMapper.createObjectNode();
-
+        ArrayNode NewsList = objectMapper.createArrayNode();
         try {
             BufferedReader in = new BufferedReader(new FileReader(FilePath));
-            String line = "";
-            int Count = 0;
-            ArrayNode NewsList = objectMapper.createArrayNode();
+            String line;
             while((line=in.readLine())!=null){
                 try {
                     JsonNode News = objectMapper.readTree(line);
-                    Count ++;
+                    if(News.has("gzh")){
+                        Constant.Gzh.add(News.get("gzh").asText());
+                        if(News.get("gzh").asText().equals("铜仁微生活")){
+                            Constant.TongrenWeishenghuo += 1;
+                        }
+                        else if(News.get("gzh").asText().equals("铜仁公安")){
+                            Constant.TongrenGongan += 1;
+                        }
+                    }
+                    else if(News.has("source")){
+                        Constant.Gzh.add(News.get("source").asText());
+                        if(News.get("source").asText().equals("新华网")){
+                            Constant.Xinhua += 1;
+                        }
+                        else if(News.get("source").asText().equals("中新网")){
+                            Constant.Zhongxin += 1;
+                        }
+                    }
                     NewsList.add(News);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
-            NewsMap.put("TotalCount",Count);
-            NewsMap.replace("NewsList",NewsList);
         }catch (Exception e){
             e.printStackTrace();
         }
-        return NewsMap;
+        return NewsList;
     }
 
-    public static void ParseNews(File DirectoryName){
+    private static void ParseNews(File DirectoryName){
         try {
             for (File SubDictory : DirectoryName.listFiles()) {
                 News NewsInfo = new News();
                 if(SubDictory.isDirectory()&&(SubDictory.getName().contains("wx")||SubDictory.getName().contains("baidu"))) {
                     for (File FileName : SubDictory.listFiles()) {
-                        if (FileName.getName().contains("海关") && FileName.getName()
-                            .contains("病毒")) {
-                            NewsInfo
-                                .setCustomsVirus(ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("海关") && FileName.getName()
-                            .contains("查获")) {
-                            NewsInfo
-                                .setCustomsSeized(ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("海关") && FileName.getName()
-                            .contains("毒品")) {
-                            NewsInfo
-                                .setCustomsDrug(ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("海关") && FileName.getName()
-                            .contains("疫情")) {
-                            NewsInfo.setCustomsEpidemic(
-                                ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("海关") && FileName.getName()
-                            .contains("走私")) {
-                            NewsInfo
-                                .setCustomsSmuggle(ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("铜仁凤凰机场")) {
-                            NewsInfo.setTongrenPhoenixAirport(
-                                ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("铜仁海关")) {
-                            NewsInfo
-                                .setTongrenCustoms(ReadFile(FileName.getCanonicalFile().getPath()));
-                        } else if (FileName.getName().contains("铜仁机场")) {
-                            NewsInfo
-                                .setTongrenAirport(ReadFile(FileName.getCanonicalFile().getPath()));
+                        if (FileName.getName().contains(".json")) {
+                            NewsInfo.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
                         }
                     }
                     if (SubDictory.getName().equals("baidu")) {
-                        NewsInfo.Summary();
                         Constant.Baidu = NewsInfo;
                     } else if (SubDictory.getName().equals("wx")) {
-                        NewsInfo.Summary();
                         Constant.Weixin = NewsInfo;
                     }
                 }
@@ -111,19 +89,16 @@ public class NewsService {
         Date Newest = new Date(0);
         File newest = null;
         try {
-            for (File directory : new File("../..").getCanonicalFile().listFiles()) {
-                if(directory.getName().equals("yuqing")) {
-                    for(File subDirectory:directory.listFiles()) {
-                        System.out.println(subDirectory);
-                        if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
-                            .find()) {
-                            if (dateFormat.parse(subDirectory.getName()).after(Newest)) {
-                                Newest = dateFormat.parse(subDirectory.getName());
-                                newest = subDirectory;
-                            }
-                        }
+            System.out.println(new File("./yuqing").getCanonicalFile());
+            File directory = new File("./yuqing");
+            for(File subDirectory:directory.listFiles()) {
+                System.out.println(subDirectory);
+                if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
+                    .find()) {
+                    if (dateFormat.parse(subDirectory.getName()).after(Newest)) {
+                        Newest = dateFormat.parse(subDirectory.getName());
+                        newest = subDirectory;
                     }
-                    break;
                 }
             }
         }catch (Exception e){
@@ -132,6 +107,11 @@ public class NewsService {
         }
         System.out.println(newest);
         ParseNews(newest);
+    }
+
+    public void run(){
+        initial();
+        getNewestNews();
     }
 
     public static void main(String args[]) throws Exception{

@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import airport.web.restful.service.Constant;
+import airport.web.restful.service.News.NewsService;
 
 import static airport.web.restful.service.News.NewsService.getNewestNews;
 
@@ -28,18 +32,16 @@ import static airport.web.restful.service.News.NewsService.getNewestNews;
  */
 @Controller
 public class NewsController {
+    static{
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(
+            new NewsService(),
+            0,
+            1,
+            TimeUnit.MINUTES);
+    }
 
     private final static Logger LOG = LoggerFactory.getLogger(NewsController.class);
-
-    @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, value = {
-        "/api/ScanNews",
-    })
-
-    public String ScanNews(){
-        getNewestNews();
-        return "Finish";
-    }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = {
