@@ -1,14 +1,27 @@
 package airport.web.data.bean;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Created by Machenike on 2017/12/20.
  * 定义新闻内容类
  */
 public class News {
+
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static Pattern DatePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}$");
+    private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
 
     private ObjectNode CustomsVirus;             //海关+病毒新闻
     private ObjectNode CustomsSeized;            //海关+查获新闻
@@ -23,7 +36,24 @@ public class News {
     private long Total;
     private ArrayNode TotalNews;
 
+    private ObjectNode Count;
+    private static int CountDays = 30;
+
     public News(){
+        TotalNews = new ObjectMapper().createArrayNode();
+        Count = new ObjectMapper().createObjectNode();
+        GregorianCalendar gc=new GregorianCalendar();
+        System.out.println(new Date());
+        try {
+            gc.setTime(dateFormat.parse(dateFormat.format(new Date())));
+            gc.add(5,-CountDays);
+        }catch (Exception e){
+
+        }
+        for(int i=0;i<CountDays;i++){
+            Count.put(dateFormat.format(gc.getTime()),0);
+            gc.add(5,1);
+        }
         Total = 0;
     }
 
@@ -100,6 +130,7 @@ public class News {
     }
 
     public void Summary(){
+        TotalNews = new ObjectMapper().createArrayNode();
         TotalNews.addAll((ArrayNode) CustomsVirus.get("NewsList"))
                  .addAll((ArrayNode) CustomsSeized.get("NewsList"))
                  .addAll((ArrayNode) CustomsDrug.get("NewsList"))
@@ -108,5 +139,50 @@ public class News {
                  .addAll((ArrayNode) TongrenPhoenixAirport.get("NewsList"))
                  .addAll((ArrayNode) TongrenCustoms.get("NewsList"))
                  .addAll((ArrayNode) TongrenAirport.get("NewsList"));
+        Total = CustomsVirus.get("TotalCount").asLong()
+            +   CustomsSeized.get("TotalCount").asLong()
+            +   CustomsDrug.get("TotalCount").asLong()
+            +   CustomsEpidemic.get("TotalCount").asLong()
+            +   CustomsSmuggle.get("TotalCount").asLong()
+            +   TongrenPhoenixAirport.get("TotalCount").asLong()
+            +   TongrenCustoms.get("TotalCount").asLong()
+            +   TongrenAirport.get("TotalCount").asLong();
+        Count();
+    }
+
+    public LinkedList<JsonNode> getNews(){
+        int num = 9 + new Random().nextInt(4);
+        LinkedList<JsonNode> news = new LinkedList<>();
+        for(int i=0;i<num;i++){
+            news.add(TotalNews.get(new Random().nextInt(TotalNews.size()-1)));
+        }
+        return news;
+    }
+
+    private void Count(){
+        JsonNode news;
+        for(int i=0;i<TotalNews.size();i++){
+            news = TotalNews.get(i);
+            if(news.has("date")){
+                try {
+                    Date d = new Date(0);
+                    if(DatePattern.matcher(news.get("date").toString().replace("\"","")).find()){
+                        d = dateFormat.parse(news.get("date").toString().replace("\"",""));
+                    }
+                    else if(TimePattern.matcher(news.get("date").toString().replace("\"","")).find()){
+                        d = timeFormat.parse(news.get("date").toString().replace("\"",""));
+                    }
+                    if (Count.has(dateFormat.format(d))){
+                        Count.put(dateFormat.format(d),(Count.get(dateFormat.format(d)).asLong() + 1));
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public JsonNode getCount(){
+        return Count;
     }
 }
