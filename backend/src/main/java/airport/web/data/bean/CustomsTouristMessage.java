@@ -163,12 +163,8 @@ public class CustomsTouristMessage {
         return warningTourist_place;
     }
 
-    public void setWarningTourist_place(String warningTourist_place) {
-        try {
-            this.warningTourist_place = objectMapper.readTree(warningTourist_place);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public void setWarningTourist_place(JsonNode warningTourist_place) {
+        this.warningTourist_place = warningTourist_place;
     }
 
     public JsonNode getFellowTourist_list() {

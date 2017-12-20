@@ -9,6 +9,7 @@ import java.util.Properties;
 
 /**
  * Created by Machenike on 2017/12/15.
+ * 数据库连接工具类
  */
 
 public class MySQL {

@@ -24,6 +24,7 @@ import airport.web.data.bean.TourTrips;
 
 /**
  * Created by Machenike on 2017/12/18.
+ * 数据库读取操作类
  */
 
 public class Query {
@@ -88,7 +89,7 @@ public class Query {
      * @param date: 查询日期
      */
     public static LinkedList<TourTrips> getAirwayTrip(Date from, Date to){
-        String sql = "SELECT createDate,warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
+        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
                      + "FROM customs_touristmessage\n"
                      + "INNER JOIN city_longlati AS city_dep\n"
                      + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
@@ -102,7 +103,7 @@ public class Query {
      * @description: 查询最新的航线
      */
     public static LinkedList<TourTrips> getAirwayTrip(){
-        String sql = "SELECT createDate,warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
+        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
                      + "FROM customs_touristmessage\n"
                      + "INNER JOIN city_longlati AS city_dep\n"
                      + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
@@ -111,6 +112,26 @@ public class Query {
                      + "GROUP BY warningTourist_departure,warningTourist_destination\n"
                      + "ORDER BY createDate DESC LIMIT 10";
         return getAirwayTripBySQL(sql);
+    }
+
+    /*
+     * @description: 查询某条航线
+     */
+    public static JsonNode getAirLine(String Departure, String Destination){
+        String sql = "SELECT\n"
+                     + "\tcity_dep.cncity AS dep,\n"
+                     + "\tcity_dep.lon AS deplon,\n"
+                     + "\tcity_dep.lat AS deplat,\n"
+                     + "\tcity_dest.cncity AS dest,\n"
+                     + "\tcity_dest.lon AS destlon,\n"
+                     + "\tcity_dest.lat AS destlat\n"
+                     + "FROM\n"
+                     + "\tcity_longlati AS city_dep,\n"
+                     + "\tcity_longlati AS city_dest\n"
+                     + "WHERE\n"
+                     + "\tcity_dep.cncity = \"" + Departure + "\"\n"
+                     + "AND city_dest.cncity = \"" + Destination + "\"";
+        return getAirLineBySQL(sql);
     }
 
     /*
@@ -290,21 +311,28 @@ public class Query {
         PreparedStatement ps = null;
         ResultSet rs = null;
         LinkedList<TourTrips> result = new LinkedList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                TourTrips TourTrip = new TourTrips();
-                TourTrip.setDeparture(rs.getString("warningTourist_departure"));
-                TourTrip.setDepartureLong(rs.getDouble("deplon"));
-                TourTrip.setDepartureLati(rs.getDouble("deplat"));
-                TourTrip.setDestination(rs.getString("warningTourist_destination"));
-                TourTrip.setDestinationLong(rs.getDouble("destlon"));
-                TourTrip.setDestinationLati(rs.getDouble("destlat"));
-                TourTrip.setCreateDate(rs.getDate("createDate"));
-                TourTrip.setWeight(rs.getInt("weight"));
-                if(TourTrip.getWeight()!=0) {
+                if(rs.getInt("weight")!=0) {
+                    TourTrips TourTrip = new TourTrips();
+                    ObjectNode Departure = objectMapper.createObjectNode();
+                    ArrayNode DepartureCoordinate = objectMapper.createArrayNode();
+                    ObjectNode Destination = objectMapper.createObjectNode();
+                    ArrayNode DestinationCoordinate = objectMapper.createArrayNode();
+                    Departure.put("CityName", rs.getString("warningTourist_departure"));
+                    DepartureCoordinate.add(rs.getDouble("deplon"));
+                    DepartureCoordinate.add(rs.getDouble("deplat"));
+                    Departure.replace("Coordinate", DepartureCoordinate);
+                    Destination.put("CityName", rs.getString("warningTourist_destination"));
+                    DestinationCoordinate.add(rs.getDouble("destlon"));
+                    DestinationCoordinate.add(rs.getDouble("destlat"));
+                    Destination.replace("Coordinate", DestinationCoordinate);
+                    TourTrip.setDeparture(Departure);
+                    TourTrip.setDestination(Destination);
                     result.add(TourTrip);
                 }
             }
@@ -326,6 +354,7 @@ public class Query {
         PreparedStatement ps = null;
         ResultSet rs = null;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
@@ -347,7 +376,15 @@ public class Query {
                 CT.setWarningTourist_flight_type(rs.getString("warningTourist_flight_type"));
                 CT.setWarningTourist_time(rs.getDate("warningTourist_time"));
                 CT.setWarningTourist_historyTime(rs.getString("warningTourist_historyTime"));
-                CT.setWarningTourist_place(rs.getString("warningTourist_place"));
+                ArrayNode TravelLine = objectMapper.createArrayNode();
+                JsonNode Travel = objectMapper.readTree(rs.getString("warningTourist_place"));
+                Iterator<String> Travelline = Travel.fieldNames();
+                while(Travelline.hasNext()){
+                    String field = Travelline.next();
+                    JsonNode Trav = Travel.get(field);
+                    TravelLine.add(getAirLine(Trav.get("出发地").asText(),Trav.get("目的地").asText()));
+                }
+                CT.setWarningTourist_place(TravelLine);
                 CT.setFellowTourist_list(rs.getString("fellowTourist_list"));
                 CT.setCreateDate(rs.getDate("createDate"));
                 result.add(CT);
@@ -364,4 +401,44 @@ public class Query {
             return result;
         }
     }
+
+    private static JsonNode getAirLineBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                    ObjectNode Departure = objectMapper.createObjectNode();
+                    ArrayNode DepartureCoordinate = objectMapper.createArrayNode();
+                    ObjectNode Destination = objectMapper.createObjectNode();
+                    ArrayNode DestinationCoordinate = objectMapper.createArrayNode();
+                    Departure.put("CityName", rs.getString("dep"));
+                    DepartureCoordinate.add(rs.getDouble("deplon"));
+                    DepartureCoordinate.add(rs.getDouble("deplat"));
+                    Departure.replace("Coordinate", DepartureCoordinate);
+                    Destination.put("CityName", rs.getString("dest"));
+                    DestinationCoordinate.add(rs.getDouble("destlon"));
+                    DestinationCoordinate.add(rs.getDouble("destlat"));
+                    Destination.replace("Coordinate", DestinationCoordinate);
+                    result.replace("Departure",Departure);
+                    result.replace("Destination",Destination);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
 }
