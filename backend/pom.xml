@@ -535,7 +535,7 @@
                                     </descriptors>
                                     <archive>
                                         <manifest>
-                                            <mainClass>airport.web.demo.DemoServer</mainClass>
+                                            <mainClass>airport.web.restful.Main</mainClass>
                                         </manifest>
                                     </archive>
                                 </configuration>
