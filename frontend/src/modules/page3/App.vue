@@ -2,10 +2,10 @@
   <div id="app" class="real-body">
     <div class="con-left">
       <div class="con-box">
-        <Echarts theme="ring" :option="l_t_option" className="chart" ></Echarts>
+        <Echarts theme="ring" :option="top_option" className="chart" ></Echarts>
       </div>
       <div class="con-box">
-        <Echarts theme="ring" :option="l_t_option" className="chart" ></Echarts>
+        <Echarts theme="ring" :option="bottom_option" className="chart" ></Echarts>
       </div>
     </div>
     <div class="con-right">
@@ -82,7 +82,7 @@
     name: 'app',
     data () {
       return {
-        l_t_option: {
+        top_option: {
           title: {
             text: '风险走势',
             left: 'center',
@@ -158,35 +158,99 @@
                 }
               },
               data: [20, 10, 20, 30, 35, 26, 36, 30]
-            },
-            {
-              name: '选项A',
-              type: 'line',
-              itemStyle: {
-                normal: {
-                  color: 'rgba(41, 202, 255, .8)'
-                }
-              },
-              areaStyle: {
-                normal: {
-                  color: new Graphic.LinearGradient(0, 0, 0, 1, [{
-                    offset: 0,
-                    color: 'rgba(59, 159, 237, .9)'
-                  }, {
-                    offset: 1,
-                    color: 'rgba(59, 159, 237, .3)'
-                  }])
-                }
-              },
-              data: [10, 20, 30, 15, 12, 20, 38, 20]
             }
           ]
-        }
-      }
+        },
+        bottom_option: {
+          tooltip: {
+            trigger: 'item',
+            enterable: true,
+            confine: true,
+            textStyle: {fontSize: 10},
+            //  formatter: function(param){
+            //    var a=param.data.text.join('<br/>');
+            //    var b=param.data.name+'&nbsp;&nbsp;代表性文本：<br/><br/>'+a;
+            //    return b;
+            //  }
+          },
+          legend: {
+            orient: 'horizontal',
+            right: 'center',
+            //  left: 'left',
+            align: 'left',
+            //  top: 'top',
+            data: [],
+            //  x : 'center',
+            //  y : 'bottom',
+            y: '5%',
+            x: '85%'
+          },
+          //  grid: {
+          //    left: '30',
+          //    right: '30',
+          //    bottom: '100',
+          //    top:'0%',
+          //    containLabel: true
+          //  },
+          series: [{
+            // name: '社会观点',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: [],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }]
+        },
+      };
+    },
+    created () {
+      this.updateData();
+      setInterval(this.updateData, 60 * 1000);
+    },
+    methods: {
+      updateData () {
+        this.update_top_option();
+        this.update_bottom_option();
+      },
+      update_top_option () {
+        axios.get('/api/getCount').then(response => {
+          this.top_option.xAxis.data = response.data.Date;
+          this.top_option.series[0].data = response.data.count;
+        });
+      },
+      update_bottom_option () {
+        axios.get('/static/data/haiguan_clustering_results.json').then(response => {
+          let legendData = [];
+          let dataValue = [];
+          _.each(response.data, function (item, index) {
+            var keywords, emotion, docs_ratio;
+            if (item.key_words) {
+              keywords = item.key_words;
+            } else {
+              keywords = '暂无关键词';
+            }
+            //  emotion='（积极：'+item.emotions[0]+',中性：'+item.emotions[1]+',消极：'+item.emotions[2]+')';
+            docs_ratio = item.docs_ratio;
+            keywords += ' ' + docs_ratio
+            //  emotion = '（积极 '+item.emotions[0]+', 消极 '+item.emotions[2]+')';
+            //  keywords += emotion;
+            legendData.push(keywords);
+            dataValue.push({value: item.docs_count, name: keywords, text: item.docs})
+          });
+          this.bottom_option.legend.data = legendData;
+          this.bottom_option.series[0].data = dataValue;
+        });
+      },
     },
     components: {
       Echarts
-    }
+    },
   }
 </script>
 

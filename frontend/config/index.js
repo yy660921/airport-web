@@ -32,6 +32,7 @@ module.exports = {
     // custom proxy rules.
     proxyReqList: [
       '^/api/',
+      '^/static/data',
     ],
     localHost: 'http://localhost:8080',
     remoteHost: 'http://10.1.1.11:8082',
