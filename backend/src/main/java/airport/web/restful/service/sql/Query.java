@@ -117,21 +117,16 @@ public class Query {
     /*
      * @description: 查询某条航线
      */
-    public static JsonNode getAirLine(String Departure, String Destination){
-        String sql = "SELECT\n"
-                     + "\tcity_dep.cncity AS dep,\n"
-                     + "\tcity_dep.lon AS deplon,\n"
-                     + "\tcity_dep.lat AS deplat,\n"
-                     + "\tcity_dest.cncity AS dest,\n"
-                     + "\tcity_dest.lon AS destlon,\n"
-                     + "\tcity_dest.lat AS destlat\n"
-                     + "FROM\n"
-                     + "\tcity_longlati AS city_dep,\n"
-                     + "\tcity_longlati AS city_dest\n"
-                     + "WHERE\n"
-                     + "\tcity_dep.cncity = \"" + Departure + "\"\n"
-                     + "AND city_dest.cncity = \"" + Destination + "\"";
-        return getAirLineBySQL(sql);
+    public static JsonNode getAirLine(Iterator<String> Places){
+        String sql = "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"北京\")";
+        if(Places.hasNext()) {
+            sql =
+                "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"" + Places.next();
+        }
+        while(Places.hasNext()){
+            sql += "\",\"" + Places.next();
+        }
+        return getAirLineBySQL(sql + "\")");
     }
 
     /*
@@ -379,10 +374,34 @@ public class Query {
                 ArrayNode TravelLine = objectMapper.createArrayNode();
                 JsonNode Travel = objectMapper.readTree(rs.getString("warningTourist_place"));
                 Iterator<String> Travelline = Travel.fieldNames();
+                ObjectNode TravelPlaces = objectMapper.createObjectNode();
                 while(Travelline.hasNext()){
                     String field = Travelline.next();
                     JsonNode Trav = Travel.get(field);
-                    TravelLine.add(getAirLine(Trav.get("出发地").asText(),Trav.get("目的地").asText()));
+                    if(!TravelPlaces.has(Trav.get("出发地").asText())){
+                        TravelPlaces.put(Trav.get("出发地").asText(),0);
+                    }
+                    if(!TravelPlaces.has(Trav.get("目的地").asText())){
+                        TravelPlaces.put(Trav.get("目的地").asText(),0);
+                    }
+                }
+                JsonNode PlaceDict = getAirLine(TravelPlaces.fieldNames());
+                Travelline = Travel.fieldNames();
+                while(Travelline.hasNext()){
+                    String field = Travelline.next();
+                    JsonNode Trav = Travel.get(field);
+                    if(PlaceDict.has(Trav.get("出发地").asText())&&PlaceDict.has(Trav.get("目的地").asText())){
+                        ObjectNode Trip = objectMapper.createObjectNode();
+                        ObjectNode Departure = objectMapper.createObjectNode();
+                        ObjectNode Destination = objectMapper.createObjectNode();
+                        Departure.put("CityName",Trav.get("出发地").asText());
+                        Departure.replace("Coordinate",PlaceDict.get(Trav.get("出发地").asText()));
+                        Destination.put("CityName",Trav.get("目的地").asText());
+                        Destination.replace("Coordinate",PlaceDict.get(Trav.get("目的地").asText()));
+                        Trip.replace("departure",Departure);
+                        Trip.replace("destination",Destination);
+                        TravelLine.add(Trip);
+                    }
                 }
                 CT.setWarningTourist_place(TravelLine);
                 CT.setFellowTourist_list(rs.getString("fellowTourist_list"));
@@ -412,21 +431,11 @@ public class Query {
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            if (rs.next()) {
-                    ObjectNode Departure = objectMapper.createObjectNode();
-                    ArrayNode DepartureCoordinate = objectMapper.createArrayNode();
-                    ObjectNode Destination = objectMapper.createObjectNode();
-                    ArrayNode DestinationCoordinate = objectMapper.createArrayNode();
-                    Departure.put("CityName", rs.getString("dep"));
-                    DepartureCoordinate.add(rs.getDouble("deplon"));
-                    DepartureCoordinate.add(rs.getDouble("deplat"));
-                    Departure.replace("Coordinate", DepartureCoordinate);
-                    Destination.put("CityName", rs.getString("dest"));
-                    DestinationCoordinate.add(rs.getDouble("destlon"));
-                    DestinationCoordinate.add(rs.getDouble("destlat"));
-                    Destination.replace("Coordinate", DestinationCoordinate);
-                    result.replace("Departure",Departure);
-                    result.replace("Destination",Destination);
+            while (rs.next()) {
+                    ArrayNode Coordinate = objectMapper.createArrayNode();
+                    Coordinate.add(rs.getDouble("lon"));
+                    Coordinate.add(rs.getDouble("lat"));
+                    result.replace(rs.getString("cncity"),Coordinate);
             }
         }catch (Exception e) {
             e.printStackTrace();

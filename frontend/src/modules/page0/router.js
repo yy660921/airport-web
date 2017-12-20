@@ -1,7 +1,7 @@
 // for App.vue router-view
 import Vue from 'vue'
 import Router from 'vue-router'
-import Page4 from 'modules/page4/Page4.vue'
+import Page0 from 'modules/page0/Page0.vue'
 
 Vue.use(Router)
 
@@ -10,8 +10,8 @@ const router = new Router({
     {
       // 首页路由
       path: '/',
-      name: 'Page4',
-      component: Page4
+      name: 'Page0',
+      component: Page0
     },
   ]
 });
