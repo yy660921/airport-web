@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -19,6 +20,8 @@ public class News {
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static Pattern DatePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}$");
+    private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
 
     private ObjectNode CustomsVirus;             //海关+病毒新闻
     private ObjectNode CustomsSeized;            //海关+查获新闻
@@ -34,6 +37,7 @@ public class News {
     private ArrayNode TotalNews;
 
     private ObjectNode Count;
+    private static int CountDays = 30;
 
     public News(){
         TotalNews = new ObjectMapper().createArrayNode();
@@ -42,11 +46,11 @@ public class News {
         System.out.println(new Date());
         try {
             gc.setTime(dateFormat.parse(dateFormat.format(new Date())));
-            gc.add(5,-15);
+            gc.add(5,-CountDays);
         }catch (Exception e){
 
         }
-        for(int i=0;i<15;i++){
+        for(int i=0;i<CountDays;i++){
             Count.put(dateFormat.format(gc.getTime()),0);
             gc.add(5,1);
         }
@@ -161,13 +165,18 @@ public class News {
             news = TotalNews.get(i);
             if(news.has("date")){
                 try {
-                    System.out.println(news.get("date").toString());
-                    if (Count.has(dateFormat.format(dateFormat.parse(news.get("date").toString())))){
-                        Count.put(dateFormat.format(dateFormat.parse(news.get("date").toString())),
-                            (Count.get(dateFormat.format(dateFormat.parse(news.get("date").toString()))).asLong() + 1));
+                    Date d = new Date(0);
+                    if(DatePattern.matcher(news.get("date").toString().replace("\"","")).find()){
+                        d = dateFormat.parse(news.get("date").toString().replace("\"",""));
+                    }
+                    else if(TimePattern.matcher(news.get("date").toString().replace("\"","")).find()){
+                        d = timeFormat.parse(news.get("date").toString().replace("\"",""));
+                    }
+                    if (Count.has(dateFormat.format(d))){
+                        Count.put(dateFormat.format(d),(Count.get(dateFormat.format(d)).asLong() + 1));
                     }
                 }catch (Exception e){
-                    ;
+                    e.printStackTrace();
                 }
             }
         }
