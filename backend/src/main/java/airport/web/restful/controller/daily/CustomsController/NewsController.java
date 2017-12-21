@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -49,10 +52,18 @@ public class NewsController {
 
     public LinkedList<JsonNode> getNews() {
         LinkedList<JsonNode> news = new LinkedList<>();
-        for(int i=0;i<Constant.news.size();i++){
-            ObjectNode n = (ObjectNode) Constant.news.get(i);
+        HashSet<Integer> ID = new HashSet<>();
+        Random r = new Random();
+        while (ID.size()<10){
+            ID.add(r.nextInt(Constant.news.size()));
+        }
+        Iterator<Integer> I = ID.iterator();
+        int i=0;
+        while(I.hasNext()){
+            ObjectNode n = (ObjectNode) Constant.news.get(I.next());
             n.put("ID",i);
             news.add(n);
+            i++;
         }
         return news;
     }
