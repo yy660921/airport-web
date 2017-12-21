@@ -60,7 +60,7 @@ export default {
       number_all: 0,
       number_now: 0,
       resData: [],
-      username: '张三',
+      username: 'Mcneal',
       sex: '男',
       country: '中国',
       birth: '1990-01-01',
@@ -68,7 +68,7 @@ export default {
       departure: '巴黎',
       destination: '铜仁',
       intime: '2017-12-16',
-      riskIndex: '99',
+      riskIndex: '60',
       left_option: {
         animation: true,
         title: {
@@ -293,57 +293,24 @@ export default {
             },
             data: [
               {
-                name: '徐贱云',
+                name: 'Mcneal',
                 draggable: true,
                 symbolSize: 60,
               }, {
-                name: '冯可梁',
+                name: '李白,China,FB00312',
                 category: 1,
                 draggable: true,
+                symbolSize: 40,
               }, {
-                name: '邓志荣',
+                name: '马超,China,FP8843',
                 category: 1,
                 draggable: true,
+                symbolSize: 80,
               }, {
-                name: '李荣庆',
+                name: '耀文,China,PK2345',
                 category: 1,
                 draggable: true,
-              }, {
-                name: '郑志勇',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '赵英杰',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '王承军',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '陈卫东',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '邹劲松',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '赵成',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '陈现忠',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '陶泳',
-                category: 1,
-                draggable: true,
-              }, {
-                name: '王德福',
-                category: 1,
-                draggable: true,
+                symbolSize: 60,
               }
             ],
             links: [
@@ -351,63 +318,15 @@ export default {
                 source: 0,
                 target: 1,
                 category: 0,
-                value: '朋友'
+                value: '3'
               }, {
                 source: 0,
                 target: 2,
-                value: '战友'
+                value: '1'
               }, {
                 source: 0,
                 target: 3,
-                value: '房东'
-              }, {
-                source: 0,
-                target: 4,
-                value: '朋友'
-              }, {
-                source: 1,
-                target: 2,
-                value: '表亲'
-              }, {
-                source: 0,
-                target: 5,
-                value: '朋友'
-              }, {
-                source: 4,
-                target: 5,
-                value: '姑姑'
-              }, {
-                source: 2,
-                target: 8,
-                value: '叔叔'
-              }, {
-                source: 0,
-                target: 12,
-                value: '朋友'
-              }, {
-                source: 6,
-                target: 11,
-                value: '爱人'
-              }, {
-                source: 6,
-                target: 3,
-                value: '朋友'
-              }, {
-                source: 7,
-                target: 5,
-                value: '朋友'
-              }, {
-                source: 9,
-                target: 10,
-                value: '朋友'
-              }, {
-                source: 3,
-                target: 10,
-                value: '朋友'
-              }, {
-                source: 2,
-                target: 11,
-                value: '同学'
+                value: '4'
               }
             ],
             lineStyle: {
@@ -507,7 +426,9 @@ export default {
       var linkdata = []
       var ii = 1;
       for (var p in data) {
-        namedata.push({name: data[p].姓名 + ',' + data[p].国籍 + ',' + p, category: 1, draggable: true, country: data[p].国籍, passID: p})
+        var psize = 30 + 10 * data[p].同行次数;
+        psize = psize > 80 ? 80 : psize;
+        namedata.push({name: data[p].姓名 + ',' + data[p].国籍 + ',' + p, category: 1, draggable: true, country: data[p].国籍, passID: p, symbolSize: psize})
         linkdata.push({source: 0, target: ii, value: data[p].同行次数})
         ii = ii + 1
       }
