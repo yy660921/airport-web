@@ -50,7 +50,9 @@ public class NewsController {
     public LinkedList<JsonNode> getNews() {
         LinkedList<JsonNode> news = new LinkedList<>();
         for(int i=0;i<Constant.news.size();i++){
-            news.add(Constant.news.get(i));
+            ObjectNode n = (ObjectNode) Constant.news.get(i);
+            n.put("ID",i);
+            news.add(n);
         }
         return news;
     }
