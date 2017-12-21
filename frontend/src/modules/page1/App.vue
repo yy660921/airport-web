@@ -576,6 +576,7 @@
             this.r_t_option.series[1].data = response.data.DepartureCount;
             var maxd = _.max(response.data.DepartureCount);
             this.r_t_option.series[0].data = _.map(response.data.DepartureCount, (obj, idx) => { return maxd })
+            this.r_t_option.xAxis.max = maxd;
           }
         });
       },
@@ -586,6 +587,7 @@
             this.l_b_option.series[1].data = response.data.TouristRiskIndex;
             var maxd = _.max(response.data.TouristRiskIndex);
             this.l_b_option.series[0].data = _.map(response.data.TouristRiskIndex, (obj, idx) => { return maxd })
+            this.l_b_option.xAxis.max = maxd;
           }
         });
       },
@@ -596,6 +598,7 @@
             this.r_b_option.series[1].data = response.data.Count;
             var maxd = _.max(response.data.Count);
             this.r_b_option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+            this.r_b_option.yAxis.max = maxd;
           }
         });
       },

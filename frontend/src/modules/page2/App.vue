@@ -514,6 +514,7 @@ export default {
         this.left_option.series[1].data = linedata;
         var maxd = _.max(linedata);
         this.left_option.series[0].data = _.map(linedata, (obj, idx) => { return maxd })
+        this.left_option.yAxis.max = maxd;
         break;
       }
     },
