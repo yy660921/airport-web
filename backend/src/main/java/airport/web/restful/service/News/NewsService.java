@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -32,8 +34,9 @@ public class NewsService implements Runnable{
         boolean CountTotal = true;
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode NewsList = objectMapper.createArrayNode();
+        BufferedReader in = null;
         try {
-            BufferedReader in = new BufferedReader(new FileReader(FilePath));
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF-8"));
             String line;
             while((line=in.readLine())!=null){
                 try {
@@ -64,7 +67,6 @@ public class NewsService implements Runnable{
                                 d = timeFormat.parse(News.get("date").toString().replace("\"", ""));
                             }
                             if (d.after(Constant.LastDay) && d.before(new Date())) {
-                                Constant.initial();
                                 Constant.LastDay = d;
                             }
                         }
@@ -124,6 +126,13 @@ public class NewsService implements Runnable{
             }
         }catch (Exception e){
             e.printStackTrace();
+        }
+        finally {
+            try {
+                in.close();
+            }catch (Exception e){
+
+            }
         }
         return NewsList;
     }
