@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import airport.web.restful.service.Constant;
+
 /**
  * Created by Machenike on 2017/12/20.
  * 定义新闻内容类
@@ -27,7 +29,7 @@ public class News {
     private static ArrayNode TotalNews;
 
     private ObjectNode Count;
-    private static int CountDays = 30;
+    private static int CountDays = 365;
 
     public News(){
         TotalNews = new ObjectMapper().createArrayNode();
@@ -97,5 +99,28 @@ public class News {
     public JsonNode getCount(){
         Count();
         return Count;
+    }
+
+    public int getDays(){
+        Count();
+        GregorianCalendar gc=new GregorianCalendar();
+        int Now = 0;
+        int Max = 1;
+        try {
+            gc.setTime(dateFormat.parse(dateFormat.format(Constant.LastDay)));
+            gc.add(5,-20);
+        }catch (Exception e){
+
+        }
+        for(int i=0;i<20;i++){
+            if(Max<Count.get(dateFormat.format(gc.getTime())).asInt()){
+                Max = Count.get(dateFormat.format(gc.getTime())).asInt();
+            }
+            if(i==19){
+                Now = Count.get(dateFormat.format(gc.getTime())).asInt();
+            }
+            gc.add(5,1);
+        }
+        return (int)(Now/(Max*1.2)*100);
     }
 }

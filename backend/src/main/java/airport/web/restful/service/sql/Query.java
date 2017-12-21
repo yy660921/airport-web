@@ -92,7 +92,7 @@ public class Query {
      * @param date: 查询日期
      */
     public static LinkedList<TourTrips> getAirwayTrip(Date from, Date to){
-        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
+        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,1 AS weight\n"
                      + "FROM customs_touristmessage\n"
                      + "INNER JOIN city_longlati AS city_dep\n"
                      + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
@@ -486,7 +486,7 @@ public class Query {
                 result.put("highTax_number", rs.getInt("highTax_number"));
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
-                result.put("yuqing_index",(float)(Constant.Baidu.getsize() + Constant.Weixin.getsize())/1.2%50+50);
+                result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
                 result.put("yuqing_total", Constant.Baidu.getsize() + Constant.Weixin.getsize());
                 result.put("yuqing_media", Constant.Media.size());
                 result.put("yuqing_xinhua", Constant.Xinhua);

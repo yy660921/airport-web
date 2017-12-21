@@ -1,13 +1,10 @@
 package airport.web.restful.service;
 
 
+import java.util.Date;
 import java.util.HashSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import airport.web.data.bean.News;
-import airport.web.restful.service.News.NewsService;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -22,6 +19,7 @@ public class Constant {
         Zhongxin = 0;
         TongrenGongan = 0;
         TongrenWeishenghuo = 0;
+        LastDay = new Date(0);
     }
 
     public static News Baidu;
@@ -35,5 +33,7 @@ public class Constant {
 
     public static long TongrenGongan;
     public static long TongrenWeishenghuo;
+
+    public static Date LastDay;
 
 }

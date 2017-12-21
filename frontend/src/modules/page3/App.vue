@@ -11,58 +11,10 @@
     <div class="con-right">
       <h3>热点新闻</h3>
       <ul>
-        <li class="list active">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘南开区环保招聘南开区环保招聘南开区环保招聘</a>
+        <li class="list" v-for="(msg, idx) in newsdata" :key="idx" :class="{active: activeID === msg['ID']}">
+          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>{{ msg['title'] }}</a>
           <i class="news-arrow fa fa-angle-double-down"></i>
-          <p class="news-detail">河北区 86295673 铁东路街社区卫生服务中心 河北区南口路186号 每周一、二、四、五上午 86662997 望海楼街社区卫生服务中心 河北区昆纬路72号 每周一至周五上午 26219502 新开河街社区卫生服务中心 河北区古北道10号 86651424 月牙河街社区卫生服务中心 河北区靖江路雅砻江道2号 26025637 江都路街社区卫生服务中心 河北区金山道2号</p>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-        </li>
-        <li class="list">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>天津欣国环环保科技有限公司最新天津市/南开区环保招聘</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
+          <p class="news-detail" v-show="activeID === msg['ID']">{{ msg['content'] }}</p>
         </li>
       </ul>
     </div>
@@ -82,9 +34,14 @@
     name: 'app',
     data () {
       return {
+        intervalID: null,
+        intervalAc: null,
+        activeID: 0,
+        activeNewsIndex: 0,
+        newsdata: null,
         top_option: {
           title: {
-            text: '风险走势',
+            text: '舆情热度走势',
           },
           tooltip: {
             trigger: 'axis',
@@ -125,6 +82,13 @@
           ]
         },
         bottom_option: {
+          title: {
+            text: '观点分析',
+            left: 'center',
+            textStyle: {
+              color: '#b5eaff'
+            }
+          },
           tooltip: {
             trigger: 'item',
             enterable: true,
@@ -173,13 +137,19 @@
       };
     },
     created () {
-      this.updateData();
-      setInterval(this.updateData, 60 * 1000);
+      this.updateData()
+      this.intervalID = setInterval(() => {
+        this.updateData()
+      }, 5 * 60 * 1000);
+      this.intervalAc = setInterval(() => {
+          this.changeActive()
+        }, 5 * 1000);
     },
     methods: {
       updateData () {
         this.update_top_option();
         this.update_bottom_option();
+        this.update_right();
       },
       update_top_option () {
         axios.get('/api/getCount').then(response => {
@@ -210,6 +180,21 @@
           this.bottom_option.series[0].data = dataValue;
         });
       },
+      update_right () {
+        axios.get('/api/getNews').then(response => {
+          this.activeNewsIndex = 0;
+          this.newsdata = response.data;
+          this.activeID = response.data[this.activeNewsIndex]['ID'];
+        });
+      },
+      changeActive () {
+        this.activeNewsIndex = (this.activeNewsIndex + 1) % this.newsdata.length;
+        this.activeID = this.newsdata[this.activeNewsIndex]['ID'];
+      },
+    },
+    beforeDestroy () {
+      clearInterval(this.intervalID)
+      clearInterval(this.intervalAc)
     },
     components: {
       Echarts
@@ -297,7 +282,7 @@
           top: .35rem
           display: block
           cursor: pointer
-        
+
 
 
 </style>
