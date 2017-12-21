@@ -84,47 +84,40 @@
         bottom_option: {
           title: {
             text: '观点分析',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
           },
           tooltip: {
             trigger: 'item',
             enterable: true,
             confine: true,
-            textStyle: {fontSize: 10},
-            //  formatter: function(param){
-            //    var a=param.data.text.join('<br/>');
-            //    var b=param.data.name+'&nbsp;&nbsp;代表性文本：<br/><br/>'+a;
-            //    return b;
-            //  }
+            textStyle: {fontSize: 14},
+            // formatter: function(param){
+            //   var a=param.data.text.join('<br/>');
+            //   var b=param.data.name+'&nbsp;&nbsp;代表性文本：<br/><br/>'+a;
+            //   return b;
+            // }
           },
           legend: {
             orient: 'horizontal',
-            right: 'center',
-            //  left: 'left',
             align: 'left',
-            //  top: 'top',
+            bottom: '20',
             data: [],
-            //  x : 'center',
-            //  y : 'bottom',
-            y: '5%',
-            x: '85%'
+            itemGap: 15,
+            textStyle: {
+              color: '#ccc',
+              fontSize: '13',
+            }
           },
-          //  grid: {
-          //    left: '30',
-          //    right: '30',
-          //    bottom: '100',
-          //    top:'0%',
-          //    containLabel: true
-          //  },
           series: [{
             // name: '社会观点',
             type: 'pie',
             radius: '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '50%'],
             data: [],
+            label: {
+              normal: {
+                fontSize: 14,
+              },
+            },
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
@@ -247,6 +240,8 @@
           display: none
         &.active
           background: rgba(32, 82, 211, .5)
+          max-height: 23rem
+          overflow: hidden
           .link
             color: #fff
             padding-bottom: .4rem
