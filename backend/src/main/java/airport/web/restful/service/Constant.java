@@ -1,6 +1,8 @@
 package airport.web.restful.service;
 
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import java.util.Date;
 import java.util.HashSet;
 
@@ -24,6 +26,7 @@ public class Constant {
 
     public static News Baidu;
     public static News Weixin;
+    public static ArrayNode news;
 
     public static HashSet<String> Media;
     public static HashSet<String> Gzh;
