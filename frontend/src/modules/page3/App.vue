@@ -41,7 +41,7 @@
         newsdata: null,
         top_option: {
           title: {
-            text: '风险走势',
+            text: '舆情热度走势',
             left: 'center',
             textStyle: {
               color: '#b5eaff'
@@ -119,6 +119,13 @@
           ]
         },
         bottom_option: {
+          title: {
+            text: '观点分析',
+            left: 'center',
+            textStyle: {
+              color: '#b5eaff'
+            }
+          },
           tooltip: {
             trigger: 'item',
             enterable: true,
