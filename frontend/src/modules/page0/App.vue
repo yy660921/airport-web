@@ -10,11 +10,11 @@
         </div>
         <div class="con-txt">
           <h3>近<span>24</span>小时</h3>
-          <p class="para">预警查获事件数量为<strong class="txt-block"><span>1</span><span>3</span><span>8</span></strong></p>
-          <p class="para">其中涉及有风险旅客和重点旅客<strong class="txt-block"><span>1</span><span>3</span><span>8</span></strong>人（境内<strong class="txt-block"><span>2</span><span>0</span><span>0</span></strong>人，境外<strong class="txt-block"><span>1</span><span>1</span><span>4</span></strong>人）
+          <p class="para">预警查获事件数量为<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong></p>
+          <p class="para">其中涉及有风险旅客和重点旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人（境内<strong class="txt-block"><span v-for="one in chinaTourist_warningEvents.toString()">{{ one }}</span></strong>人，境外<strong class="txt-block"><span v-for="one in overseasTourist_warningEvents.toString()">{{ one }} </span></strong>人）
           </p>
-          <p class="para">查获物品<strong class="txt-block"><span>3</span><span>9</span><span>9</span></strong>件（违禁品<strong class="txt-block"><span>1</span><span>9</span><span>9</span></strong>件，高价值税品<strong class="txt-block"><span>2</span><span>0</span><span>0</span></strong>件）</p>
-          <p class="para">监管人员总数<strong class="txt-block"><span>2</span><span>3</span></strong>设备查验总数<strong class="txt-block"><span>2</span><span>3</span><span>3</span></strong>次</p>
+          <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
+          <p class="para">监管人员总数<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>设备查验总数<strong class="txt-block"><span v-for="one in devicecount_number.toString()">{{ one }}</span></strong>次</p>
         </div>
       </div>
       <div class="con clearfix">
@@ -23,9 +23,9 @@
         </div>
         <div class="con-txt">
           <h3 class="last">近<span>24</span>小时</h3>
-          <p class="para">外网相关舆情总数为<strong class="txt-block"><span>7</span><span>3</span><span>8</span></strong>其中参与媒体<strong class="txt-block"><span>1</span><span>2</span><span>8</span></strong>家</p>
-          <p class="para">（新华网<strong class="txt-block"><span>1</span><span>2</span><span>2</span></strong>条、中新网<strong class="txt-block"><span>1</span><span>2</span><span>0</span></strong>条）</p>
-          <p class="para">参与微信公众号<strong class="txt-block"><span>3</span><span>1</span><span>4</span></strong>个（铜仁公安<strong class="txt-block"><span>3</span><span>0</span><span>4</span></strong>条，铜仁微生活<strong class="txt-block"><span>3</span><span>0</span><span>4</span></strong>条）</p>
+          <p class="para">外网相关舆情总数为<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>其中参与媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家</p>
+          <p class="para">（新华网<strong class="txt-block"><span v-for="one in yuqing_xinhua.toString()">{{ one }}</span></strong>条、中新网<strong class="txt-block"><span v-for="one in yuqing_zhongxin.toString()">{{ one }}</span></strong>条）</p>
+          <p class="para">参与微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（铜仁公安<strong class="txt-block"><span v-for="one in yuqing_tongrenga.toString()">{{ one }}</span></strong>条，铜仁微生活<strong class="txt-block"><span v-for="one in yuqing_tongrenwsh.toString()">{{ one }}</span></strong>条）</p>
         </div>
       </div>
     </div>
@@ -45,6 +45,26 @@
     name: 'app',
     data () {
       return {
+        intervalID: null,
+        riskIndex: 50,
+        warningEvents_number: 50,
+        tourist_warningEvents: 100,
+        chinaTourist_warningEvents: 80,
+        overseasTourist_warningEvents: 20,
+        seizure_number: 200,
+        contraband_number: 150,
+        highTax_number: 50,
+        governpeople_number: 30,
+        devicecount_number: 2000,
+        yuqing_total: 10000,
+        yuqing_media: 52,
+        yuqing_xinhua: 25,
+        yuqing_zhongxin: 500,
+        yuqing_gzh: 2345,
+        yuqing_tongrenga: 200,
+        yuqing_tongrenwsh: 4,
+        yuqingIndex: 80,
+
         t_option: {
           series: [{
             type: 'liquidFill',
@@ -130,6 +150,45 @@
           }],
         },
       }
+    },
+    created () {
+      this.updateData()
+      this.intervalID = setInterval(() => {
+        this.updateData()
+      }, 60 * 1000);
+    },
+    methods: {
+        updateData: function () {
+          axios.get('/api/getFirstPage', {params: {}}).then(response => {
+            if (response.data.riskIndex > 0) {
+              this.riskIndex = response.data.riskIndex;
+              this.warningEvents_number = response.data.warningEvents_number;
+              this.tourist_warningEvents = response.data.tourist_warningEvents;
+              this.chinaTourist_warningEvents = response.data.chinaTourist_warningEvents;
+              this.overseasTourist_warningEvents = response.data.overseasTourist_warningEvents;
+              this.seizure_number = response.data.seizure_number;
+              this.contraband_number = response.data.contraband_number;
+              this.highTax_number = response.data.highTax_number;
+              this.governpeople_number = response.data.governpeople_number;
+              this.devicecount_number = response.data.devicecount_number;
+              this.yuqing_total = response.data.yuqing_total;
+              this.yuqing_media = response.data.yuqing_media;
+              this.yuqing_xinhua = response.data.yuqing_xinhua;
+              this.yuqing_zhongxin = response.data.yuqing_zhongxin;
+              this.yuqing_gzh = response.data.yuqing_gzh;
+              this.yuqing_tongrenga = response.data.yuqing_tongrenga;
+              this.yuqing_tongrenwsh = response.data.yuqing_tongrenwsh;
+              this.yuqingIndex = response.data.yuqingIndex;
+              this.t_option.series[0].data[0].value = this.riskIndex / 100;
+              if (response.data.yuqingIndex.length > 0) {
+                this.b_option.series[0].data[0].value = this.yuqingIndex / 100;
+              }
+            }
+          });
+        }
+    },
+    beforeDestroy () {
+      clearInterval(this.intervalID)
     },
     components: {
       Echarts

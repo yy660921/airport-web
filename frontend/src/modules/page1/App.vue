@@ -350,8 +350,8 @@
               texture: blendTexture.src,
             }],
             viewControl: {
-              alpha: 30,
-              beta: -160,
+              // alpha: 30,
+              // beta: -160,
               autoRotate: true,
             },
           },
@@ -360,20 +360,13 @@
             type: 'scatter3D',
             coordinateSystem: 'globe',
             zlevel: 100,
-            label: {
-              emphasis: {
-                show: true,
-                position: 'right',
-                formatter: '{b}'
-              },
-            },
-            animation: true,
-            blendMode: 'lighter',
-            symbol: 'circle',
-            symbolSize: 100,
+            animation: false,
+            blendMode: 'source-over',
+            symbol: 'pin',
+            symbolSize: 10,
             itemStyle: {
               normal: {
-                color: '#F58158',
+                color: '#fa3434',
               },
             },
             data: [],
@@ -396,20 +389,17 @@
               trailOpacity: 1,
               trailColor: '#0087f4'
             },
-            data: [
-              [[-72, 38], [109.21, 27.73]],
-              [[109.22, 27.73], [37, 55]],
-              [[109.22, 27.73], [98, 55]],
-              [[109.22, 27.73], [80, 10]],
-            ],
+            data: [],
           }]
         },
+        globe: null,
       }
     },
     mounted () {
       this.echartsGlobe();
     },
     created () {
+      this.updateData()
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 5000);
@@ -423,8 +413,8 @@
         this.update_globe_option();
       },
       echartsGlobe () {
-        let globediv = echarts.init(document.getElementById('echarts-globe'));
-        globediv.setOption(this.globe_t_option);
+        this.globe = echarts.init(document.getElementById('echarts-globe'));
+        this.globe.setOption(this.globe_t_option);
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {
@@ -442,6 +432,7 @@
             this.r_t_option.series[1].data = response.data.DepartureCount;
             var maxd = _.max(response.data.DepartureCount);
             this.r_t_option.series[0].data = _.map(response.data.DepartureCount, (obj, idx) => { return maxd })
+            this.r_t_option.xAxis.max = maxd;
           }
         });
       },
@@ -452,6 +443,7 @@
             this.l_b_option.series[1].data = response.data.TouristRiskIndex;
             var maxd = _.max(response.data.TouristRiskIndex);
             this.l_b_option.series[0].data = _.map(response.data.TouristRiskIndex, (obj, idx) => { return maxd })
+            this.l_b_option.xAxis.max = maxd;
           }
         });
       },
@@ -462,6 +454,7 @@
             this.r_b_option.series[1].data = response.data.Count;
             var maxd = _.max(response.data.Count);
             this.r_b_option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+            this.r_b_option.yAxis.max = maxd;
           }
         });
       },
@@ -473,12 +466,16 @@
           let cities = [];
           let lines = [];
           _.each(response.data, item => {
-            cities.push({name: item.departure, value: [item.departureLati, item.departureLong]});
-            cities.push({name: item.destination, value: [item.destinationLati, item.destinationLong]});
-            lines.push([[item.departureLati, item.departureLong], [item.destinationLati, item.destinationLong]]);
+            cities.push({name: item.departure.CityName, value: item.departure.Coordinate});
+            cities.push({name: item.destination.CityName, value: item.destination.Coordinate});
+            lines.push([item.departure.Coordinate, item.destination.Coordinate]);
           });
+          console.log(cities);
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
+          if (this.globe) {
+            this.globe.setOption(this.globe_t_option);
+          }
         });
       }
     },
