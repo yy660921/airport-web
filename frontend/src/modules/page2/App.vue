@@ -166,6 +166,17 @@ export default {
             },
           },
         },
+        visualMap: {
+          type: 'continuous',
+          min: 0,
+          max: 100,
+          show: false,
+          calculable: false,
+          color: ['#ff3333', 'orange', 'yellow', 'lime', 'aqua'],
+          textStyle: {
+            color: '#fff',
+          },
+        },
         series: [{
           type: 'lines',
           zlevel: 2,
