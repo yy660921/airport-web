@@ -373,6 +373,7 @@ public class Query {
                 CT.setWarningTourist_birthday(rs.getDate("warningTourist_birthday"));
                 CT.setWarningTourist_departure(rs.getString("warningTourist_departure"));
                 CT.setWarningTourist_destination(rs.getString("warningTourist_destination"));
+                CT.setWarningTourist_category(rs.getString("warningTourist_category"));
                 CT.setWarningTourist_flight_number(rs.getString("warningTourist_flight_number"));
                 CT.setWarningTourist_flight_type(rs.getString("warningTourist_flight_type"));
                 CT.setWarningTourist_time(rs.getDate("warningTourist_time"));
