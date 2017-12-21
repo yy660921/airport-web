@@ -112,6 +112,9 @@ public class NewsService implements Runnable{
                     if(News.has("keyword")){
                         AcceptNews.put("keyword", News.get("keyword").asText());
                     }
+                    if(News.has("date")){
+                        AcceptNews.put("date", News.get("date").asText());
+                    }
                     if(AcceptNews.fieldNames().hasNext()){
                         NewsList.add(AcceptNews);
                     }
