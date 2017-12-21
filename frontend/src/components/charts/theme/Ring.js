@@ -21,49 +21,62 @@ import Colors from 'components/Colors.js'
         color: '#666',
       },
     },
-    tooltip: {
-      confine: true,
-      borderWidth: 1,
-      backgroundColor: 'rgba(7, 17, 27, .5)',
-      borderColor: 'transparent',
+    title: {
+      left: 'center',
+      textStyle: {
+        color: '#b5eaff'
+      }
     },
-
+    tooltip: {
+      trigger: 'item',
+      borderWidth: 1,
+      padding: 5,
+      borderColor: '#0775e4',
+      backgroundColor: 'rgba(29, 81, 203, .6)',
+    },
+    // 横向轴
     categoryAxis: {
       axisLabel: {
         textStyle: {
-          color: '#666',
+          color: '#fff',
         },
+        fontSize: 14,
       },
       axisLine: {
         lineStyle: {
-          color: '#ababab',
-        }
+          with: 2,
+          color: '#0775e4',
+        },
+        show: true,
       },
       splitLine: {
         lineStyle: {
-          color: '#cecece',
+          color: '#1a41ac',
+          type: 'dashed',
         },
-        show: false,
+        show: true,
       },
       nameTextStyle: {
-        color: '#666',
+        color: '#fff',
       },
     },
+    // 纵向轴
     valueAxis: {
       axisLabel: {
         textStyle: {
-          color: '#666',
+          color: '#fff',
         },
       },
       axisLine: {
         lineStyle: {
-          color: '#ababab',
+          width: 2,
+          color: '#0775e4',
         },
-        show: false,
+        show: true,
       },
       splitLine: {
         lineStyle: {
-          color: ['#cecece'],
+          color: ['#1a41ac'],
           type: 'dashed'
         },
       },
@@ -71,7 +84,7 @@ import Colors from 'components/Colors.js'
         show: false,
       },
       nameTextStyle: {
-        color: '#666',
+        color: '#fff',
       },
     },
     logAxis: {

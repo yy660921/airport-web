@@ -34,7 +34,7 @@ module.exports = {
       '^/api/',
     ],
     localHost: 'http://localhost:8080',
-    remoteHost: 'http://10.1.1.11:8082',
+    remoteHost: 'http://10.254.20.199:8080',
     // remoteHost: 'http://ring.act.buaa.edu.cn',
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

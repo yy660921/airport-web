@@ -75,84 +75,47 @@ export default {
         animation: true,
         title: {
           text: '入境时间分布',
-          left: 'center',
-          textStyle: {
-            color: '#b5eaff'
-          }
         },
         tooltip: {
           trigger: 'axis',
         },
         xAxis: {
           type: 'category',
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          axisTick: {
-            show: false
-          },
           splitLine: {
-            lineStyle: {
-              type: 'solid',
-              color: '#cfc3bd'
-            }
+            show: false,
           },
-          boundaryGap: false,
           data: ['2017-06', '2017-07', '2017-08', '2017-09', '2017-10', '2017-11', '2017-12']
         },
         yAxis: {
           type: 'value',
           position: 'top',
-          axisLine: {
-            lineStyle: {
-              width: 2,
-              color: '#1a41ac'
-            }
-          },
-          // 坐标轴刻度标签
-          axisLabel: {
-            color: '#fff',
-            fontSize: 14
-          },
-          splitLine: {
-            lineStyle: {
-              color: '#1a41ac'
-            }
-          }
         },
         grid: {
-          top: 60,
-          left: 60,
+          top: 40,
+          left: 35,
           right: 20,
-          bottom: 10
+          bottom: 25
         },
         series: [
           {
             name: '',
             type: 'bar',
-            barWidth: 14,
+            barWidth: 20,
             barGap: '-100%',
             itemStyle: {
               normal: {
-                color: 'rgba(64, 42, 31, .8)',
+                color: 'rgba(17, 69, 63, .8)',
               }
             },
-            // TODO: 动态获取坐标轴的最大值
-            // data: data.map(function() {return xMax})
+            tooltip: {
+              show: false,
+            },
             data: [10, 10, 10, 10, 10, 10, 10]
           },
           {
-            name: '设备查验次数',
+            name: '入境时间次数',
             type: 'bar',
-            barWidth: 14,
+            barWidth: 20,
             label: {
               normal: {
                 textStyle: {
@@ -165,12 +128,12 @@ export default {
             },
             itemStyle: {
               normal: {
-                color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                color: new Graphic.LinearGradient(0, 0, 0, 1, [{
                   offset: 0,
-                  color: 'rgba(255, 162, 82, 1)'
+                  color: 'rgba(1, 241, 201, 1)'
                 }, {
                   offset: 1,
-                  color: 'rgba(241, 90, 34, 1)'
+                  color: 'rgba(8, 99, 41, 1)'
                 }])
               }
             },
@@ -293,10 +256,6 @@ export default {
       right_option: {
         title: {
           text: '紧密联系人/同行分析',
-          left: 'center',
-          textStyle: {
-            color: '#b5eaff'
-          }
         },
         tooltip: {},
         animationDurationUpdate: 1500,

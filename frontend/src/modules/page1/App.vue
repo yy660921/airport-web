@@ -46,52 +46,15 @@
         l_t_option: {
           title: {
             text: '风险走势',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
           },
-          tooltip: {},
+          tooltip: {
+            trigger: 'axis',
+          },
           xAxis: {
             data: ['12-01', '12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
-            // 坐标轴轴线
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
             boundaryGap: false,
-            // 坐标轴刻度
-            axisTick: {
-
-            }
           },
-          yAxis: {
-            // 坐标轴轴线
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                // type: 'solid',
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#1a41ac'
-              }
-            }
-          },
+          yAxis: {},
           grid: {
             top: 50,
             left: 30,
@@ -146,11 +109,7 @@
         r_t_option: {
           animation: true,
           title: {
-            text: '热门旅客出发地分布',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
+            text: '热门旅客出发地分布'
           },
           tooltip: {
             trigger: 'axis',
@@ -158,22 +117,6 @@
           xAxis: {
             type: 'value',
             position: 'top',
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#1a41ac'
-              }
-            }
           },
           yAxis: {
             type: 'category',
@@ -183,22 +126,9 @@
                 color: '#1a41ac'
               }
             },
-            // 坐标轴刻度标签
             axisLabel: {
-              color: '#fff',
-              fontSize: 14
+              rotate: 15,
             },
-            axisTick: {
-              show: false
-            },
-            splitLine: {
-              lineStyle: {
-                type: 'solid',
-                color: '#cfc3bd'
-              }
-            },
-            boundaryGap: false,
-//            data: this.page1_hotDeparture_y
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
@@ -218,8 +148,9 @@
                   color: 'rgba(64, 42, 31, .8)',
                 }
               },
-              // TODO: 动态获取坐标轴的最大值
-              // data: data.map(function() {return xMax})
+              tooltip: {
+                show: false,
+              },
               data: ['3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000']
             },
             {
@@ -248,7 +179,6 @@
                   barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
-//              data: this.page1_hotDeparture_x
               data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
             }
           ]
@@ -257,10 +187,6 @@
           animation: true,
           title: {
             text: 'TOP10风险旅客名单',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
           },
           tooltip: {
             trigger: 'axis',
@@ -268,47 +194,15 @@
           xAxis: {
             type: 'value',
             position: 'top',
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#1a41ac'
-              }
-            }
           },
           yAxis: {
             type: 'category',
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            axisTick: {
-              show: false
-            },
             splitLine: {
-              lineStyle: {
-                type: 'solid',
-                color: '#cfc3bd'
-              }
+              show: false,
             },
-            boundaryGap: false,
-//            data: this.page1_hotDeparture_y
+            axisLabel: {
+              rotate: 15,
+            },
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
@@ -329,8 +223,9 @@
                   color: 'rgba(42, 56, 144, .8)',
                 }
               },
-              // TODO: 动态获取坐标轴的最大值
-              // data: data.map(function() {return xMax})
+              tooltip: {
+                show: false,
+              },
               data: ['3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000']
             },
             {
@@ -358,7 +253,6 @@
                   barBorderRadius: [0, 10, 10, 0],  // 圆角
                 }
               },
-//              data: this.page1_hotDeparture_x
               data: [500, 700, 800, 900, 1200, 1600, 1900, 2200, 2600, 2900]
             }
           ]
@@ -367,59 +261,20 @@
           animation: true,
           title: {
             text: '设备总查验次数时段分布',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
           },
           tooltip: {
             trigger: 'axis',
           },
           xAxis: {
             type: 'category',
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            axisTick: {
-              show: false
-            },
             splitLine: {
-              lineStyle: {
-                type: 'solid',
-                color: '#cfc3bd'
-              }
+              show: false,
             },
-            boundaryGap: false,
-//            data: this.page1_hotDeparture_y
             data: ["0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]
           },
           yAxis: {
             type: 'value',
             position: 'top',
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#1a41ac'
-              }
-            }
           },
           grid: {
             top: 35,
@@ -431,21 +286,22 @@
             {
               name: '',
               type: 'bar',
-              barWidth: 14,
+              barWidth: 13,
               barGap: '-100%',
               itemStyle: {
                 normal: {
                   color: 'rgba(24, 50, 117, .8)',
                 }
               },
-              // TODO: 动态获取坐标轴的最大值
-              // data: data.map(function() {return xMax})
+              tooltip: {
+                show: false,
+              },
               data: [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150]
             },
             {
               name: '设备查验次数',
               type: 'bar',
-              barWidth: 14,
+              barWidth: 13,
               label: {
                 normal: {
                   textStyle: {
