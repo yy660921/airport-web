@@ -49,24 +49,8 @@ public class NewsController {
 
     public LinkedList<JsonNode> getNews() {
         LinkedList<JsonNode> news = new LinkedList<>();
-        LinkedList<JsonNode> baidu = new LinkedList<>();
-        LinkedList<JsonNode> wx = new LinkedList<>();
-        try {
-            baidu = Constant.Baidu.getNews();
-            wx = Constant.Weixin.getNews();
-            for(int i=0;i<5;i++){
-                news.add(baidu.get(i));
-            }
-            for(int i=0;i<5;i++){
-                news.add(wx.get(i));
-            }
-            for(int i=0;i<news.size();i++){
-                ObjectNode newsInfo = (ObjectNode) news.get(i);
-                newsInfo.put("ID",i);
-            }
-        }catch (Exception e){
-            LOG.debug("Have to Run ScanNews First");
-            e.printStackTrace();
+        for(int i=0;i<Constant.news.size();i++){
+            news.add(Constant.news.get(i));
         }
         return news;
     }

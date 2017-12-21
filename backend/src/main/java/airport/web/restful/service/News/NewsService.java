@@ -3,6 +3,7 @@ package airport.web.restful.service.News;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +37,7 @@ public class NewsService implements Runnable{
             String line;
             while((line=in.readLine())!=null){
                 try {
-                    JsonNode News = objectMapper.readTree(line);
+                    JsonNode News = objectMapper.readTree(line.replace("key_words","keyword"));
                     if(CountTotal){
                         if (News.has("gzh")) {
                             Constant.Gzh.add(News.get("gzh").asText());
@@ -101,7 +102,19 @@ public class NewsService implements Runnable{
                             }
                         }
                     }
-                    NewsList.add(News);
+                    ObjectNode AcceptNews = objectMapper.createObjectNode();
+                    if(News.has("content")){
+                        AcceptNews.put("content", News.get("content").asText());
+                    }
+                    if(News.has("title")){
+                        AcceptNews.put("title", News.get("title").asText());
+                    }
+                    if(News.has("keyword")){
+                        AcceptNews.put("keyword", News.get("keyword").asText());
+                    }
+                    if(AcceptNews.fieldNames().hasNext()){
+                        NewsList.add(AcceptNews);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -133,6 +146,9 @@ public class NewsService implements Runnable{
                             }
                         }
                     }
+                }
+                else if(SubDictory.getName().contains(".json")){
+                    Constant.news = ReadFile(SubDictory.getCanonicalFile().getPath());
                 }
             }
         }catch (Exception e){
