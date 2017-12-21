@@ -67,17 +67,17 @@
               type: 'line',
               itemStyle: {
                 normal: {
-                  color: 'rgba(252, 143, 47, .8)'
+                  color: '#1e98ff',
                 }
               },
               areaStyle: {
                 normal: {
                   color: new Graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: 'rgba(252, 143, 47, .9)'
+                    color: 'rgba(30, 152, 255, .9)'
                   }, {
                     offset: 1,
-                    color: 'rgba(252, 143, 47, .3)'
+                    color: 'rgba(30, 152, 255, .3)'
                   }])
                 }
               },
@@ -88,17 +88,17 @@
               type: 'line',
               itemStyle: {
                 normal: {
-                  color: 'rgba(41, 202, 255, .8)'
+                  color: '#ff5421'
                 }
               },
               areaStyle: {
                 normal: {
                   color: new Graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: 'rgba(59, 159, 237, .9)'
+                    color: 'rgba(255, 84, 33, .9)'
                   }, {
                     offset: 1,
-                    color: 'rgba(59, 159, 237, .3)'
+                    color: 'rgba(255, 84, 33, .3)'
                   }])
                 }
               },
