@@ -377,6 +377,7 @@ export default {
       this.destination = person.warningTourist_destination;
       this.intime = person.warningTourist_time;
       this.riskIndex = person.warningTourist_riskIndex;
+      this.category = person.warningTourist_category;
       this.update_left_option(person.warningTourist_historyTime);
       this.update_center_option(person.warningTourist_place);
       this.update_right_option(person.fellowTourist_list);
