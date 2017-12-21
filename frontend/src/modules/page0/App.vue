@@ -70,7 +70,7 @@
             type: 'liquidFill',
             radius: '90%',
             data: [{
-                value: 0.6,
+                value: 0.5,
                 itemStyle: {
                     normal: {
                         color: '#1b6cc9'
@@ -112,7 +112,7 @@
             type: 'liquidFill',
             radius: '90%',
             data: [{
-                value: 0.6,
+                value: 0.5,
                 itemStyle: {
                     normal: {
                         color: '#d37d1c'
@@ -255,7 +255,7 @@
         font-weight: normal
         font-size: 0
         span
-          font-family: "Montserrat"
+          font-family: "MyMontserrat"
           font-size: 1.8rem
           height: 2.5rem
           line-height: 2.5rem
@@ -263,7 +263,6 @@
           width: 28px
           margin: 0 1px
           display: inline-block
-          // font-weight: bold
           background-image: url("~assets/images/word-bg.png")
           background-size: 100% 100%
 </style>
