@@ -55,7 +55,7 @@ public class NewsController {
             news.addAll(Constant.Weixin.getNews());
             for(int i=0;i<news.size();i++){
                 ObjectNode newsInfo = (ObjectNode) news.get(i);
-                newsInfo.put("No.",i);
+                newsInfo.put("ID",i);
             }
         }catch (Exception e){
             LOG.debug("Have to Run ScanNews First");
