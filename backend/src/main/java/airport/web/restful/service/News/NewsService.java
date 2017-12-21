@@ -23,7 +23,9 @@ import static airport.web.restful.service.Constant.initial;
 public class NewsService implements Runnable{
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Pattern DataPattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}");
+    private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
 
     private static ArrayNode ReadFile(String FilePath){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -50,6 +52,18 @@ public class NewsService implements Runnable{
                         }
                         else if(News.get("source").asText().equals("中新网")){
                             Constant.Zhongxin += 1;
+                        }
+                    }
+                    if(News.has("date")){
+                        Date d = new Date(0);
+                        if(DataPattern.matcher(News.get("date").toString().replace("\"","")).find()){
+                            d = dateFormat.parse(News.get("date").toString().replace("\"",""));
+                        }
+                        else if(TimePattern.matcher(News.get("date").toString().replace("\"","")).find()){
+                            d = timeFormat.parse(News.get("date").toString().replace("\"",""));
+                        }
+                        if(d.after(Constant.LastDay)&&d.before(new Date())){
+                            Constant.LastDay = d;
                         }
                     }
                     NewsList.add(News);
