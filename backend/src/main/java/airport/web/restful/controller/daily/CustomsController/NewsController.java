@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Iterator;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import airport.web.restful.service.Constant;
 import airport.web.restful.service.News.NewsService;
-
-import static airport.web.restful.service.News.NewsService.getNewestNews;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -40,7 +39,7 @@ public class NewsController {
             1,
             TimeUnit.MINUTES);
     }
-
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final static Logger LOG = LoggerFactory.getLogger(NewsController.class);
 
     @ResponseBody
@@ -74,13 +73,19 @@ public class NewsController {
         try {
             JsonNode Baidu = Constant.Baidu.getCount();
             JsonNode Weixin = Constant.Baidu.getCount();
-            Iterator<String> fieldNames = Baidu.fieldNames();
             ArrayNode Date = new ObjectMapper().createArrayNode();
             ArrayNode count = new ObjectMapper().createArrayNode();
-            while (fieldNames.hasNext()){
-                String fieldName = fieldNames.next();
-                Date.add(fieldName.replaceAll("\\d{4}-",""));
-                count.add(Baidu.get(fieldName).asLong() + Weixin.get(fieldName).asLong());
+            GregorianCalendar gc=new GregorianCalendar();
+            try {
+                gc.setTime(dateFormat.parse(dateFormat.format(Constant.LastDay)));
+                gc.add(5,-30);
+            }catch (Exception e){
+
+            }
+            for(int i=0;i<30;i++){
+                Date.add(dateFormat.format(gc.getTime()).replaceAll("\\d{4}-",""));
+                count.add(Baidu.get(dateFormat.format(gc.getTime())).asLong() + Weixin.get(dateFormat.format(gc.getTime())).asLong());
+                gc.add(5,1);
             }
             Count.replace("Date",Date);
             Count.replace("count",count);
