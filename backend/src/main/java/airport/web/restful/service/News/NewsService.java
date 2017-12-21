@@ -47,7 +47,7 @@ public class NewsService implements Runnable{
                                 Constant.TongrenGongan += 1;
                             }
                         } else if (News.has("source")) {
-                            Constant.Gzh.add(News.get("source").asText());
+                            Constant.Media.add(News.get("source").asText());
                             if (News.get("source").asText().equals("新华网")) {
                                 Constant.Xinhua += 1;
                             } else if (News.get("source").asText().equals("中新网")) {
@@ -92,7 +92,7 @@ public class NewsService implements Runnable{
                                         Constant.TongrenGongan += 1;
                                     }
                                 } else if (News.has("source")) {
-                                    Constant.Gzh.add(News.get("source").asText());
+                                    Constant.Media.add(News.get("source").asText());
                                     if (News.get("source").asText().equals("新华网")) {
                                         Constant.Xinhua += 1;
                                     } else if (News.get("source").asText().equals("中新网")) {
