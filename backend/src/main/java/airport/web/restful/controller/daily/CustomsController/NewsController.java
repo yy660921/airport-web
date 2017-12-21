@@ -77,7 +77,7 @@ public class NewsController {
         ObjectNode Count = new ObjectMapper().createObjectNode();
         try {
             JsonNode Baidu = Constant.Baidu.getCount();
-            JsonNode Weixin = Constant.Baidu.getCount();
+            JsonNode Weixin = Constant.Weixin.getCount();
             ArrayNode Date = new ObjectMapper().createArrayNode();
             ArrayNode count = new ObjectMapper().createArrayNode();
             GregorianCalendar gc=new GregorianCalendar();
