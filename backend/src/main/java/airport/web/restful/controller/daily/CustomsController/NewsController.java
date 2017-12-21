@@ -49,9 +49,17 @@ public class NewsController {
 
     public LinkedList<JsonNode> getNews() {
         LinkedList<JsonNode> news = new LinkedList<>();
+        LinkedList<JsonNode> baidu = new LinkedList<>();
+        LinkedList<JsonNode> wx = new LinkedList<>();
         try {
-            news.addAll(Constant.Baidu.getNews());
-            news.addAll(Constant.Weixin.getNews());
+            baidu = Constant.Baidu.getNews();
+            wx = Constant.Weixin.getNews();
+            for(int i=0;i<5;i++){
+                news.add(baidu.get(i));
+            }
+            for(int i=0;i<5;i++){
+                news.add(wx.get(i));
+            }
             for(int i=0;i<news.size();i++){
                 ObjectNode newsInfo = (ObjectNode) news.get(i);
                 newsInfo.put("ID",i);
