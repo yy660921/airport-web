@@ -26,7 +26,7 @@ public class News {
     private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
 
     private long Total;
-    private static ArrayNode TotalNews;
+    private ArrayNode TotalNews;
 
     private ObjectNode Count;
     private static int CountDays = 365;
@@ -98,7 +98,11 @@ public class News {
 
     public JsonNode getCount(){
         Count();
-        return Count;
+        return this.Count;
+    }
+
+    public int getLastDay(){
+        return Count.get(dateFormat.format(Constant.LastDay)).asInt();
     }
 
     public int getDays(){
