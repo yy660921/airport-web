@@ -31,7 +31,7 @@ public class AirwayController {
     public LinkedList<TourTrips> getAirway(
         @RequestParam(value = "from", defaultValue = "1509811200") long from,
         @RequestParam(value = "to", defaultValue = "1509811200") long to) {
-        LinkedList Result = getAirwayTrip(new Date(from), new Date(to));
+        LinkedList Result = getAirwayTrip(new Date(from * 1000), new Date(to* 1000));
         if(Result.size() == 0){
             return getAirwayTrip();
         }

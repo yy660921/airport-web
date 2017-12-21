@@ -53,6 +53,10 @@ public class NewsController {
         try {
             news.addAll(Constant.Baidu.getNews());
             news.addAll(Constant.Weixin.getNews());
+            for(int i=0;i<news.size();i++){
+                ObjectNode newsInfo = (ObjectNode) news.get(i);
+                newsInfo.put("No.",i);
+            }
         }catch (Exception e){
             LOG.debug("Have to Run ScanNews First");
             e.printStackTrace();
