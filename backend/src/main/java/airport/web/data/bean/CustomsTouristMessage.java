@@ -22,6 +22,7 @@ public class CustomsTouristMessage {
     private Date warningTourist_birthday;
     private String warningTourist_departure;
     private String warningTourist_destination;
+    private String warningTourist_category;
     private String warningTourist_flight_number;
     private String warningTourist_flight_type;
     private Date warningTourist_time;
@@ -121,6 +122,14 @@ public class CustomsTouristMessage {
 
     public void setWarningTourist_destination(String warningTourist_destination) {
         this.warningTourist_destination = warningTourist_destination;
+    }
+
+    public String getWarningTourist_category() {
+        return warningTourist_category;
+    }
+
+    public void setWarningTourist_category(String warningTourist_category) {
+        this.warningTourist_category = warningTourist_category;
     }
 
     public String getWarningTourist_flight_type() {

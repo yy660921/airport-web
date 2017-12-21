@@ -5,22 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.print.attribute.standard.MediaSize;
-
-import airport.web.data.bean.BaseInfomation;
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
 import airport.web.restful.service.Constant;
@@ -59,7 +53,7 @@ public class Query {
      * @param size: 信息条数
      */
     public static JsonNode getRiskTouristsAndSeizureNumber(){
-        String sql = "SELECT tourist_warningEvents,seizure_number,createDate FROM customs_top ORDER BY id DESC LIMIT 10";
+        String sql = "(SELECT tourist_warningEvents,seizure_number,createDate FROM customs_top ORDER BY createDate DESC LIMIT 10) ORDER BY createDate ASC";
         return getRiskTouristsAndSeizureNumberBySQL(sql);
     }
 
@@ -125,11 +119,12 @@ public class Query {
         if(Places.hasNext()) {
             sql =
                 "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"" + Places.next();
+            while(Places.hasNext()){
+                sql += "\",\"" + Places.next();
+            }
+            sql += "\")";
         }
-        while(Places.hasNext()){
-            sql += "\",\"" + Places.next();
-        }
-        return getAirLineBySQL(sql + "\")");
+        return getAirLineBySQL(sql);
     }
 
     /*
@@ -167,7 +162,6 @@ public class Query {
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            System.out.println(sql);
             ArrayNode tourist_warningEvents = objectMapper.createArrayNode();
             ArrayNode seizure_number = objectMapper.createArrayNode();
             ArrayNode createDate = objectMapper.createArrayNode();
@@ -361,6 +355,7 @@ public class Query {
         ResultSet rs = null;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        HashSet<String> Places = new HashSet<>();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
@@ -378,46 +373,55 @@ public class Query {
                 CT.setWarningTourist_birthday(rs.getDate("warningTourist_birthday"));
                 CT.setWarningTourist_departure(rs.getString("warningTourist_departure"));
                 CT.setWarningTourist_destination(rs.getString("warningTourist_destination"));
+                CT.setWarningTourist_category(rs.getString("warningTourist_category"));
                 CT.setWarningTourist_flight_number(rs.getString("warningTourist_flight_number"));
                 CT.setWarningTourist_flight_type(rs.getString("warningTourist_flight_type"));
                 CT.setWarningTourist_time(rs.getDate("warningTourist_time"));
                 CT.setWarningTourist_historyTime(rs.getString("warningTourist_historyTime"));
                 ArrayNode TravelLine = objectMapper.createArrayNode();
                 JsonNode Travel = objectMapper.readTree(rs.getString("warningTourist_place"));
-                Iterator<String> Travelline = Travel.fieldNames();
-                ObjectNode TravelPlaces = objectMapper.createObjectNode();
-                while(Travelline.hasNext()){
-                    String field = Travelline.next();
-                    JsonNode Trav = Travel.get(field);
-                    if(!TravelPlaces.has(Trav.get("出发地").asText())){
-                        TravelPlaces.put(Trav.get("出发地").asText(),0);
-                    }
-                    if(!TravelPlaces.has(Trav.get("目的地").asText())){
-                        TravelPlaces.put(Trav.get("目的地").asText(),0);
-                    }
-                }
-                JsonNode PlaceDict = getAirLine(TravelPlaces.fieldNames());
-                Travelline = Travel.fieldNames();
-                while(Travelline.hasNext()){
-                    String field = Travelline.next();
-                    JsonNode Trav = Travel.get(field);
-                    if(PlaceDict.has(Trav.get("出发地").asText())&&PlaceDict.has(Trav.get("目的地").asText())){
-                        ObjectNode Trip = objectMapper.createObjectNode();
-                        ObjectNode Departure = objectMapper.createObjectNode();
-                        ObjectNode Destination = objectMapper.createObjectNode();
-                        Departure.put("CityName",Trav.get("出发地").asText());
-                        Departure.replace("Coordinate",PlaceDict.get(Trav.get("出发地").asText()));
-                        Destination.put("CityName",Trav.get("目的地").asText());
-                        Destination.replace("Coordinate",PlaceDict.get(Trav.get("目的地").asText()));
-                        Trip.replace("departure",Departure);
-                        Trip.replace("destination",Destination);
-                        TravelLine.add(Trip);
-                    }
+                Iterator<String> Timeline = Travel.fieldNames();
+                while(Timeline.hasNext()){
+                    String time = Timeline.next();
+                    JsonNode Trav = Travel.get(time);
+                    ObjectNode Trip = objectMapper.createObjectNode();
+                    ObjectNode Departure = objectMapper.createObjectNode();
+                    ObjectNode Destination = objectMapper.createObjectNode();
+                    Departure.put("CityName",Trav.get("出发地").asText());
+                    Destination.put("CityName",Trav.get("目的地").asText());
+                    Trip.replace("departure",Departure);
+                    Trip.replace("destination",Destination);
+                    TravelLine.add(Trip);
+                    Places.add(Trav.get("出发地").asText());
+                    Places.add(Trav.get("目的地").asText());
                 }
                 CT.setWarningTourist_place(TravelLine);
                 CT.setFellowTourist_list(rs.getString("fellowTourist_list"));
                 CT.setCreateDate(rs.getDate("createDate"));
                 result.add(CT);
+            }
+            JsonNode PlaceDict = objectMapper.createObjectNode();
+            if(result.size()!=0){
+                PlaceDict = getAirLine(Places.iterator());
+            }
+            for(CustomsTouristMessage Tourist:result){
+                JsonNode TravelLines = Tourist.getWarningTourist_place();
+                ArrayNode newTravelLines = objectMapper.createArrayNode();
+                for(JsonNode TravelLine:TravelLines){
+                    ObjectNode Departure = (ObjectNode) TravelLine.get("departure");
+                    ObjectNode Destination = (ObjectNode) TravelLine.get("destination");
+                    if(PlaceDict.has(Departure.get("CityName").asText())&&PlaceDict.has(Destination.get("CityName").asText())) {
+                        Departure.replace("Coordinate",
+                                          PlaceDict.get(Departure.get("CityName").asText()));
+                        Destination.replace("Coordinate",
+                                            PlaceDict.get(Destination.get("CityName").asText()));
+                        ObjectNode newTravelLine = objectMapper.createObjectNode();
+                        newTravelLine.replace("departure",Departure);
+                        newTravelLine.replace("destination",Destination);
+                        newTravelLines.add(newTravelLine);
+                    }
+                }
+                Tourist.setWarningTourist_place(newTravelLines);
             }
         }catch (Exception e) {
             e.printStackTrace();
