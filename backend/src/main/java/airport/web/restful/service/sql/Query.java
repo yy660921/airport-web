@@ -487,7 +487,7 @@ public class Query {
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
                 result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
-                result.put("yuqing_total", Constant.Baidu.getsize() + Constant.Weixin.getsize());
+                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize()));
                 result.put("yuqing_media", Constant.Media.size());
                 result.put("yuqing_xinhua", Constant.Xinhua);
                 result.put("yuqing_zhongxin", Constant.Zhongxin);

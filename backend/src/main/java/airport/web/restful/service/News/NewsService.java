@@ -28,6 +28,7 @@ public class NewsService implements Runnable{
     private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
 
     private static ArrayNode ReadFile(String FilePath){
+        boolean CountTotal = true;
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayNode NewsList = objectMapper.createArrayNode();
         try {
@@ -36,34 +37,68 @@ public class NewsService implements Runnable{
             while((line=in.readLine())!=null){
                 try {
                     JsonNode News = objectMapper.readTree(line);
-                    if(News.has("gzh")){
-                        Constant.Gzh.add(News.get("gzh").asText());
-                        if(News.get("gzh").asText().equals("铜仁微生活")){
-                            Constant.TongrenWeishenghuo += 1;
+                    if(CountTotal){
+                        if (News.has("gzh")) {
+                            Constant.Gzh.add(News.get("gzh").asText());
+                            if (News.get("gzh").asText().equals("铜仁微生活")) {
+                                Constant.TongrenWeishenghuo += 1;
+                            } else if (News.get("gzh").asText().equals("铜仁公安")) {
+                                Constant.TongrenGongan += 1;
+                            }
+                        } else if (News.has("source")) {
+                            Constant.Gzh.add(News.get("source").asText());
+                            if (News.get("source").asText().equals("新华网")) {
+                                Constant.Xinhua += 1;
+                            } else if (News.get("source").asText().equals("中新网")) {
+                                Constant.Zhongxin += 1;
+                            }
                         }
-                        else if(News.get("gzh").asText().equals("铜仁公安")){
-                            Constant.TongrenGongan += 1;
+                        if (News.has("date")) {
+                            Date d = new Date(0);
+                            if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
+                                .find()) {
+                                d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
+                            } else if (TimePattern
+                                .matcher(News.get("date").toString().replace("\"", "")).find()) {
+                                d = timeFormat.parse(News.get("date").toString().replace("\"", ""));
+                            }
+                            if (d.after(Constant.LastDay) && d.before(new Date())) {
+                                Constant.initial();
+                                Constant.LastDay = d;
+                            }
                         }
                     }
-                    else if(News.has("source")){
-                        Constant.Gzh.add(News.get("source").asText());
-                        if(News.get("source").asText().equals("新华网")){
-                            Constant.Xinhua += 1;
-                        }
-                        else if(News.get("source").asText().equals("中新网")){
-                            Constant.Zhongxin += 1;
-                        }
-                    }
-                    if(News.has("date")){
-                        Date d = new Date(0);
-                        if(DataPattern.matcher(News.get("date").toString().replace("\"","")).find()){
-                            d = dateFormat.parse(News.get("date").toString().replace("\"",""));
-                        }
-                        else if(TimePattern.matcher(News.get("date").toString().replace("\"","")).find()){
-                            d = timeFormat.parse(News.get("date").toString().replace("\"",""));
-                        }
-                        if(d.after(Constant.LastDay)&&d.before(new Date())){
-                            Constant.LastDay = d;
+                    else {
+                        if (News.has("date")) {
+                            Date d = new Date(0);
+                            if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
+                                .find()) {
+                                d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
+                            } else if (TimePattern
+                                .matcher(News.get("date").toString().replace("\"", "")).find()) {
+                                d = timeFormat.parse(News.get("date").toString().replace("\"", ""));
+                            }
+                            if (d.after(Constant.LastDay) && d.before(new Date())) {
+                                Constant.initial();
+                                Constant.LastDay = d;
+                            }
+                            if (d.equals(Constant.LastDay)) {
+                                if (News.has("gzh")) {
+                                    Constant.Gzh.add(News.get("gzh").asText());
+                                    if (News.get("gzh").asText().equals("铜仁微生活")) {
+                                        Constant.TongrenWeishenghuo += 1;
+                                    } else if (News.get("gzh").asText().equals("铜仁公安")) {
+                                        Constant.TongrenGongan += 1;
+                                    }
+                                } else if (News.has("source")) {
+                                    Constant.Gzh.add(News.get("source").asText());
+                                    if (News.get("source").asText().equals("新华网")) {
+                                        Constant.Xinhua += 1;
+                                    } else if (News.get("source").asText().equals("中新网")) {
+                                        Constant.Zhongxin += 1;
+                                    }
+                                }
+                            }
                         }
                     }
                     NewsList.add(News);
@@ -80,17 +115,23 @@ public class NewsService implements Runnable{
     private static void ParseNews(File DirectoryName){
         try {
             for (File SubDictory : DirectoryName.listFiles()) {
-                News NewsInfo = new News();
-                if(SubDictory.isDirectory()&&(SubDictory.getName().contains("wx")||SubDictory.getName().contains("baidu"))) {
-                    for (File FileName : SubDictory.listFiles()) {
-                        if (FileName.getName().contains(".json")) {
-                            NewsInfo.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
+                if (SubDictory.getName().equals("baidu")) {
+                    Constant.Baidu = new News();
+                    if(SubDictory.isDirectory()&&SubDictory.getName().contains("baidu")) {
+                        for (File FileName : SubDictory.listFiles()) {
+                            if (FileName.getName().contains(".json")) {
+                                Constant.Baidu.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
+                            }
                         }
                     }
-                    if (SubDictory.getName().equals("baidu")) {
-                        Constant.Baidu = NewsInfo;
-                    } else if (SubDictory.getName().equals("wx")) {
-                        Constant.Weixin = NewsInfo;
+                } else if (SubDictory.getName().equals("wx")) {
+                    Constant.Weixin = new News();
+                    if(SubDictory.isDirectory()&&SubDictory.getName().contains("wx")) {
+                        for (File FileName : SubDictory.listFiles()) {
+                            if (FileName.getName().contains(".json")) {
+                                Constant.Weixin.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
+                            }
+                        }
                     }
                 }
             }
