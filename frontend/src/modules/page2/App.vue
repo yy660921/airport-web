@@ -21,6 +21,7 @@
       </div>
       <div class="info-detail">
         <p>姓名：<span>{{ username }}</span></p>
+        <p><span class="category"><i class="fa fa-tags"></i>{{ category }}</span></p>
         <p>性别：<span>{{ sex }}</span></p>
         <p>国籍：<span>{{ country }}</span></p>
         <p>出生日期：<span>{{ birth }}</span></p>
@@ -61,6 +62,7 @@ export default {
       number_now: 0,
       resData: [],
       username: 'Mcneal',
+      category: '重点人物-携高价值物品',
       sex: '男',
       country: '中国',
       birth: '1990-01-01',
@@ -366,6 +368,7 @@ export default {
       var person = this.resData[this.number_now]
       this.number_now = this.number_now + 1
       this.username = person.warningTourist_name;
+      // this.category = person.warningTourist_category;
       this.sex = person.warningTourist_sex;
       this.country = person.warningTourist_country;
       this.birth = person.warningTourist_birthday;
@@ -482,6 +485,15 @@ export default {
     font-size: .85rem
     p
       margin-bottom: .8rem
+      .category
+        // margin: 0 12px
+        display: inline-block
+        border-radius: 5px
+        color: #fff
+        padding: 1px 5px
+        background-color: #eb7350
+        i
+          margin-right: 4px
   .guest-charts
     position: relative
     bottom: -6rem
