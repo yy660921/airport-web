@@ -473,7 +473,7 @@ public class Query {
             rs = ps.executeQuery();
             if (rs.next()) {
                 try {
-                    result.put("riskIndex", Double.parseDouble(rs.getString("riskIndex")));
+                    result.put("riskIndex", Integer.parseInt(rs.getString("riskIndex")));
                 }catch (Exception e){
                     result.put("riskIndex", rs.getString("riskIndex"));
                 }
@@ -486,6 +486,7 @@ public class Query {
                 result.put("highTax_number", rs.getInt("highTax_number"));
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
+                result.put("yuqing_index",(float)(Constant.Baidu.getsize() + Constant.Weixin.getsize())/1.2%50+50);
                 result.put("yuqing_total", Constant.Baidu.getsize() + Constant.Weixin.getsize());
                 result.put("yuqing_media", Constant.Media.size());
                 result.put("yuqing_xinhua", Constant.Xinhua);
