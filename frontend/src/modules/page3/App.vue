@@ -12,7 +12,7 @@
       <h3>热点新闻</h3>
       <ul>
         <li class="list" v-for="(msg, idx) in newsdata" :key="idx" :class="{active: activeID === msg['ID']}">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[社会焦点]</span>{{ msg['title'] }}</a>
+          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[{{ msg['keyword'] }}]</span>{{ msg['title'] }}</a>
           <i class="news-arrow fa fa-angle-double-down"></i>
           <p class="news-detail" v-show="activeID === msg['ID']">{{ msg['content'] }}</p>
         </li>
