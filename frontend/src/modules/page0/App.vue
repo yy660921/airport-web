@@ -22,7 +22,6 @@
           <Echarts theme="ring" :option="b_option" className="chart" ></Echarts>
         </div>
         <div class="con-txt">
-          <h3 class="last">近<span>24</span>小时</h3>
           <p class="para">外网相关舆情总数为<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>其中参与媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家</p>
           <p class="para">（新华网<strong class="txt-block"><span v-for="one in yuqing_xinhua.toString()">{{ one }}</span></strong>条、中新网<strong class="txt-block"><span v-for="one in yuqing_zhongxin.toString()">{{ one }}</span></strong>条）</p>
           <p class="para">参与微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（铜仁公安<strong class="txt-block"><span v-for="one in yuqing_tongrenga.toString()">{{ one }}</span></strong>条，铜仁微生活<strong class="txt-block"><span v-for="one in yuqing_tongrenwsh.toString()">{{ one }}</span></strong>条）</p>
