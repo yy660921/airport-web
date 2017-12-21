@@ -178,11 +178,9 @@
               this.yuqing_gzh = response.data.yuqing_gzh;
               this.yuqing_tongrenga = response.data.yuqing_tongrenga;
               this.yuqing_tongrenwsh = response.data.yuqing_tongrenwsh;
-              this.yuqingIndex = response.data.yuqingIndex;
+              this.yuqingIndex = response.data.yuqing_index;
               this.t_option.series[0].data[0].value = this.riskIndex / 100;
-              if (response.data.yuqingIndex.length > 0) {
-                this.b_option.series[0].data[0].value = this.yuqingIndex / 100;
-              }
+              this.b_option.series[0].data[0].value = this.yuqingIndex / 100;
             }
           });
         }

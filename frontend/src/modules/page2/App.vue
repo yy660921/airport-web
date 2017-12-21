@@ -103,7 +103,7 @@ export default {
             itemStyle: {
               normal: {
                 color: 'rgba(17, 69, 63, .8)',
-              }
+              },
             },
             tooltip: {
               show: false,
@@ -132,8 +132,9 @@ export default {
                 }, {
                   offset: 1,
                   color: 'rgba(8, 99, 41, 1)'
-                }])
-              }
+                }]),
+                barBorderRadius: [10, 10, 0, 0],  // 圆角
+              },
             },
             data: [7, 6, 5, 4, 3, 2, 1]
           }
@@ -142,10 +143,6 @@ export default {
       center_option: {
         title: {
           text: '地理活动轨迹分析',
-          left: 'center',
-          textStyle: {
-            color: '#b5eaff'
-          }
         },
         geo: {
           map: 'world',
@@ -159,23 +156,14 @@ export default {
           layoutSize: "150%",
           itemStyle: {
             normal: {
-              color: 'rgba(51, 69, 89, .5)',
-              borderColor: 'rgba(100,149,237,1)'
+              // color: 'rgba(8, 30, 67, .9)',
+              color: '#0a276b',
+              borderColor: 'rgba(20, 84, 186, .8)'
             },
             emphasis: {
-              color: 'rgba(37, 43, 61, .5)'
+              color: 'rgba(41, 106, 253, .9)',
+              borderColor: 'rgba(20, 84, 186, .9)'
             },
-          },
-        },
-        visualMap: {
-          type: 'continuous',
-          min: 0,
-          max: 100,
-          show: false,
-          calculable: false,
-          color: ['#ff3333', 'orange', 'yellow', 'lime', 'aqua'],
-          textStyle: {
-            color: '#fff',
           },
         },
         series: [{
@@ -247,6 +235,14 @@ export default {
           show: false,
           data: ["朋友", "战友", '亲戚']
         },
+        grid: {
+          top: 40,
+          left: 35,
+          right: 20,
+          bottom: 25
+        },
+        top: 20,
+        color: ['#fd0e0e', '#ff652e', '#ff902e', '#ff2eda'],
         series: [
           {
             type: 'graph',
@@ -254,28 +250,15 @@ export default {
             symbolSize: 45,
             focusNodeAdjacency: true,
             roam: true,
-            categories: [{
-              name: '朋友',
-              itemStyle: {
-                normal: {
-                  color: "#009800",
-                }
+            categories: [
+              {
+                name: '朋友',
+              }, {
+                name: '战友',
+              }, {
+                name: '亲戚',
               }
-            }, {
-              name: '战友',
-              itemStyle: {
-                normal: {
-                  color: "#4592FF",
-                }
-              }
-            }, {
-              name: '亲戚',
-              itemStyle: {
-                normal: {
-                  color: "#3592F",
-                }
-              }
-            }],
+            ],
             label: {
               normal: {
                 show: true,
@@ -297,120 +280,125 @@ export default {
                 formatter: "{c}"
               }
             },
-            data: [{
-              name: '徐贱云',
-              draggable: true,
-            }, {
-              name: '冯可梁',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '邓志荣',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '李荣庆',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '郑志勇',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '赵英杰',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '王承军',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '陈卫东',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '邹劲松',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '赵成',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '陈现忠',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '陶泳',
-              category: 1,
-              draggable: true,
-            }, {
-              name: '王德福',
-              category: 1,
-              draggable: true,
-            }],
-            links: [{
-              source: 0,
-              target: 1,
-              category: 0,
-              value: '朋友'
-            }, {
-              source: 0,
-              target: 2,
-              value: '战友'
-            }, {
-              source: 0,
-              target: 3,
-              value: '房东'
-            }, {
-              source: 0,
-              target: 4,
-              value: '朋友'
-            }, {
-              source: 1,
-              target: 2,
-              value: '表亲'
-            }, {
-              source: 0,
-              target: 5,
-              value: '朋友'
-            }, {
-              source: 4,
-              target: 5,
-              value: '姑姑'
-            }, {
-              source: 2,
-              target: 8,
-              value: '叔叔'
-            }, {
-              source: 0,
-              target: 12,
-              value: '朋友'
-            }, {
-              source: 6,
-              target: 11,
-              value: '爱人'
-            }, {
-              source: 6,
-              target: 3,
-              value: '朋友'
-            }, {
-              source: 7,
-              target: 5,
-              value: '朋友'
-            }, {
-              source: 9,
-              target: 10,
-              value: '朋友'
-            }, {
-              source: 3,
-              target: 10,
-              value: '朋友'
-            }, {
-              source: 2,
-              target: 11,
-              value: '同学'
-            }],
+            data: [
+              {
+                name: '徐贱云',
+                draggable: true,
+                symbolSize: 60,
+              }, {
+                name: '冯可梁',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '邓志荣',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '李荣庆',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '郑志勇',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '赵英杰',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '王承军',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '陈卫东',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '邹劲松',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '赵成',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '陈现忠',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '陶泳',
+                category: 1,
+                draggable: true,
+              }, {
+                name: '王德福',
+                category: 1,
+                draggable: true,
+              }
+            ],
+            links: [
+              {
+                source: 0,
+                target: 1,
+                category: 0,
+                value: '朋友'
+              }, {
+                source: 0,
+                target: 2,
+                value: '战友'
+              }, {
+                source: 0,
+                target: 3,
+                value: '房东'
+              }, {
+                source: 0,
+                target: 4,
+                value: '朋友'
+              }, {
+                source: 1,
+                target: 2,
+                value: '表亲'
+              }, {
+                source: 0,
+                target: 5,
+                value: '朋友'
+              }, {
+                source: 4,
+                target: 5,
+                value: '姑姑'
+              }, {
+                source: 2,
+                target: 8,
+                value: '叔叔'
+              }, {
+                source: 0,
+                target: 12,
+                value: '朋友'
+              }, {
+                source: 6,
+                target: 11,
+                value: '爱人'
+              }, {
+                source: 6,
+                target: 3,
+                value: '朋友'
+              }, {
+                source: 7,
+                target: 5,
+                value: '朋友'
+              }, {
+                source: 9,
+                target: 10,
+                value: '朋友'
+              }, {
+                source: 3,
+                target: 10,
+                value: '朋友'
+              }, {
+                source: 2,
+                target: 11,
+                value: '同学'
+              }
+            ],
             lineStyle: {
               normal: {
                 opacity: 0.9,
@@ -548,7 +536,7 @@ export default {
       color: #fff
       font-size: 3rem
       font-weight: bold
-      font-family: "Montserrat"
+      font-family: "MyMontserrat"
     .circle-2
       animation: rotate_2 6s 1s infinite linear
     .circle-3
@@ -560,6 +548,8 @@ export default {
   .info-detail
     color: #fff
     font-size: .85rem
+    p
+      margin-bottom: .8rem
   .guest-charts
     position: relative
     bottom: -6rem

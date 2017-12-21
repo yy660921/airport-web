@@ -85,56 +85,19 @@
         top_option: {
           title: {
             text: '风险走势',
-            left: 'center',
-            textStyle: {
-              color: '#b5eaff'
-            }
           },
-          tooltip: {},
+          tooltip: {
+            trigger: 'axis',
+          },
           xAxis: {
-            data: ['12-01', '12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
-            // 坐标轴轴线
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
             boundaryGap: false,
-            // 坐标轴刻度
-            axisTick: {
-
-            }
+            data: ['12-01', '12-02', '12-03', '12-04', '12-05', '12-06', '12-07', '12-08'],
           },
-          yAxis: {
-            // 坐标轴轴线
-            axisLine: {
-              lineStyle: {
-                width: 2,
-                // type: 'solid',
-                color: '#1a41ac'
-              }
-            },
-            // 坐标轴刻度标签
-            axisLabel: {
-              color: '#fff',
-              fontSize: 14
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#1a41ac'
-              }
-            }
-          },
+          yAxis: {},
           grid: {
-            top: 50,
+            top: 38,
             left: 30,
-            right: 20,
+            right: 10,
             bottom: 25
           },
           series: [
@@ -143,7 +106,7 @@
               type: 'line',
               itemStyle: {
                 normal: {
-                  color: 'rgba(252, 143, 47, .8)'
+                  color: 'rgba(252, 143, 47, .9)'
                 }
               },
               areaStyle: {
@@ -153,7 +116,7 @@
                     color: 'rgba(252, 143, 47, .9)'
                   }, {
                     offset: 1,
-                    color: 'rgba(252, 143, 47, .3)'
+                    color: 'rgba(252, 143, 47, .4)'
                   }])
                 }
               },
