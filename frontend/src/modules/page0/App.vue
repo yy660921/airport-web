@@ -23,8 +23,8 @@
         </div>
         <div class="con-txt">
           <p class="para">外网相关舆情总数为<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>其中参与媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家</p>
-          <p class="para">（新华网<strong class="txt-block"><span v-for="one in yuqing_xinhua.toString()">{{ one }}</span></strong>条、中新网<strong class="txt-block"><span v-for="one in yuqing_zhongxin.toString()">{{ one }}</span></strong>条）</p>
-          <p class="para">参与微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（铜仁公安<strong class="txt-block"><span v-for="one in yuqing_tongrenga.toString()">{{ one }}</span></strong>条，铜仁微生活<strong class="txt-block"><span v-for="one in yuqing_tongrenwsh.toString()">{{ one }}</span></strong>条）</p>
+          <p class="para">（{{ yuqing_media_top1 }}<strong class="txt-block"><span v-for="one in yuqing_media_top1Count.toString()">{{ one }}</span></strong>条、{{ yuqing_media_top2 }}<strong class="txt-block"><span v-for="one in yuqing_media_top2Count.toString()">{{ one }}</span></strong>条）</p>
+          <p class="para">参与微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（{{ yuqing_gzh_top1 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条，{{ yuqing_gzh_top2 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条）</p>
         </div>
       </div>
     </div>
@@ -57,11 +57,15 @@
         devicecount_number: 2000,
         yuqing_total: 10000,
         yuqing_media: 52,
-        yuqing_xinhua: 25,
-        yuqing_zhongxin: 500,
+        yuqing_media_top1: '新华网',
+        yuqing_media_top1Count: 15,
+        yuqing_media_top2: '中新网',
+        yuqing_media_top2Count: 9,
         yuqing_gzh: 2345,
-        yuqing_tongrenga: 200,
-        yuqing_tongrenwsh: 4,
+        yuqing_gzh_top1: '铜仁公安',
+        yuqing_gzh_top1Count: 230,
+        yuqing_gzh_top2: '贵州日报',
+        yuqing_gzh_top2Count: 23,
         yuqingIndex: 80,
 
         t_option: {
@@ -172,11 +176,23 @@
               this.devicecount_number = response.data.devicecount_number;
               this.yuqing_total = response.data.yuqing_total;
               this.yuqing_media = response.data.yuqing_media;
-              this.yuqing_xinhua = response.data.yuqing_xinhua;
-              this.yuqing_zhongxin = response.data.yuqing_zhongxin;
+              for (var tp in response.data.yuqing_mediatop1) {
+                this.yuqing_media_top1 = tp;
+                this.yuqing_media_top1Count = response.data.yuqing_mediatop1[tp];
+              }
+              for (tp in response.data.yuqing_mediatop2) {
+                this.yuqing_media_top2 = tp;
+                this.yuqing_media_top2Count = response.data.yuqing_mediatop2[tp];
+              }
               this.yuqing_gzh = response.data.yuqing_gzh;
-              this.yuqing_tongrenga = response.data.yuqing_tongrenga;
-              this.yuqing_tongrenwsh = response.data.yuqing_tongrenwsh;
+              for (tp in response.data.yuqing_gzhtop1) {
+                this.yuqing_gzh_top1 = tp;
+                this.yuqing_gzh_top1Count = response.data.yuqing_gzhtop1[tp];
+              }
+              for (tp in response.data.yuqing_gzhtop2) {
+                this.yuqing_gzh_top2 = tp;
+                this.yuqing_gzh_top2Count = response.data.yuqing_gzhtop2[tp];
+              }
               this.yuqingIndex = response.data.yuqing_index;
               this.t_option.series[0].data[0].value = this.riskIndex / 100;
               this.b_option.series[0].data[0].value = this.yuqingIndex / 100;

@@ -30,8 +30,8 @@ import airport.web.restful.service.News.NewsService;
 /**
  * Created by Machenike on 2017/12/20.
  * 新闻内容接口
- * /api/ScanNews接口从本地文件夹中搜索新闻数据
- * /api/getNews接口从所有新闻中随机返回18~26条新闻数据
+ * /api/getTotalNews接口返回所有新闻按时间递减排序的数据
+ * /api/getNews接口从所有新闻中随机返回10条按时间递减排序的数据
  * /api/getCount接口获得新闻时间范围统计
  */
 @Controller

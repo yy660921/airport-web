@@ -1,10 +1,11 @@
 package airport.web.restful.service;
 
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import airport.web.data.bean.News;
 
@@ -15,12 +16,8 @@ import airport.web.data.bean.News;
 public class Constant {
 
     public static void initial(){
-        Media = new HashSet<>();
-        Gzh = new HashSet<>();
-        Xinhua = 0;
-        Zhongxin = 0;
-        TongrenGongan = 0;
-        TongrenWeishenghuo = 0;
+        Media = new HashMap<>();
+        Gzh = new HashMap<>();
         LastDay = new Date(0);
     }
 
@@ -28,14 +25,10 @@ public class Constant {
     public static News Weixin;
     public static ArrayNode news;
 
-    public static HashSet<String> Media;
-    public static HashSet<String> Gzh;
-
-    public static long Xinhua;
-    public static long Zhongxin;
-
-    public static long TongrenGongan;
-    public static long TongrenWeishenghuo;
+    public static HashMap<String, Integer> Media;
+    public static HashMap<String, Integer> Gzh;
+    public static List<Map.Entry<String,Integer>> MediaList;
+    public static List<Map.Entry<String,Integer>> GzhList;
 
     public static Date LastDay;
 

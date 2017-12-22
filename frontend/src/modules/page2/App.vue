@@ -36,7 +36,7 @@
         <p><i class="fa fa-plane"></i>高风险入境次数：3</p>
       </div>
     </div>
-    <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category">重点人物-携高价值物品</span><span class="category">重点人物</span><span class="category">重点人物</span><span class="category">重点人物</span></p>
+    <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category" v-for="label in category">{{ label }}</span></p>
     <div class="guest-charts clearfix">
       <div class="con-box left-box">
         <Echarts theme="ring" :option="left_option" className="chart" ></Echarts>
@@ -68,7 +68,7 @@ export default {
       number_now: 0,
       resData: [],
       username: 'Mcneal',
-      category: '重点人物-携高价值物品',
+      category: ['重点人物-携高价值物品'],
       sex: '男',
       country: '中国',
       birth: '1990-01-01',
@@ -482,7 +482,7 @@ export default {
       background-color: #eb7350
       margin-right: 1.2rem
       // background-image: url("~assets/images/tag-bg.png")
-      background-size: 100% 100% 
+      background-size: 100% 100%
       // border: 2px solid #fff
       &:after
         content: ""
