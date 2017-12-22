@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,6 +67,58 @@ public class NewsController {
             news.add(n);
             i++;
         }
+        Collections.sort(news, new Comparator<JsonNode>(){
+            public int compare(JsonNode arg0, JsonNode arg1) {
+                int result = 0;
+                try{
+                    if(dateFormat.parse(arg0.get("date").asText()).after(dateFormat.parse(arg1.get("date").asText()))){
+                        return -1;
+                    }
+                    else if(dateFormat.parse(arg0.get("date").asText()).before(dateFormat.parse(arg1.get("date").asText()))){
+                        return 1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }catch (Exception e){
+
+                }
+                return result;
+            }
+        });
+        return news;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = {
+        "/api/getTotalNews",
+    })
+
+    public LinkedList<JsonNode> getTotalNews() {
+        LinkedList<JsonNode> news = new LinkedList<>();
+        for(int i=0;i<Constant.news.size();i++){
+            ObjectNode n = (ObjectNode) Constant.news.get(i);
+            news.add(n);
+        }
+        Collections.sort(news, new Comparator<JsonNode>(){
+            public int compare(JsonNode arg0, JsonNode arg1) {
+                int result = 0;
+                try{
+                    if(dateFormat.parse(arg0.get("date").asText()).after(dateFormat.parse(arg1.get("date").asText()))){
+                        return -1;
+                    }
+                    else if(dateFormat.parse(arg0.get("date").asText()).before(dateFormat.parse(arg1.get("date").asText()))){
+                        return 1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }catch (Exception e){
+
+                }
+                return result;
+            }
+        });
         return news;
     }
 

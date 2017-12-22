@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,6 +40,7 @@ public class NewsService implements Runnable{
             while((line=in.readLine())!=null){
                 try {
                     JsonNode News = objectMapper.readTree(line.replace("key_words","keyword"));
+                    Date d = new Date(0);
                     if(CountTotal){
                         if (News.has("gzh")) {
                             Constant.Gzh.add(News.get("gzh").asText());
@@ -58,7 +58,7 @@ public class NewsService implements Runnable{
                             }
                         }
                         if (News.has("date")) {
-                            Date d = new Date(0);
+
                             if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
                                 .find()) {
                                 d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
@@ -73,7 +73,7 @@ public class NewsService implements Runnable{
                     }
                     else {
                         if (News.has("date")) {
-                            Date d = new Date(0);
+                            d = new Date(0);
                             if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
                                 .find()) {
                                 d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
@@ -88,16 +88,16 @@ public class NewsService implements Runnable{
                             if (d.equals(Constant.LastDay)) {
                                 if (News.has("gzh")) {
                                     Constant.Gzh.add(News.get("gzh").asText());
-                                    if (News.get("gzh").asText().equals("铜仁微生活")) {
+                                    if (News.get("gzh").asText().contains("铜仁微生活")) {
                                         Constant.TongrenWeishenghuo += 1;
-                                    } else if (News.get("gzh").asText().equals("铜仁公安")) {
+                                    } else if (News.get("gzh").asText().contains("铜仁公安")) {
                                         Constant.TongrenGongan += 1;
                                     }
                                 } else if (News.has("source")) {
                                     Constant.Media.add(News.get("source").asText());
-                                    if (News.get("source").asText().equals("新华网")) {
+                                    if (News.get("source").asText().contains("新华网")) {
                                         Constant.Xinhua += 1;
-                                    } else if (News.get("source").asText().equals("中新网")) {
+                                    } else if (News.get("source").asText().contains("中新网")||News.get("source").asText().contains("中国新闻网")) {
                                         Constant.Zhongxin += 1;
                                     }
                                 }
@@ -115,7 +115,10 @@ public class NewsService implements Runnable{
                         AcceptNews.put("keyword", News.get("keyword").asText());
                     }
                     if(News.has("date")){
-                        AcceptNews.put("date", News.get("date").asText());
+                        AcceptNews.put("date", dateFormat.format(d));
+                    }
+                    else{
+                        AcceptNews.put("date", dateFormat.format(d));
                     }
                     if(AcceptNews.fieldNames().hasNext()){
                         NewsList.add(AcceptNews);
