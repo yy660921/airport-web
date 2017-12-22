@@ -361,9 +361,9 @@
             coordinateSystem: 'globe',
             zlevel: 100,
             animation: false,
-            blendMode: 'source-over',
+            blendMode: 'lighter',
             symbol: 'pin',
-            symbolSize: 10,
+            symbolSize: 20,
             itemStyle: {
               normal: {
                 color: '#fa3434',
@@ -372,7 +372,14 @@
             label: {
               normal: {
                 show: true,
-                formatter: '{b}'
+                formatter: '{b}',
+                textStyle: {
+                  color: '#fff',
+                  padding: 5,
+                  borderWidth: 1,
+                  borderColor: '#0775e4',
+                  backgroundColor: 'rgba(29, 81, 203, .8)',
+                },
               },
             },
             data: [],
