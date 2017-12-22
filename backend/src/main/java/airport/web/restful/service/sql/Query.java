@@ -10,7 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -251,10 +255,20 @@ public class Query {
             ArrayNode NameList = objectMapper.createArrayNode();
             ArrayNode RiskIndex = objectMapper.createArrayNode();
             Iterator<String> Passports = TouristList.fieldNames();
+            HashMap<String, Double> TouristMap = new HashMap<>();
             while(Passports.hasNext()){
                 String Passport = Passports.next();
-                NameList.add(TouristList.get(Passport).get("姓名"));
-                RiskIndex.add(Double.parseDouble(TouristList.get(Passport).get("风险值").toString().replace("\"","")));
+                TouristMap.put(TouristList.get(Passport).get("姓名").asText(),Double.parseDouble(TouristList.get(Passport).get("风险值").toString().replace("\"","")));
+            }
+            ArrayList<Map.Entry<String, Double>> Tourists = new ArrayList<>(TouristMap.entrySet());
+            Collections.sort(Tourists, new Comparator<Map.Entry<String,Double>>(){
+                public int compare(Map.Entry<String,Double> arg0, Map.Entry<String,Double> arg1) {
+                    return arg1.getValue().compareTo(arg0.getValue());
+                }
+            });
+            for(Map.Entry<String, Double> Tourist:Tourists){
+                NameList.add(Tourist.getKey());
+                RiskIndex.add(Tourist.getValue());
             }
             result.replace("TouristName", NameList);
             result.replace("TouristRiskIndex", RiskIndex);
@@ -374,6 +388,8 @@ public class Query {
                 CT.setWarningTourist_birthday(rs.getDate("warningTourist_birthday"));
                 CT.setWarningTourist_departure(rs.getString("warningTourist_departure"));
                 CT.setWarningTourist_destination(rs.getString("warningTourist_destination"));
+                CT.setWarningTourist_arrival_number(rs.getInt("warningTourist_arrival_number"));
+                CT.setWarningTourist_arrival_risknumber(rs.getInt("warningTourist_arrival_risknumber"));
                 ObjectNode categoryList = (ObjectNode) objectMapper.readTree(rs.getString("warningTourist_category"));
                 ArrayNode cateList = objectMapper.createArrayNode();
                 Iterator<String> categorys = categoryList.fieldNames();
