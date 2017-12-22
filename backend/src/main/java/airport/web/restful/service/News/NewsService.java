@@ -10,7 +10,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import airport.web.data.bean.News;
@@ -42,23 +47,22 @@ public class NewsService implements Runnable{
                     JsonNode News = objectMapper.readTree(line.replace("key_words","keyword"));
                     Date d = new Date(0);
                     if(CountTotal){
-                        if (News.has("gzh")) {
-                            Constant.Gzh.add(News.get("gzh").asText());
-                            if (News.get("gzh").asText().equals("铜仁微生活")) {
-                                Constant.TongrenWeishenghuo += 1;
-                            } else if (News.get("gzh").asText().equals("铜仁公安")) {
-                                Constant.TongrenGongan += 1;
+                        if (News.has("gzh")&&!News.get("gzh").asText().equals("")) {
+                            if(Constant.Gzh.containsKey(News.get("gzh").asText())){
+                                Constant.Gzh.put(News.get("gzh").asText(),Constant.Gzh.get(News.get("gzh").asText()) + 1);
                             }
-                        } else if (News.has("source")) {
-                            Constant.Media.add(News.get("source").asText());
-                            if (News.get("source").asText().equals("新华网")) {
-                                Constant.Xinhua += 1;
-                            } else if (News.get("source").asText().equals("中新网")) {
-                                Constant.Zhongxin += 1;
+                            else{
+                                Constant.Gzh.put(News.get("gzh").asText(),1);
+                            }
+                        } else if (News.has("source")&&!News.get("source").asText().equals("")) {
+                            if(Constant.Media.containsKey(News.get("source").asText())){
+                                Constant.Media.put(News.get("source").asText(),Constant.Media.get(News.get("source").asText()) + 1);
+                            }
+                            else{
+                                Constant.Media.put(News.get("source").asText(),1);
                             }
                         }
                         if (News.has("date")) {
-
                             if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
                                 .find()) {
                                 d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
@@ -86,19 +90,19 @@ public class NewsService implements Runnable{
                                 Constant.LastDay = d;
                             }
                             if (d.equals(Constant.LastDay)) {
-                                if (News.has("gzh")) {
-                                    Constant.Gzh.add(News.get("gzh").asText());
-                                    if (News.get("gzh").asText().contains("铜仁微生活")) {
-                                        Constant.TongrenWeishenghuo += 1;
-                                    } else if (News.get("gzh").asText().contains("铜仁公安")) {
-                                        Constant.TongrenGongan += 1;
+                                if (News.has("gzh")&&!News.get("gzh").asText().equals("")) {
+                                    if(Constant.Gzh.containsKey(News.get("gzh").asText())){
+                                        Constant.Gzh.put(News.get("gzh").asText(),Constant.Gzh.get(News.get("gzh").asText()) + 1);
                                     }
-                                } else if (News.has("source")) {
-                                    Constant.Media.add(News.get("source").asText());
-                                    if (News.get("source").asText().contains("新华网")) {
-                                        Constant.Xinhua += 1;
-                                    } else if (News.get("source").asText().contains("中新网")||News.get("source").asText().contains("中国新闻网")) {
-                                        Constant.Zhongxin += 1;
+                                    else{
+                                        Constant.Gzh.put(News.get("gzh").asText(),1);
+                                    }
+                                } else if (News.has("source")&&!News.get("source").asText().equals("")) {
+                                    if(Constant.Media.containsKey(News.get("source").asText())){
+                                        Constant.Media.put(News.get("source").asText(),Constant.Media.get(News.get("source").asText()) + 1);
+                                    }
+                                    else{
+                                        Constant.Media.put(News.get("source").asText(),1);
                                     }
                                 }
                             }
@@ -193,6 +197,18 @@ public class NewsService implements Runnable{
         }
         System.out.println(newest);
         ParseNews(newest);
+        Constant.GzhList = new ArrayList<>(Constant.Gzh.entrySet());
+        Collections.sort(Constant.GzhList, new Comparator<Map.Entry<String,Integer>>(){
+            public int compare(Map.Entry<String,Integer> arg0, Map.Entry<String,Integer> arg1) {
+                return arg1.getValue().compareTo(arg0.getValue());
+            }
+        });
+        Constant.MediaList = new ArrayList<>(Constant.Media.entrySet());
+        Collections.sort(Constant.MediaList, new Comparator<Map.Entry<String,Integer>>(){
+            public int compare(Map.Entry<String,Integer> arg0, Map.Entry<String,Integer> arg1) {
+                return arg1.getValue().compareTo(arg0.getValue());
+            }
+        });
     }
 
     public void run(){

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
@@ -373,7 +374,16 @@ public class Query {
                 CT.setWarningTourist_birthday(rs.getDate("warningTourist_birthday"));
                 CT.setWarningTourist_departure(rs.getString("warningTourist_departure"));
                 CT.setWarningTourist_destination(rs.getString("warningTourist_destination"));
-                CT.setWarningTourist_category(rs.getString("warningTourist_category"));
+                ObjectNode categoryList = (ObjectNode) objectMapper.readTree(rs.getString("warningTourist_category"));
+                ArrayNode cateList = objectMapper.createArrayNode();
+                Iterator<String> categorys = categoryList.fieldNames();
+                while(categorys.hasNext()){
+                    String category = categorys.next();
+                    if(categoryList.get(category).asText().equals("1")){
+                        cateList.add(category);
+                    }
+                }
+                CT.setWarningTourist_category(cateList);
                 CT.setWarningTourist_flight_number(rs.getString("warningTourist_flight_number"));
                 CT.setWarningTourist_flight_type(rs.getString("warningTourist_flight_type"));
                 CT.setWarningTourist_time(rs.getDate("warningTourist_time"));
@@ -493,11 +503,45 @@ public class Query {
                 result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
                 result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize()));
                 result.put("yuqing_media", Constant.Media.size());
-                result.put("yuqing_xinhua", Constant.Xinhua);
-                result.put("yuqing_zhongxin", Constant.Zhongxin);
+                Iterator<Map.Entry<String, Integer>> it = Constant.MediaList.iterator();
+                if(it.hasNext()){
+                    ObjectNode MediaCount = objectMapper.createObjectNode();
+                    MediaCount.put(it.next().getKey(),it.next().getValue());
+                    result.replace("yuqing_mediatop1", MediaCount);
+                }
+                else{
+                    ObjectNode MediaCount = objectMapper.createObjectNode();
+                    result.replace("yuqing_mediatop1", MediaCount);
+                }
+                if(it.hasNext()){
+                    ObjectNode MediaCount = objectMapper.createObjectNode();
+                    MediaCount.put(it.next().getKey(),it.next().getValue());
+                    result.replace("yuqing_mediatop2", MediaCount);
+                }
+                else{
+                    ObjectNode MediaCount = objectMapper.createObjectNode();
+                    result.replace("yuqing_mediatop2", MediaCount);
+                }
                 result.put("yuqing_gzh", Constant.Gzh.size());
-                result.put("yuqing_tongrenga", Constant.TongrenGongan);
-                result.put("yuqing_tongrenwsh", Constant.TongrenWeishenghuo);
+                it = Constant.GzhList.iterator();
+                if(it.hasNext()){
+                    ObjectNode GzhCount = objectMapper.createObjectNode();
+                    GzhCount.put(it.next().getKey(),it.next().getValue());
+                    result.replace("yuqing_gzhtop1", GzhCount);
+                }
+                else{
+                    ObjectNode GzhCount = objectMapper.createObjectNode();
+                    result.replace("yuqing_gzhtop1", GzhCount);
+                }
+                if(it.hasNext()){
+                    ObjectNode GzhCount = objectMapper.createObjectNode();
+                    GzhCount.put(it.next().getKey(),it.next().getValue());
+                    result.replace("yuqing_gzhtop2", GzhCount);
+                }
+                else{
+                    ObjectNode GzhCount = objectMapper.createObjectNode();
+                    result.replace("yuqing_gzhtop2", GzhCount);
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
