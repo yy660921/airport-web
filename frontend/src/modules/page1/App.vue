@@ -369,6 +369,12 @@
                 color: '#fa3434',
               },
             },
+            label: {
+              normal: {
+                show: true,
+                formatter: '{b}'
+              },
+            },
             data: [],
           }, {
             type: 'lines3D',
