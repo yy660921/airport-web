@@ -32,8 +32,8 @@
         <p><i class="fa fa-map-marker"></i>本次出发地：<span>{{ departure }}</span></p>
         <p><i class="fa fa-location-arrow"></i>本次目的地：<span>{{ destination }}</span></p>
         <p><i class="fa fa-calendar "></i>本次入境时间：<span>{{ intime }}</span></p>
-        <p><i class="fa fa-plane"></i>最近一年入境次数：6</p>
-        <p><i class="fa fa-plane"></i>高风险入境次数：3</p>
+        <p><i class="fa fa-plane"></i>最近一年入境次数：{{ warningTourist_arrival_number }}</p>
+        <p><i class="fa fa-plane"></i>高风险入境次数：{{ warningTourist_arrival_risknumber }}</p>
       </div>
     </div>
     <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category" v-for="label in category">{{ label }}</span></p>
@@ -77,6 +77,8 @@ export default {
       destination: '铜仁',
       intime: '2017-12-16',
       riskIndex: '60',
+      warningTourist_arrival_number: 6,
+      warningTourist_arrival_risknumber: 2,
       left_option: {
         animation: true,
         title: {
@@ -384,6 +386,8 @@ export default {
       this.intime = person.warningTourist_time;
       this.riskIndex = person.warningTourist_riskIndex;
       this.category = person.warningTourist_category;
+      this.warningTourist_arrival_number = person.warningTourist_arrival_number;
+      this.warningTourist_arrival_risknumber = person.warningTourist_arrival_risknumber;
       this.update_left_option(person.warningTourist_historyTime);
       this.update_center_option(person.warningTourist_place);
       this.update_right_option(person.fellowTourist_list);
