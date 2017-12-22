@@ -1,6 +1,14 @@
 <template>
   <div id="app" class="real-body">
     <div class="guest-info">
+      <div class="info-detail">
+        <p><strong>基本信息：</strong></p>
+        <p><i class="fa fa-user "></i>姓名：<span>{{ username }}</span></p>
+        <p><i class="fa fa-intersex"></i>性别：<span>{{ sex }}</span></p>
+        <p><i class="fa fa-flag"></i>国籍：<span>{{ country }}</span></p>
+        <p><i class="fa fa-calendar"></i>出生日期：<span>{{ birth }}</span></p>
+        <p><i class="fa fa-drivers-license-o"></i>护照号：<span>{{ passportID }}</span></p>
+      </div>
       <div class="info-score">
         <div class="circle circle-5">
           <img src="~assets/images/circle-5.png" alt="">
@@ -20,17 +28,15 @@
         </div>
       </div>
       <div class="info-detail">
-        <p>姓名：<span>{{ username }}</span></p>
-        <p><span class="category"><i class="fa fa-tags"></i>{{ category }}</span></p>
-        <p>性别：<span>{{ sex }}</span></p>
-        <p>国籍：<span>{{ country }}</span></p>
-        <p>出生日期：<span>{{ birth }}</span></p>
-        <p>护照号：<span>{{ passportID }}</span></p>
-        <p>最近一次航班出发地：<span>{{ departure }}</span></p>
-        <p>最近一次航班目的地：<span>{{ destination }}</span></p>
-        <p>入境时间：<span>{{ intime }}</span></p>
+        <p><strong>活动信息：</strong></p>
+        <p><i class="fa fa-map-marker"></i>本次出发地：<span>{{ departure }}</span></p>
+        <p><i class="fa fa-location-arrow"></i>本次目的地：<span>{{ destination }}</span></p>
+        <p><i class="fa fa-calendar "></i>本次入境时间：<span>{{ intime }}</span></p>
+        <p><i class="fa fa-plane"></i>最近一年入境次数：6</p>
+        <p><i class="fa fa-plane"></i>高风险入境次数：3</p>
       </div>
     </div>
+    <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category">重点人物-携高价值物品</span><span class="category">重点人物</span><span class="category">重点人物</span><span class="category">重点人物</span></p>
     <div class="guest-charts clearfix">
       <div class="con-box left-box">
         <Echarts theme="ring" :option="left_option" className="chart" ></Echarts>
@@ -455,12 +461,55 @@ export default {
     margin: 0 auto
     padding-top: 2rem
     display: flex
+    align-items: center
     justify-content: center
+    margin-bottom: 2rem
+  .tags
+    text-align: center
+    color: #fff
+    .fa
+      width: 1.1rem
+      text-align: center
+      margin-right: 4px
+      font-size: .9rem
+      color: #69d3ff
+    .category
+      position: relative
+      display: inline-block
+      // border-radius: 5px
+      color: #fff
+      padding: 3px 7px
+      background-color: #eb7350
+      margin-right: 1.2rem
+      // background-image: url("~assets/images/tag-bg.png")
+      background-size: 100% 100% 
+      // border: 2px solid #fff
+      &:after
+        content: ""
+        display: block
+        position: absolute
+        right: -10px
+        top: 5px
+        background-color: #eb7350
+        width: 20px
+        z-index: -1
+        height: 20px
+        transform: rotate(45deg)
+      &:before
+        position: absolute
+        right: -5px
+        top: 11px
+        content: ""
+        display: block
+        width: 7px
+        height: 7px
+        border-radius: 5px
+        background-color: #050c19
   .info-score
     position: relative
     width: 15rem
     height: 15rem
-    margin-right: 3rem
+    margin: 0 2.5rem
     .circle
       position: absolute
       width: 100%
@@ -483,21 +532,20 @@ export default {
       animation: rotate_5 15s 4s infinite linear
   .info-detail
     color: #fff
-    font-size: .85rem
+    font-size: .9rem
     p
       margin-bottom: .8rem
-      .category
-        // margin: 0 12px
-        display: inline-block
-        border-radius: 5px
-        color: #fff
-        padding: 1px 5px
-        background-color: #eb7350
-        i
-          margin-right: 4px
+      &:first-child
+        padding-top: .6rem
+      .fa
+        width: 1.1rem
+        text-align: center
+        margin-right: 4px
+        font-size: .9rem
+        color: #69d3ff
   .guest-charts
     position: relative
-    bottom: -6rem
+    bottom: -3rem
     .con-box
       float: left
       height: 20rem
