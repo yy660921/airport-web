@@ -17,6 +17,7 @@
           <p class="news-detail" v-show="activeID === msg['ID']">{{ msg['content'] }}</p>
         </li>
       </ul>
+      <p class="load-all"><a href="#" title="加载全部">加载全部</a></p>
     </div>
   </div>
 </template>
@@ -96,6 +97,14 @@
             //   return b;
             // }
           },
+          color: [
+            '#24adf1',
+            '#0e7fe2',
+            '#4465f6',
+            '#a06af5',
+            '#f48021',
+            '#f5d10c'
+          ],
           legend: {
             orient: 'horizontal',
             align: 'left',
@@ -225,8 +234,9 @@
       margin-bottom: 0
     ul
       margin-top: 1rem
+      margin-bottom: 1rem
       padding: 0rem 1rem
-      height: calc(100% - 50px)
+      height: calc(100% - 120px)
       overflow-y: auto
       li.list
         position: relative
@@ -277,7 +287,14 @@
           top: .35rem
           display: block
           cursor: pointer
-
-
-
+    p.load-all
+      text-align: center
+      margin-bottom: 0
+      a
+        display: inline-block
+        padding: .5rem 1rem
+        color: #fff
+        border: 1px solid #2052dd
+        &:hover
+          background-color: #2052dd
 </style>
