@@ -334,7 +334,7 @@
             globeRadius: 70,
             baseTexture: baseTexture.src,
             heightTexture: heightTexture.src,
-            displacementScale: 0.1,
+            displacementScale: 0.2,
             shading: 'lambert',
             light: {
               ambient: {
