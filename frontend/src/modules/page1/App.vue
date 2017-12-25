@@ -428,6 +428,7 @@
       echartsGlobe () {
         this.globe = echarts.init(document.getElementById('echarts-globe'));
         this.globe.setOption(this.globe_t_option);
+        this.globe_t_option.globe.displacementScale = 0.1;
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {
