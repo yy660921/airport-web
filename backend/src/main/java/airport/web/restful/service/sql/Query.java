@@ -206,19 +206,39 @@ public class Query {
                 ArrayNode DepartureCount = OM.createArrayNode();
                 JsonNode Departure = OM.readTree(rs.getString("warningTourist_departure"));
                 Iterator<String> fieldNames = Departure.fieldNames();
+                HashMap<String, Long> Dep = new HashMap<>();
                 while(fieldNames.hasNext()){
                     String field = fieldNames.next();
-                    Departures.add(field);
-                    DepartureCount.add(Long.parseLong(Departure.get(field).toString().replace("\"","")));
+                    Dep.put(field,Long.parseLong(Departure.get(field).toString().replace("\"","")));
+                }
+                ArrayList<Map.Entry<String, Long>> Depts = new ArrayList<>(Dep.entrySet());
+                Collections.sort(Depts, new Comparator<Map.Entry<String,Long>>(){
+                    public int compare(Map.Entry<String,Long> arg0, Map.Entry<String,Long> arg1) {
+                        return arg0.getValue().compareTo(arg1.getValue());
+                    }
+                });
+                for(Map.Entry<String, Long> Dept:Depts){
+                    Departures.add(Dept.getKey());
+                    DepartureCount.add(Long.parseLong(Dept.getValue().toString()));
                 }
                 ArrayNode Destinations = OM.createArrayNode();
                 ArrayNode DestinationCount = OM.createArrayNode();
                 JsonNode Destination = OM.readTree(rs.getString("warningTourist_destination"));
                 fieldNames = Destination.fieldNames();
+                HashMap<String, Long> Des = new HashMap<>();
                 while(fieldNames.hasNext()){
                     String field = fieldNames.next();
-                    Destinations.add(field);
-                    DestinationCount.add(Long.parseLong(Destination.get(field).toString().replace("\"","")));
+                    Des.put(field,Long.parseLong(Destination.get(field).toString().replace("\"","")));
+                }
+                ArrayList<Map.Entry<String, Long>> Dests = new ArrayList<>(Des.entrySet());
+                Collections.sort(Dests, new Comparator<Map.Entry<String,Long>>(){
+                    public int compare(Map.Entry<String,Long> arg0, Map.Entry<String,Long> arg1) {
+                        return arg0.getValue().compareTo(arg1.getValue());
+                    }
+                });
+                for(Map.Entry<String, Long> Dest:Dests){
+                    Destinations.add(Dest.getKey());
+                    DestinationCount.add(Long.parseLong(Dest.getValue().toString()));
                 }
                 result.replace("Departures",Departures);
                 result.replace("DepartureCount",DepartureCount);
@@ -263,7 +283,7 @@ public class Query {
             ArrayList<Map.Entry<String, Double>> Tourists = new ArrayList<>(TouristMap.entrySet());
             Collections.sort(Tourists, new Comparator<Map.Entry<String,Double>>(){
                 public int compare(Map.Entry<String,Double> arg0, Map.Entry<String,Double> arg1) {
-                    return arg1.getValue().compareTo(arg0.getValue());
+                    return arg0.getValue().compareTo(arg1.getValue());
                 }
             });
             for(Map.Entry<String, Double> Tourist:Tourists){
