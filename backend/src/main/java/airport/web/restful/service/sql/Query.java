@@ -517,7 +517,7 @@ public class Query {
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
                 result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
-                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize()));
+                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize() + Constant.news.size()));
                 result.put("yuqing_media", Constant.Media.size());
                 Iterator<Map.Entry<String, Integer>> it = Constant.MediaList.iterator();
                 if(it.hasNext()){
