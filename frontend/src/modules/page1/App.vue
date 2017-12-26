@@ -415,7 +415,7 @@
       this.updateData()
       this.intervalID = setInterval(() => {
         this.updateData()
-      }, 5000);
+      }, 30 * 1000);
     },
     methods: {
       updateData: function () {
@@ -428,7 +428,6 @@
       echartsGlobe () {
         this.globe = echarts.init(document.getElementById('echarts-globe'));
         this.globe.setOption(this.globe_t_option);
-        this.globe_t_option.globe.displacementScale = 0.1;
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {
@@ -473,6 +472,7 @@
         });
       },
       update_globe_option () {
+        this.globe_t_option.globe.displacementScale = 0.2;
         axios.get('/api/getAirway', {params: {
           from: Math.floor(new Date().getTime() / 1000) - 24 * 3600,
           to: Math.floor(new Date().getTime() / 1000),
@@ -487,6 +487,7 @@
           console.log(cities);
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
+          this.globe_t_option.globe.displacementScale = 0.1;
           if (this.globe) {
             this.globe.setOption(this.globe_t_option);
           }
