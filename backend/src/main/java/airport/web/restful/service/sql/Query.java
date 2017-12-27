@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -327,11 +329,17 @@ public class Query {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        FileWriter writer = null;
         LinkedList<TourTrips> Tempresult = new LinkedList<>();
         LinkedList<TourTrips> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
         try{
+            File f = new File("./WrongCity.txt");
+            if(!f.exists()){
+                f.createNewFile();
+            }
+            writer = new FileWriter("./WrongCity.txt", true);
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -368,6 +376,14 @@ public class Query {
                         Tourtrip.setDestination(Destination);
                         result.add(Tourtrip);
                     }
+                    else{
+                        if(!PlaceDict.has(Departure.get("CityName").asText())){
+                            writer.write(Departure.get("CityName").asText() + "\n");
+                        }
+                        if(!PlaceDict.has(Destination.get("CityName").asText())){
+                            writer.write(Destination.get("CityName").asText() + "\n");
+                        }
+                    }
                 }
             }
         }catch (Exception e) {
@@ -376,8 +392,9 @@ public class Query {
         } finally {
             try {
                 conn.close();
+                writer.close();
             }
-            catch (SQLException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
             return result;
@@ -388,10 +405,16 @@ public class Query {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        FileWriter writer = null;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
         try{
+            File f = new File("./WrongCity.txt");
+            if(!f.exists()){
+                f.createNewFile();
+            }
+            writer = new FileWriter("./WrongCity.txt", true);
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -465,6 +488,14 @@ public class Query {
                         newTravelLine.replace("departure",Departure);
                         newTravelLine.replace("destination",Destination);
                         newTravelLines.add(newTravelLine);
+                    }
+                    else{
+                        if(!PlaceDict.has(Departure.get("CityName").asText())){
+                            writer.write(Departure.get("CityName").asText() + "\n");
+                        }
+                        if(!PlaceDict.has(Destination.get("CityName").asText())){
+                            writer.write(Destination.get("CityName").asText() + "\n");
+                        }
                     }
                 }
                 Tourist.setWarningTourist_place(newTravelLines);
