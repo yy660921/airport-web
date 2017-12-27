@@ -28,15 +28,7 @@ public class AirwayController {
         "/api/getAirway",
     })
 
-    public LinkedList<TourTrips> getAirway(
-        @RequestParam(value = "from", defaultValue = "1509811200") long from,
-        @RequestParam(value = "to", defaultValue = "1509811200") long to) {
-        LinkedList Result = getAirwayTrip(new Date(from * 1000), new Date(to* 1000));
-        if(Result.size() == 0){
+    public LinkedList<TourTrips> getAirway() {
             return getAirwayTrip();
-        }
-        else {
-            return Result;
-        }
     }
 }

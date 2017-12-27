@@ -66,7 +66,7 @@ public class Query {
      * @description: 查询最新的高风险旅客出发地与目的地统计
      */
     public static JsonNode getDepartureData(){
-        String sql = "SELECT warningTourist_departure,warningTourist_destination FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT warningTourist_departure,warningTourist_destination FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getDepartureAndDestinationBySQL(sql);
     }
 
@@ -74,7 +74,7 @@ public class Query {
      * @description: 查询最新TOP10的高风险旅客名单及风险值
      */
     public static JsonNode getTop10TouristsAndRiskIndex(){
-        String sql = "SELECT warningTourist_nameList FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT warningTourist_nameList FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getTop10TouristsAndRiskIndexBySQL(sql);
     }
 
@@ -82,37 +82,15 @@ public class Query {
      * @description: 查询最新的设备24小时运行情况
      */
     public static JsonNode getDeviceCountDist(){
-        String sql = "SELECT DeviceCountDist FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT DeviceCountDist FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getDeviceCountDistBySQL(sql);
-    }
-
-    /*
-     * @description: 查询date时间的航线
-     * @param date: 查询日期
-     */
-    public static LinkedList<TourTrips> getAirwayTrip(Date from, Date to){
-        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,1 AS weight\n"
-                     + "FROM customs_touristmessage\n"
-                     + "INNER JOIN city_longlati AS city_dep\n"
-                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
-                     + "INNER JOIN city_longlati AS city_dest\n"
-                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
-                     + "WHERE createDate BETWEEN \"" + dateFormat.format(from) + "\" AND \""+ dateFormat.format(to) + "\"";
-        return getAirwayTripBySQL(sql);
     }
 
     /*
      * @description: 查询最新的航线
      */
     public static LinkedList<TourTrips> getAirwayTrip(){
-        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
-                     + "FROM customs_touristmessage\n"
-                     + "INNER JOIN city_longlati AS city_dep\n"
-                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
-                     + "INNER JOIN city_longlati AS city_dest\n"
-                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
-                     + "GROUP BY warningTourist_departure,warningTourist_destination\n"
-                     + "ORDER BY createDate DESC LIMIT 10";
+        String sql = "SELECT warningTourist_line FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getAirwayTripBySQL(sql);
     }
 
@@ -145,7 +123,7 @@ public class Query {
      * @description: 查询最新的高危旅客信息
      */
     public static LinkedList<CustomsTouristMessage> getTouristMessage(){
-        String sql = "SELECT * FROM customs_touristmessage ORDER BY createDate DESC LIMIT 10";
+        String sql = "SELECT * FROM customs_touristmessage ORDER BY createTime DESC LIMIT 10";
         return getTouristMessageBySQL(sql);
     }
 
@@ -153,7 +131,7 @@ public class Query {
      * @description: 查询最新的首页信息
      */
     public static JsonNode getFirstPageCount(){
-        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
         return getFirstPageCountBySQL(sql);
     }
 
@@ -180,6 +158,7 @@ public class Query {
             result.replace("createDate", createDate);
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -247,6 +226,7 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -294,6 +274,7 @@ public class Query {
             result.replace("TouristRiskIndex", RiskIndex);
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -330,6 +311,7 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -345,34 +327,52 @@ public class Query {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        LinkedList<TourTrips> Tempresult = new LinkedList<>();
         LinkedList<TourTrips> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        HashSet<String> Places = new HashSet<>();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while (rs.next()) {
-                if(rs.getInt("weight")!=0) {
-                    TourTrips TourTrip = new TourTrips();
+            if (rs.next()) {
+                ArrayNode TravelLine = objectMapper.createArrayNode();
+                JsonNode Travel = objectMapper.readTree(rs.getString("warningTourist_line"));
+                Iterator<String> Timeline = Travel.fieldNames();
+                while (Timeline.hasNext()) {
+                    String time = Timeline.next();
+                    JsonNode Trav = Travel.get(time);
+                    TourTrips Trip = new TourTrips();
                     ObjectNode Departure = objectMapper.createObjectNode();
-                    ArrayNode DepartureCoordinate = objectMapper.createArrayNode();
                     ObjectNode Destination = objectMapper.createObjectNode();
-                    ArrayNode DestinationCoordinate = objectMapper.createArrayNode();
-                    Departure.put("CityName", rs.getString("warningTourist_departure"));
-                    DepartureCoordinate.add(rs.getDouble("deplon"));
-                    DepartureCoordinate.add(rs.getDouble("deplat"));
-                    Departure.replace("Coordinate", DepartureCoordinate);
-                    Destination.put("CityName", rs.getString("warningTourist_destination"));
-                    DestinationCoordinate.add(rs.getDouble("destlon"));
-                    DestinationCoordinate.add(rs.getDouble("destlat"));
-                    Destination.replace("Coordinate", DestinationCoordinate);
-                    TourTrip.setDeparture(Departure);
-                    TourTrip.setDestination(Destination);
-                    result.add(TourTrip);
+                    Departure.put("CityName", Trav.get("出发地").asText());
+                    Destination.put("CityName", Trav.get("目的地").asText());
+                    Trip.setDeparture(Departure);
+                    Trip.setDestination(Destination);
+                    Tempresult.add(Trip);
+                    Places.add(Trav.get("出发地").asText());
+                    Places.add(Trav.get("目的地").asText());
+                }
+                JsonNode PlaceDict = getAirLine(Places.iterator());
+                for (TourTrips Tourtrip : Tempresult) {
+                    ObjectNode Departure = Tourtrip.getDeparture();
+                    ObjectNode Destination =  Tourtrip.getDestination();
+                    if (PlaceDict.has(Departure.get("CityName").asText()) && PlaceDict
+                        .has(Destination.get("CityName").asText())) {
+                        Departure.replace("Coordinate",
+                                          PlaceDict.get(Departure.get("CityName").asText()));
+                        Destination.replace("Coordinate",
+                                            PlaceDict
+                                                .get(Destination.get("CityName").asText()));
+                        Tourtrip.setDeparture(Departure);
+                        Tourtrip.setDestination(Destination);
+                        result.add(Tourtrip);
+                    }
                 }
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -471,6 +471,7 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -581,6 +582,7 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
