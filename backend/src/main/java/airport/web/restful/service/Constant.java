@@ -21,6 +21,12 @@ public class Constant {
         LastDay = new Date(0);
     }
 
+    public static String IP;
+    public static String Port;
+    public static String Database;
+    public static String Username;
+    public static String Password;
+
     public static News Baidu;
     public static News Weixin;
     public static ArrayNode news;
