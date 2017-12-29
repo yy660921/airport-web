@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -211,9 +212,31 @@ public class NewsService implements Runnable{
         });
     }
 
+    public static void UpdateCity(){
+        FileWriter writer = null;
+        try {
+            File f = new File("./WrongCity.txt");
+            f.createNewFile();
+            writer = new FileWriter("./WrongCity.txt", true);
+            for(String city:Constant.CityList){
+                writer.write(city + "\n");
+            }
+            writer.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                writer.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void run(){
         initial();
         getNewestNews();
+        UpdateCity();
     }
 
     public static void main(String args[]) throws Exception{

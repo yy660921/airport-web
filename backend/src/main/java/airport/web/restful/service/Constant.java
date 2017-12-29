@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,8 @@ public class Constant {
     public static String Database;
     public static String Username;
     public static String Password;
+
+    public static HashSet<String > CityList;
 
     public static News Baidu;
     public static News Weixin;

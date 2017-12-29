@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.validation.constraints.Null;
+
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
 import airport.web.restful.service.Constant;
@@ -139,8 +141,8 @@ public class Query {
 
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -165,7 +167,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -174,8 +176,8 @@ public class Query {
 
     private static JsonNode getDepartureAndDestinationBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper OM = new ObjectMapper();
         ObjectNode result = OM.createObjectNode();
         try{
@@ -233,7 +235,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -242,8 +244,8 @@ public class Query {
 
     private static JsonNode getTop10TouristsAndRiskIndexBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -281,7 +283,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -290,8 +292,8 @@ public class Query {
 
     private static JsonNode getDeviceCountDistBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -318,7 +320,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -327,19 +329,14 @@ public class Query {
 
     private static LinkedList<TourTrips> getAirwayTripBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         FileWriter writer = null;
         LinkedList<TourTrips> Tempresult = new LinkedList<>();
         LinkedList<TourTrips> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
         try{
-            File f = new File("./WrongCity.txt");
-            if(!f.exists()){
-                f.createNewFile();
-            }
-            writer = new FileWriter("./WrongCity.txt", true);
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -375,13 +372,19 @@ public class Query {
                         Tourtrip.setDeparture(Departure);
                         Tourtrip.setDestination(Destination);
                         result.add(Tourtrip);
+                        if(Constant.CityList.contains(Departure.get("CityName").asText())){
+                            Constant.CityList.remove(Departure.get("CityName").asText());
+                        }
+                        if(Constant.CityList.contains(Destination.get("CityName").asText())){
+                            Constant.CityList.remove(Destination.get("CityName").asText());
+                        }
                     }
                     else{
                         if(!PlaceDict.has(Departure.get("CityName").asText())){
-                            writer.write(Departure.get("CityName").asText() + "\n");
+                            Constant.CityList.add(Departure.get("CityName").asText());
                         }
                         if(!PlaceDict.has(Destination.get("CityName").asText())){
-                            writer.write(Destination.get("CityName").asText() + "\n");
+                            Constant.CityList.add(Destination.get("CityName").asText());
                         }
                     }
                 }
@@ -403,18 +406,13 @@ public class Query {
 
     private static LinkedList<CustomsTouristMessage> getTouristMessageBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        FileWriter writer = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        FileWriter writer;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
         try{
-            File f = new File("./WrongCity.txt");
-            if(!f.exists()){
-                f.createNewFile();
-            }
-            writer = new FileWriter("./WrongCity.txt", true);
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -488,13 +486,19 @@ public class Query {
                         newTravelLine.replace("departure",Departure);
                         newTravelLine.replace("destination",Destination);
                         newTravelLines.add(newTravelLine);
+                        if(Constant.CityList.contains(Departure.get("CityName").asText())){
+                            Constant.CityList.remove(Departure.get("CityName").asText());
+                        }
+                        if(Constant.CityList.contains(Destination.get("CityName").asText())){
+                            Constant.CityList.remove(Destination.get("CityName").asText());
+                        }
                     }
                     else{
                         if(!PlaceDict.has(Departure.get("CityName").asText())){
-                            writer.write(Departure.get("CityName").asText() + "\n");
+                            Constant.CityList.add(Departure.get("CityName").asText());
                         }
                         if(!PlaceDict.has(Destination.get("CityName").asText())){
-                            writer.write(Destination.get("CityName").asText() + "\n");
+                            Constant.CityList.add(Destination.get("CityName").asText());
                         }
                     }
                 }
@@ -516,8 +520,8 @@ public class Query {
 
     private static JsonNode getAirLineBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -536,7 +540,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -545,8 +549,8 @@ public class Query {
 
     private static JsonNode getFirstPageCountBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -618,7 +622,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;

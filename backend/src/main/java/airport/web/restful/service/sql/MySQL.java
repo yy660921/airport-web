@@ -57,7 +57,7 @@ public class MySQL {
             }
             Class.forName(driver).newInstance();
         } catch (IOException | InstantiationException | IllegalAccessException
-            | ClassNotFoundException e) {
+            | ClassNotFoundException | NullPointerException e) {
             e.printStackTrace();
         }
     }
