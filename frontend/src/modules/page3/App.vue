@@ -28,9 +28,6 @@
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
 
-  /* Globally bus for Non Parent-Child Communication */
-  window.bus = new Vue();
-
   export default {
     name: 'app',
     data () {

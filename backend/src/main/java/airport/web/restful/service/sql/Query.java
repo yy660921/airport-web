@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+
+import javax.validation.constraints.Null;
 
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
@@ -66,7 +70,7 @@ public class Query {
      * @description: 查询最新的高风险旅客出发地与目的地统计
      */
     public static JsonNode getDepartureData(){
-        String sql = "SELECT warningTourist_departure,warningTourist_destination FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT warningTourist_departure,warningTourist_destination FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getDepartureAndDestinationBySQL(sql);
     }
 
@@ -74,7 +78,7 @@ public class Query {
      * @description: 查询最新TOP10的高风险旅客名单及风险值
      */
     public static JsonNode getTop10TouristsAndRiskIndex(){
-        String sql = "SELECT warningTourist_nameList FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT warningTourist_nameList FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getTop10TouristsAndRiskIndexBySQL(sql);
     }
 
@@ -82,37 +86,15 @@ public class Query {
      * @description: 查询最新的设备24小时运行情况
      */
     public static JsonNode getDeviceCountDist(){
-        String sql = "SELECT DeviceCountDist FROM customs_top ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT DeviceCountDist FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getDeviceCountDistBySQL(sql);
-    }
-
-    /*
-     * @description: 查询date时间的航线
-     * @param date: 查询日期
-     */
-    public static LinkedList<TourTrips> getAirwayTrip(Date from, Date to){
-        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,1 AS weight\n"
-                     + "FROM customs_touristmessage\n"
-                     + "INNER JOIN city_longlati AS city_dep\n"
-                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
-                     + "INNER JOIN city_longlati AS city_dest\n"
-                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
-                     + "WHERE createDate BETWEEN \"" + dateFormat.format(from) + "\" AND \""+ dateFormat.format(to) + "\"";
-        return getAirwayTripBySQL(sql);
     }
 
     /*
      * @description: 查询最新的航线
      */
     public static LinkedList<TourTrips> getAirwayTrip(){
-        String sql = "SELECT warningTourist_departure,city_dep.lon as deplon,city_dep.lat as deplat,warningTourist_destination,city_dest.lon as destlon,city_dest.lat as destlat,count(*) as weight\n"
-                     + "FROM customs_touristmessage\n"
-                     + "INNER JOIN city_longlati AS city_dep\n"
-                     + "ON customs_touristmessage.warningTourist_departure = city_dep.cncity\n"
-                     + "INNER JOIN city_longlati AS city_dest\n"
-                     + "ON customs_touristmessage.warningTourist_destination = city_dest.cncity\n"
-                     + "GROUP BY warningTourist_departure,warningTourist_destination\n"
-                     + "ORDER BY createDate DESC LIMIT 10";
+        String sql = "SELECT warningTourist_line FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getAirwayTripBySQL(sql);
     }
 
@@ -145,7 +127,7 @@ public class Query {
      * @description: 查询最新的高危旅客信息
      */
     public static LinkedList<CustomsTouristMessage> getTouristMessage(){
-        String sql = "SELECT * FROM customs_touristmessage ORDER BY createDate DESC LIMIT 10";
+        String sql = "SELECT * FROM customs_touristmessage ORDER BY createTime DESC LIMIT 10";
         return getTouristMessageBySQL(sql);
     }
 
@@ -153,14 +135,14 @@ public class Query {
      * @description: 查询最新的首页信息
      */
     public static JsonNode getFirstPageCount(){
-        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index ORDER BY createDate DESC LIMIT 1";
+        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
         return getFirstPageCountBySQL(sql);
     }
 
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -180,11 +162,12 @@ public class Query {
             result.replace("createDate", createDate);
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -193,8 +176,8 @@ public class Query {
 
     private static JsonNode getDepartureAndDestinationBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper OM = new ObjectMapper();
         ObjectNode result = OM.createObjectNode();
         try{
@@ -206,19 +189,39 @@ public class Query {
                 ArrayNode DepartureCount = OM.createArrayNode();
                 JsonNode Departure = OM.readTree(rs.getString("warningTourist_departure"));
                 Iterator<String> fieldNames = Departure.fieldNames();
+                HashMap<String, Long> Dep = new HashMap<>();
                 while(fieldNames.hasNext()){
                     String field = fieldNames.next();
-                    Departures.add(field);
-                    DepartureCount.add(Long.parseLong(Departure.get(field).toString().replace("\"","")));
+                    Dep.put(field,Long.parseLong(Departure.get(field).toString().replace("\"","")));
+                }
+                ArrayList<Map.Entry<String, Long>> Depts = new ArrayList<>(Dep.entrySet());
+                Collections.sort(Depts, new Comparator<Map.Entry<String,Long>>(){
+                    public int compare(Map.Entry<String,Long> arg0, Map.Entry<String,Long> arg1) {
+                        return arg0.getValue().compareTo(arg1.getValue());
+                    }
+                });
+                for(Map.Entry<String, Long> Dept:Depts){
+                    Departures.add(Dept.getKey());
+                    DepartureCount.add(Long.parseLong(Dept.getValue().toString()));
                 }
                 ArrayNode Destinations = OM.createArrayNode();
                 ArrayNode DestinationCount = OM.createArrayNode();
                 JsonNode Destination = OM.readTree(rs.getString("warningTourist_destination"));
                 fieldNames = Destination.fieldNames();
+                HashMap<String, Long> Des = new HashMap<>();
                 while(fieldNames.hasNext()){
                     String field = fieldNames.next();
-                    Destinations.add(field);
-                    DestinationCount.add(Long.parseLong(Destination.get(field).toString().replace("\"","")));
+                    Des.put(field,Long.parseLong(Destination.get(field).toString().replace("\"","")));
+                }
+                ArrayList<Map.Entry<String, Long>> Dests = new ArrayList<>(Des.entrySet());
+                Collections.sort(Dests, new Comparator<Map.Entry<String,Long>>(){
+                    public int compare(Map.Entry<String,Long> arg0, Map.Entry<String,Long> arg1) {
+                        return arg0.getValue().compareTo(arg1.getValue());
+                    }
+                });
+                for(Map.Entry<String, Long> Dest:Dests){
+                    Destinations.add(Dest.getKey());
+                    DestinationCount.add(Long.parseLong(Dest.getValue().toString()));
                 }
                 result.replace("Departures",Departures);
                 result.replace("DepartureCount",DepartureCount);
@@ -227,11 +230,12 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -240,8 +244,8 @@ public class Query {
 
     private static JsonNode getTop10TouristsAndRiskIndexBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -263,7 +267,7 @@ public class Query {
             ArrayList<Map.Entry<String, Double>> Tourists = new ArrayList<>(TouristMap.entrySet());
             Collections.sort(Tourists, new Comparator<Map.Entry<String,Double>>(){
                 public int compare(Map.Entry<String,Double> arg0, Map.Entry<String,Double> arg1) {
-                    return arg1.getValue().compareTo(arg0.getValue());
+                    return arg0.getValue().compareTo(arg1.getValue());
                 }
             });
             for(Map.Entry<String, Double> Tourist:Tourists){
@@ -274,11 +278,12 @@ public class Query {
             result.replace("TouristRiskIndex", RiskIndex);
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -287,8 +292,8 @@ public class Query {
 
     private static JsonNode getDeviceCountDistBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -310,11 +315,12 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -323,41 +329,75 @@ public class Query {
 
     private static LinkedList<TourTrips> getAirwayTripBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        FileWriter writer = null;
+        LinkedList<TourTrips> Tempresult = new LinkedList<>();
         LinkedList<TourTrips> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        HashSet<String> Places = new HashSet<>();
         try{
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            while (rs.next()) {
-                if(rs.getInt("weight")!=0) {
-                    TourTrips TourTrip = new TourTrips();
+            if (rs.next()) {
+                ArrayNode TravelLine = objectMapper.createArrayNode();
+                JsonNode Travel = objectMapper.readTree(rs.getString("warningTourist_line"));
+                Iterator<String> Timeline = Travel.fieldNames();
+                while (Timeline.hasNext()) {
+                    String time = Timeline.next();
+                    JsonNode Trav = Travel.get(time);
+                    TourTrips Trip = new TourTrips();
                     ObjectNode Departure = objectMapper.createObjectNode();
-                    ArrayNode DepartureCoordinate = objectMapper.createArrayNode();
                     ObjectNode Destination = objectMapper.createObjectNode();
-                    ArrayNode DestinationCoordinate = objectMapper.createArrayNode();
-                    Departure.put("CityName", rs.getString("warningTourist_departure"));
-                    DepartureCoordinate.add(rs.getDouble("deplon"));
-                    DepartureCoordinate.add(rs.getDouble("deplat"));
-                    Departure.replace("Coordinate", DepartureCoordinate);
-                    Destination.put("CityName", rs.getString("warningTourist_destination"));
-                    DestinationCoordinate.add(rs.getDouble("destlon"));
-                    DestinationCoordinate.add(rs.getDouble("destlat"));
-                    Destination.replace("Coordinate", DestinationCoordinate);
-                    TourTrip.setDeparture(Departure);
-                    TourTrip.setDestination(Destination);
-                    result.add(TourTrip);
+                    Departure.put("CityName", Trav.get("出发地").asText());
+                    Destination.put("CityName", Trav.get("目的地").asText());
+                    Trip.setDeparture(Departure);
+                    Trip.setDestination(Destination);
+                    Tempresult.add(Trip);
+                    Places.add(Trav.get("出发地").asText());
+                    Places.add(Trav.get("目的地").asText());
+                }
+                JsonNode PlaceDict = getAirLine(Places.iterator());
+                for (TourTrips Tourtrip : Tempresult) {
+                    ObjectNode Departure = Tourtrip.getDeparture();
+                    ObjectNode Destination =  Tourtrip.getDestination();
+                    if (PlaceDict.has(Departure.get("CityName").asText()) && PlaceDict
+                        .has(Destination.get("CityName").asText())) {
+                        Departure.replace("Coordinate",
+                                          PlaceDict.get(Departure.get("CityName").asText()));
+                        Destination.replace("Coordinate",
+                                            PlaceDict
+                                                .get(Destination.get("CityName").asText()));
+                        Tourtrip.setDeparture(Departure);
+                        Tourtrip.setDestination(Destination);
+                        result.add(Tourtrip);
+                        if(Constant.CityList.contains(Departure.get("CityName").asText())){
+                            Constant.CityList.remove(Departure.get("CityName").asText());
+                        }
+                        if(Constant.CityList.contains(Destination.get("CityName").asText())){
+                            Constant.CityList.remove(Destination.get("CityName").asText());
+                        }
+                    }
+                    else{
+                        if(!PlaceDict.has(Departure.get("CityName").asText())){
+                            Constant.CityList.add(Departure.get("CityName").asText());
+                        }
+                        if(!PlaceDict.has(Destination.get("CityName").asText())){
+                            Constant.CityList.add(Destination.get("CityName").asText());
+                        }
+                    }
                 }
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
+                writer.close();
             }
-            catch (SQLException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
             return result;
@@ -366,8 +406,9 @@ public class Query {
 
     private static LinkedList<CustomsTouristMessage> getTouristMessageBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        FileWriter writer;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
@@ -445,12 +486,27 @@ public class Query {
                         newTravelLine.replace("departure",Departure);
                         newTravelLine.replace("destination",Destination);
                         newTravelLines.add(newTravelLine);
+                        if(Constant.CityList.contains(Departure.get("CityName").asText())){
+                            Constant.CityList.remove(Departure.get("CityName").asText());
+                        }
+                        if(Constant.CityList.contains(Destination.get("CityName").asText())){
+                            Constant.CityList.remove(Destination.get("CityName").asText());
+                        }
+                    }
+                    else{
+                        if(!PlaceDict.has(Departure.get("CityName").asText())){
+                            Constant.CityList.add(Departure.get("CityName").asText());
+                        }
+                        if(!PlaceDict.has(Destination.get("CityName").asText())){
+                            Constant.CityList.add(Destination.get("CityName").asText());
+                        }
                     }
                 }
                 Tourist.setWarningTourist_place(newTravelLines);
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
@@ -464,8 +520,8 @@ public class Query {
 
     private static JsonNode getAirLineBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -484,7 +540,7 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
@@ -493,8 +549,8 @@ public class Query {
 
     private static JsonNode getFirstPageCountBySQL(String sql){
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        PreparedStatement ps;
+        ResultSet rs;
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode result = objectMapper.createObjectNode();
         try{
@@ -561,11 +617,12 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
+            System.out.println(sql);
         } finally {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
             }
             return result;
