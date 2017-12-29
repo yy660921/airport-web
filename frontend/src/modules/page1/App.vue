@@ -416,6 +416,12 @@
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 30 * 1000);
+      this.intervalGlobe = setInterval(() => {
+          if (this.globe) {
+            this.globe.dispose();
+            this.echartsGlobe();
+          }
+      }, 1 * 60 * 60 * 1000);
     },
     methods: {
       updateData: function () {
@@ -496,6 +502,7 @@
     },
     beforeDestroy () {
       clearInterval(this.intervalID)
+      clearInterval(this.intervalGlobe)
     },
     components: {
       'Echarts': Echarts,
