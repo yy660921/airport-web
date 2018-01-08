@@ -33,6 +33,7 @@ public class Constant {
     public static News Baidu;
     public static News Weixin;
     public static ArrayNode news;
+    public static Long newsSize;
 
     public static HashMap<String, Integer> Media;
     public static HashMap<String, Integer> Gzh;

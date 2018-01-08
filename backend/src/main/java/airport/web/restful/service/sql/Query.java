@@ -335,7 +335,6 @@ public class Query {
         Connection conn = null;
         PreparedStatement ps;
         ResultSet rs;
-        FileWriter writer = null;
         LinkedList<TourTrips> Tempresult = new LinkedList<>();
         LinkedList<TourTrips> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -399,7 +398,6 @@ public class Query {
         } finally {
             try {
                 conn.close();
-                writer.close();
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -580,7 +578,7 @@ public class Query {
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
                 result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
-                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize() + Constant.news.size()));
+                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize() + Constant.newsSize));
                 result.put("yuqing_media", Constant.Media.size());
                 Iterator<Map.Entry<String, Integer>> it = Constant.MediaList.iterator();
                 if(it.hasNext()){
@@ -622,7 +620,10 @@ public class Query {
                     result.replace("yuqing_gzhtop2", GzhCount);
                 }
             }
-        }catch (Exception e) {
+        }catch (NullPointerException e){
+            System.out.println("Load File Not Finish!");
+        }
+        catch (Exception e) {
             e.printStackTrace();
             System.out.println(sql);
         } finally {
