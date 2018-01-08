@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -218,7 +219,10 @@ public class NewsService implements Runnable{
             File f = new File("./WrongCity.txt");
             f.createNewFile();
             writer = new FileWriter("./WrongCity.txt", true);
-            for(String city:Constant.CityList){
+            if(Constant.CityList == null){
+                Constant.CityList = new HashSet<>();
+            }
+            for (String city : Constant.CityList) {
                 writer.write(city + "\n");
             }
             writer.close();

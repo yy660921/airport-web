@@ -31,7 +31,8 @@ public class MySQL {
             Constant.Password = properties.getProperty("MySQL.Password");
         }catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println("Using Default MySQL Setting!");
+//            e.printStackTrace();
         }
         InputStream stream = null;
         properties = null;
@@ -67,6 +68,7 @@ public class MySQL {
         try {
             conn = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
+            System.out.println("MySQL Connection Error!!!!!\n");
             e.printStackTrace();
         }
         return conn;

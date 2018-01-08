@@ -22,8 +22,8 @@ public class News {
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static Pattern DatePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}$");
-    private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
+    private static Pattern DatePattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$");
+    private static Pattern TimePattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9] [0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]$");
 
     private long Total;
     private ArrayNode TotalNews;
@@ -86,6 +86,13 @@ public class News {
                         Count.put(dateFormat.format(d),(Count.get(dateFormat.format(d)).asLong() + 1));
                     }
                 }catch (Exception e){
+                    System.out.println("Data date Error");
+                    if(news.has("title")){
+                        System.out.println(news.get("title"));
+                    }
+                    if(news.has("date")){
+                        System.out.println(news.get("date") + "\n\n");
+                    }
                     e.printStackTrace();
                 }
             }

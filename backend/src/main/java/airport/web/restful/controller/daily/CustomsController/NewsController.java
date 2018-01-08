@@ -38,6 +38,7 @@ import airport.web.restful.service.News.NewsService;
 public class NewsController {
     static{
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        Constant.CityList = new HashSet<>();
         executor.scheduleAtFixedRate(
             new NewsService(),
             0,

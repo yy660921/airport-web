@@ -169,6 +169,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -237,6 +238,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -285,6 +287,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -322,6 +325,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -399,6 +403,7 @@ public class Query {
             }
             catch (Exception e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -511,8 +516,9 @@ public class Query {
             try {
                 conn.close();
             }
-            catch (SQLException e) {
+            catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -542,6 +548,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
@@ -624,6 +631,7 @@ public class Query {
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
