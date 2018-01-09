@@ -57,7 +57,7 @@
           yAxis: {},
           grid: {
             top: 50,
-            left: 30,
+            left: 40,
             right: 20,
             bottom: 25
           },
@@ -109,7 +109,7 @@
         r_t_option: {
           animation: true,
           title: {
-            text: '热门旅客出发地分布'
+            text: '热门城市'
           },
           tooltip: {
             trigger: 'axis',
@@ -132,8 +132,8 @@
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
-            top: 60,
-            left: 60,
+            top: 65,
+            left: 75,
             right: 20,
             bottom: 10
           },
@@ -186,7 +186,7 @@
         l_b_option: {
           animation: true,
           title: {
-            text: 'TOP10风险旅客名单',
+            text: '风险旅客',
           },
           tooltip: {
             trigger: 'axis',
@@ -206,8 +206,8 @@
             data: ['北京', '天津', '石家庄', '郑州', '上海', '深圳', '广州', '昆明', '贵阳', '西藏']
           },
           grid: {
-            top: 60,
-            left: 60,
+            top: 65,
+            left: 75,
             right: 20,
             bottom: 10
           },
@@ -260,7 +260,7 @@
         r_b_option: {
           animation: true,
           title: {
-            text: '设备总查验次数时段分布',
+            text: '查获时段',
           },
           tooltip: {
             trigger: 'axis',
@@ -277,7 +277,7 @@
             position: 'top',
           },
           grid: {
-            top: 35,
+            top: 50,
             left: 40,
             right: 20,
             bottom: 25
@@ -331,7 +331,8 @@
         globe_t_option: {
           backgroundColor: 'rgba(0, 0, 0, 0)',
           globe: {
-            globeRadius: 70,
+            globeRadius: 95,
+            globeOuterRadius: 500,
             baseTexture: baseTexture.src,
             heightTexture: heightTexture.src,
             displacementScale: 0.2,
@@ -352,7 +353,9 @@
             viewControl: {
               // alpha: 30,
               // beta: -160,
-              autoRotate: true,
+              autoRotate: false,
+              zoomSensitivity: 0,
+              targetCoord: [110, 33]
             },
           },
           series: [{
@@ -363,19 +366,22 @@
             animation: false,
             blendMode: 'lighter',
             symbol: 'pin',
-            symbolSize: 20,
+            symbolSize: 30,
             itemStyle: {
               normal: {
                 color: '#fa3434',
+                opacity: 1,
               },
             },
             label: {
               normal: {
                 show: true,
                 formatter: '{b}',
+                distance: 5,
                 textStyle: {
                   color: '#fff',
                   padding: 5,
+                  fontSize: 20,
                   borderWidth: 1,
                   borderColor: '#0775e4',
                   backgroundColor: 'rgba(29, 81, 203, .8)',
@@ -388,19 +394,20 @@
             coordinateSystem: 'globe',
             name: '航线',
             lineStyle: {
-              color: '#0087f4',
+              color: 'rgba(0, 135, 244, 1)',
               opacity: 0,
               width: 1,
             },
             effect: {
+              // TODO:去除前部高亮颜色
               show: true,
-              period: 2,
+              period: 4,
               // constantSpeed: 30,
               symbol: 'arrow',
               trailWidth: 3,
               trailLength: 0.8,
               trailOpacity: 1,
-              trailColor: '#0087f4'
+              trailColor: 'rgba(0, 135, 244, 1)'
             },
             data: [],
           }]
@@ -534,7 +541,9 @@
       right: 2.5rem
       bottom: 2.5rem
   .center-box
-    position: relative
+    position: absolute
+    left: 0rem
+    top: 0rem
     width: 100%
     height: 100%
     z-index: 0

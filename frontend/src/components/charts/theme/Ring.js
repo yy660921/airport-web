@@ -24,7 +24,8 @@ import Colors from 'components/Colors.js'
     title: {
       left: 'center',
       textStyle: {
-        color: '#b5eaff'
+        color: '#fff',
+        fontSize: '26'
       }
     },
     tooltip: {
