@@ -8,13 +8,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -31,8 +32,8 @@ public class NewsService implements Runnable{
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static Pattern DataPattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}");
-    private static Pattern TimePattern = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2} \\d{2}:\\d{2}:\\d{2}");
+    private static Pattern DataPattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$");
+    private static Pattern TimePattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9] [0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]$");
 
     private static ArrayNode ReadFile(String FilePath){
         boolean CountTotal = true;
@@ -42,10 +43,12 @@ public class NewsService implements Runnable{
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF-8"));
             String line;
+            long total = 0;
             while((line=in.readLine())!=null){
                 try {
                     JsonNode News = objectMapper.readTree(line.replace("key_words","keyword"));
                     Date d = new Date(0);
+                    total += 1;
                     if(CountTotal){
                         if (News.has("gzh")&&!News.get("gzh").asText().equals("")) {
                             if(Constant.Gzh.containsKey(News.get("gzh").asText())){
@@ -63,15 +66,37 @@ public class NewsService implements Runnable{
                             }
                         }
                         if (News.has("date")) {
-                            if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
-                                .find()) {
-                                d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
-                            } else if (TimePattern
-                                .matcher(News.get("date").toString().replace("\"", "")).find()) {
-                                d = timeFormat.parse(News.get("date").toString().replace("\"", ""));
+                            try {
+                                if (DataPattern
+                                    .matcher(News.get("date").toString().replace("\"", ""))
+                                    .find()) {
+                                    d =
+                                        dateFormat
+                                            .parse(News.get("date").toString().replace("\"", ""));
+                                } else if (TimePattern
+                                    .matcher(News.get("date").toString().replace("\"", ""))
+                                    .find()) {
+                                    d =
+                                        timeFormat
+                                            .parse(News.get("date").toString().replace("\"", ""));
+                                }
+                                if (d.after(Constant.LastDay) && d.before(new Date())) {
+                                    Constant.LastDay = d;
+                                }
+                            }catch (Exception e){
+                                System.out.println("Date Parse Error!");
+                                System.out.println(News.get("title").asText());
+                                System.out.println(News.get("date").asText());
                             }
-                            if (d.after(Constant.LastDay) && d.before(new Date())) {
-                                Constant.LastDay = d;
+                            if(FilePath.contains("baidu")){
+                                if(News.has("title")) {
+                                    Constant.Baidu.CountDays(d);
+                                }
+                            }
+                            else if(FilePath.contains("wx")){
+                                if(News.has("title")) {
+                                    Constant.Weixin.CountDays(d);
+                                }
                             }
                         }
                     }
@@ -108,28 +133,39 @@ public class NewsService implements Runnable{
                             }
                         }
                     }
-                    ObjectNode AcceptNews = objectMapper.createObjectNode();
-                    if(News.has("content")){
-                        AcceptNews.put("content", News.get("content").asText());
-                    }
-                    if(News.has("title")){
-                        AcceptNews.put("title", News.get("title").asText());
-                    }
-                    if(News.has("keyword")){
-                        AcceptNews.put("keyword", News.get("keyword").asText());
-                    }
-                    if(News.has("date")){
-                        AcceptNews.put("date", dateFormat.format(d));
-                    }
-                    else{
-                        AcceptNews.put("date", dateFormat.format(d));
-                    }
-                    if(AcceptNews.fieldNames().hasNext()){
-                        NewsList.add(AcceptNews);
+                    if(!(FilePath.contains("baidu")||FilePath.contains("wx"))&&total < 50){
+                        ObjectNode AcceptNews = objectMapper.createObjectNode();
+                        if(News.has("content")){
+                            AcceptNews.put("content", News.get("content").asText());
+                        }
+                        if(News.has("title")){
+                            AcceptNews.put("title", News.get("title").asText());
+                        }
+                        if(News.has("keyword")){
+                            AcceptNews.put("keyword", News.get("keyword").asText());
+                        }
+                        if(News.has("date")){
+                            AcceptNews.put("date", dateFormat.format(d));
+                        }
+                        else{
+                            AcceptNews.put("date", dateFormat.format(d));
+                        }
+                        if(AcceptNews.fieldNames().hasNext()){
+                            NewsList.add(AcceptNews);
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+            }
+            if(FilePath.contains("baidu")){
+                Constant.Baidu.setTotal(total);
+            }
+            else if(FilePath.contains("wx")){
+                Constant.Weixin.setTotal(total);
+            }
+            else{
+                Constant.newsSize = total;
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -152,7 +188,7 @@ public class NewsService implements Runnable{
                     if(SubDictory.isDirectory()&&SubDictory.getName().contains("baidu")) {
                         for (File FileName : SubDictory.listFiles()) {
                             if (FileName.getName().contains(".json")) {
-                                Constant.Baidu.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
+                                ReadFile(FileName.getCanonicalFile().getPath());
                             }
                         }
                     }
@@ -161,12 +197,12 @@ public class NewsService implements Runnable{
                     if(SubDictory.isDirectory()&&SubDictory.getName().contains("wx")) {
                         for (File FileName : SubDictory.listFiles()) {
                             if (FileName.getName().contains(".json")) {
-                                Constant.Weixin.InsertNews(ReadFile(FileName.getCanonicalFile().getPath()));
+                                ReadFile(FileName.getCanonicalFile().getPath());
                             }
                         }
                     }
                 }
-                else if(SubDictory.getName().contains(".json")){
+                else if(SubDictory.getName().contains("haiguan_results.json")){
                     Constant.news = ReadFile(SubDictory.getCanonicalFile().getPath());
                 }
             }
@@ -211,9 +247,34 @@ public class NewsService implements Runnable{
         });
     }
 
+    public static void UpdateCity(){
+        FileWriter writer = null;
+        try {
+            File f = new File("./WrongCity.txt");
+            f.createNewFile();
+            writer = new FileWriter("./WrongCity.txt", true);
+            if(Constant.CityList == null){
+                Constant.CityList = new HashSet<>();
+            }
+            for (String city : Constant.CityList) {
+                writer.write(city + "\n");
+            }
+            writer.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                writer.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void run(){
         initial();
         getNewestNews();
+        UpdateCity();
     }
 
     public static void main(String args[]) throws Exception{

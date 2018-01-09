@@ -334,7 +334,7 @@
             globeRadius: 70,
             baseTexture: baseTexture.src,
             heightTexture: heightTexture.src,
-            displacementScale: 0.1,
+            displacementScale: 0.2,
             shading: 'lambert',
             light: {
               ambient: {
@@ -415,7 +415,13 @@
       this.updateData()
       this.intervalID = setInterval(() => {
         this.updateData()
-      }, 5000);
+      }, 30 * 1000);
+      this.intervalGlobe = setInterval(() => {
+          if (this.globe) {
+            this.globe.dispose();
+            this.echartsGlobe();
+          }
+      }, 1 * 60 * 60 * 1000);
     },
     methods: {
       updateData: function () {
@@ -472,6 +478,7 @@
         });
       },
       update_globe_option () {
+        this.globe_t_option.globe.displacementScale = 0.2;
         axios.get('/api/getAirway', {params: {
           from: Math.floor(new Date().getTime() / 1000) - 24 * 3600,
           to: Math.floor(new Date().getTime() / 1000),
@@ -486,6 +493,7 @@
           console.log(cities);
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
+          this.globe_t_option.globe.displacementScale = 0.1;
           if (this.globe) {
             this.globe.setOption(this.globe_t_option);
           }
@@ -494,6 +502,7 @@
     },
     beforeDestroy () {
       clearInterval(this.intervalID)
+      clearInterval(this.intervalGlobe)
     },
     components: {
       'Echarts': Echarts,

@@ -22,6 +22,8 @@ public class CustomsTouristMessage {
     private Date warningTourist_birthday;
     private String warningTourist_departure;
     private String warningTourist_destination;
+    private int warningTourist_arrival_number;
+    private int warningTourist_arrival_risknumber;
     private JsonNode warningTourist_category;
     private String warningTourist_flight_number;
     private String warningTourist_flight_type;
@@ -122,6 +124,22 @@ public class CustomsTouristMessage {
 
     public void setWarningTourist_destination(String warningTourist_destination) {
         this.warningTourist_destination = warningTourist_destination;
+    }
+
+    public int getWarningTourist_arrival_number() {
+        return warningTourist_arrival_number;
+    }
+
+    public void setWarningTourist_arrival_number(int warningTourist_arrival_number) {
+        this.warningTourist_arrival_number = warningTourist_arrival_number;
+    }
+
+    public int getWarningTourist_arrival_risknumber() {
+        return warningTourist_arrival_risknumber;
+    }
+
+    public void setWarningTourist_arrival_risknumber(int warningTourist_arrival_risknumber) {
+        this.warningTourist_arrival_risknumber = warningTourist_arrival_risknumber;
     }
 
     public JsonNode getWarningTourist_category() {
