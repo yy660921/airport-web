@@ -394,7 +394,7 @@
             coordinateSystem: 'globe',
             name: '航线',
             lineStyle: {
-              color: 'rgba(0, 135, 244, 1)',
+              color: '#00abe0',
               opacity: 0,
               width: 1,
             },
@@ -407,7 +407,7 @@
               trailWidth: 3,
               trailLength: 0.8,
               trailOpacity: 1,
-              trailColor: 'rgba(0, 135, 244, 1)'
+              // trailColor: '#ff4d43'
             },
             data: [],
           }]

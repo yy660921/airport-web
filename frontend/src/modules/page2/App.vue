@@ -24,7 +24,7 @@
         </div>
         <div class="circle circle-1">
           <!-- <img src="~assets/images/circle-1.png" alt=""> -->
-          <span>{{ riskIndex }}</span>
+          <span :class="{'risk-middle': riskMiddle, 'risk-height': riskHeight }">{{ riskIndex }}</span>
         </div>
       </div>
       <div class="info-detail">
@@ -77,6 +77,8 @@ export default {
       destination: '铜仁',
       intime: '2017-12-16',
       riskIndex: '60',
+      riskMiddle: false,
+      riskHeight: false,
       warningTourist_arrival_number: 6,
       warningTourist_arrival_risknumber: 2,
       left_option: {
@@ -99,9 +101,9 @@ export default {
           position: 'top',
         },
         grid: {
-          top: 40,
-          left: 35,
-          right: 20,
+          top: 50,
+          left: 25,
+          right: 10,
           bottom: 25
         },
         series: [
@@ -384,13 +386,35 @@ export default {
       this.departure = person.warningTourist_departure;
       this.destination = person.warningTourist_destination;
       this.intime = person.warningTourist_time;
-      this.riskIndex = person.warningTourist_riskIndex;
+      this.riskIndex = this.decideRiskIndex(person.warningTourist_riskIndex).score;
       this.category = person.warningTourist_category;
       this.warningTourist_arrival_number = person.warningTourist_arrival_number;
       this.warningTourist_arrival_risknumber = person.warningTourist_arrival_risknumber;
       this.update_left_option(person.warningTourist_historyTime);
       this.update_center_option(person.warningTourist_place);
       this.update_right_option(person.fellowTourist_list);
+    },
+    decideRiskIndex: function (value) {
+      // red: #ff5252
+      // yellow: #d37d1c
+      // blue: #1b6cc9
+      var self = this;
+      console.log(value);
+      if (value > 75) {
+        self.riskHeight = true;
+        return {
+          score: '高',
+        }
+      } else if (value > 60) {
+        self.riskMiddle = true;
+        return {
+          score: '中',
+        }
+      } else {
+        return {
+          score: '低',
+        }
+      }
     },
     update_left_option: function (data) {
       for (var p in data) {
@@ -463,19 +487,20 @@ export default {
   @import "~assets/sass/common"
   .guest-info
     margin: 0 auto
-    padding-top: 2rem
+    padding-top: 0rem
     display: flex
     align-items: center
     justify-content: center
     margin-bottom: 2rem
   .tags
+    font-size: 1.6rem
     text-align: center
     color: #fff
     .fa
-      width: 1.1rem
+      width: 1.8rem
       text-align: center
       margin-right: 4px
-      font-size: .9rem
+      font-size: 1.6rem
       color: #69d3ff
     .category
       position: relative
@@ -484,7 +509,7 @@ export default {
       color: #fff
       padding: 3px 7px
       background-color: #eb7350
-      margin-right: 1.2rem
+      margin-right: 2.2rem
       // background-image: url("~assets/images/tag-bg.png")
       background-size: 100% 100%
       // border: 2px solid #fff
@@ -492,27 +517,27 @@ export default {
         content: ""
         display: block
         position: absolute
-        right: -10px
-        top: 5px
+        right: -.95rem
+        top: .4rem
         background-color: #eb7350
-        width: 20px
+        width: 1.9rem
+        height: 1.9rem
         z-index: -1
-        height: 20px
         transform: rotate(45deg)
       &:before
         position: absolute
-        right: -5px
-        top: 11px
+        right: -.6rem
+        top: 1.1rem
         content: ""
         display: block
-        width: 7px
-        height: 7px
-        border-radius: 5px
+        width: .5rem
+        height: .5rem
+        border-radius: 50%
         background-color: #050c19
   .info-score
     position: relative
-    width: 15rem
-    height: 15rem
+    width: 16rem
+    height: 16rem
     margin: 0 2.5rem
     .circle
       position: absolute
@@ -521,11 +546,17 @@ export default {
         width: 100%
     .circle-1
       text-align: center
-      line-height: 15rem
+      line-height: 16rem
       color: #fff
       font-size: 3rem
       font-weight: bold
       font-family: "MyMontserrat"
+      span
+        color: #9be2ff
+      span.risk-height
+        color: #ff5252
+      span.risk-middle
+        color: #d37d1c
     .circle-2
       animation: rotate_2 6s 1s infinite linear
     .circle-3
@@ -536,20 +567,20 @@ export default {
       animation: rotate_5 15s 4s infinite linear
   .info-detail
     color: #fff
-    font-size: .9rem
+    font-size: 1.6rem
     p
       margin-bottom: .8rem
       &:first-child
         padding-top: .6rem
       .fa
-        width: 1.1rem
+        width: 2.4rem
         text-align: center
         margin-right: 4px
-        font-size: .9rem
+        font-size: 1.6rem
         color: #69d3ff
   .guest-charts
     position: relative
-    bottom: -3rem
+    bottom: -1rem
     .con-box
       float: left
       height: 20rem
