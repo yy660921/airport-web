@@ -39,7 +39,7 @@
         newsdata: null,
         top_option: {
           title: {
-            text: '舆情热度走势',
+            text: '舆情走势',
           },
           tooltip: {
             trigger: 'axis',
@@ -50,7 +50,7 @@
           },
           yAxis: {},
           grid: {
-            top: 38,
+            top: 45,
             left: 30,
             right: 10,
             bottom: 25
@@ -87,7 +87,7 @@
             trigger: 'item',
             enterable: true,
             confine: true,
-            textStyle: {fontSize: 14},
+            textStyle: {fontSize: 18},
             // formatter: function(param){
             //   var a=param.data.text.join('<br/>');
             //   var b=param.data.name+'&nbsp;&nbsp;代表性文本：<br/><br/>'+a;
@@ -105,23 +105,23 @@
           legend: {
             orient: 'horizontal',
             align: 'left',
-            bottom: '20',
+            bottom: '5',
             data: [],
             itemGap: 15,
             textStyle: {
               color: '#ccc',
-              fontSize: '13',
+              fontSize: '20',
             }
           },
           series: [{
             // name: '社会观点',
             type: 'pie',
-            radius: '55%',
-            center: ['50%', '50%'],
+            radius: '50%',
+            center: ['50%', '45%'],
             data: [],
             label: {
               normal: {
-                fontSize: 14,
+                fontSize: 22,
               },
             },
             itemStyle: {
@@ -223,9 +223,10 @@
     background-image: url("~assets/images/page3-right-bg.png")
     background-size: 100% 100%
     overflow-y: hidden
+    font-size: 1rem
     h3
-      color: #b5eaff
-      font-size: 18px
+      color: #ffffff
+      font-size: 26px
       font-weight: bold
       text-align: center
       margin-bottom: 0
@@ -233,7 +234,7 @@
       margin-top: 1rem
       margin-bottom: 1rem
       padding: 0rem 1rem
-      height: calc(100% - 120px)
+      height: calc(100% - 140px)
       overflow-y: auto
       li.list
         position: relative
