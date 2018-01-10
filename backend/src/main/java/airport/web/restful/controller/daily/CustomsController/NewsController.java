@@ -53,7 +53,12 @@ public class NewsController {
             1,
             TimeUnit.MINUTES);
     }
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
     private static Pattern DataPattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$");
     private final static Logger LOG = LoggerFactory.getLogger(NewsController.class);
 
@@ -81,10 +86,10 @@ public class NewsController {
             public int compare(JsonNode arg0, JsonNode arg1) {
                 int result = 0;
                 try{
-                    if(dateFormat.parse(arg0.get("date").asText()).after(dateFormat.parse(arg1.get("date").asText()))){
+                    if(dateFormat.get().parse(arg0.get("date").asText()).after(dateFormat.get().parse(arg1.get("date").asText()))){
                         return -1;
                     }
-                    else if(dateFormat.parse(arg0.get("date").asText()).before(dateFormat.parse(arg1.get("date").asText()))){
+                    else if(dateFormat.get().parse(arg0.get("date").asText()).before(dateFormat.get().parse(arg1.get("date").asText()))){
                         return 1;
                     }
                     else{
@@ -117,8 +122,8 @@ public class NewsController {
             for(File subDirectory:directory.listFiles()) {
                 if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
                     .find()) {
-                    if (dateFormat.parse(subDirectory.getName()).after(Newest)) {
-                        Newest = dateFormat.parse(subDirectory.getName());
+                    if (dateFormat.get().parse(subDirectory.getName()).after(Newest)) {
+                        Newest = dateFormat.get().parse(subDirectory.getName());
                         newest = subDirectory;
                     }
                 }
@@ -155,14 +160,14 @@ public class NewsController {
             ArrayNode count = new ObjectMapper().createArrayNode();
             GregorianCalendar gc=new GregorianCalendar();
             try {
-                gc.setTime(dateFormat.parse(dateFormat.format(Constant.LastDay)));
+                gc.setTime(dateFormat.get().parse(dateFormat.get().format(Constant.LastDay)));
                 gc.add(5,-30);
             }catch (Exception e){
 
             }
             for(int i=0;i<30;i++){
-                Date.add(dateFormat.format(gc.getTime()).replaceAll("\\d{4}-",""));
-                count.add(Baidu.get(dateFormat.format(gc.getTime())).asLong() + Weixin.get(dateFormat.format(gc.getTime())).asLong());
+                Date.add(dateFormat.get().format(gc.getTime()).replaceAll("\\d{4}-",""));
+                count.add(Baidu.get(dateFormat.get().format(gc.getTime())).asLong() + Weixin.get(dateFormat.get().format(gc.getTime())).asLong());
                 gc.add(5,1);
             }
             Count.replace("Date",Date);
