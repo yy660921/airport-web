@@ -1,53 +1,70 @@
 <template>
   <div id="app" class="real-body">
-    <div class="guest-info">
-      <div class="info-detail">
-        <p><strong>基本信息：</strong></p>
-        <p><i class="fa fa-user "></i>姓名：<span>{{ username }}</span></p>
-        <p><i class="fa fa-intersex"></i>性别：<span>{{ sex }}</span></p>
-        <p><i class="fa fa-flag"></i>国籍：<span>{{ country }}</span></p>
-        <p><i class="fa fa-calendar"></i>出生日期：<span>{{ birth }}</span></p>
-        <p><i class="fa fa-drivers-license-o"></i>护照号：<span>{{ passportID }}</span></p>
-      </div>
-      <div class="info-score">
-        <div class="circle circle-5">
-          <img src="~assets/images/circle-5.png" alt="">
+    <transition name="fade">
+      <div class="basic" v-show='toggle_flag'>
+        <div class="guest-info">
+          <div class="info-detail">
+            <p><strong>基本信息：</strong></p>
+            <p><i class="fa fa-user "></i>姓名：<span>{{ username }}</span></p>
+            <p><i class="fa fa-intersex"></i>性别：<span>{{ sex }}</span></p>
+            <p><i class="fa fa-flag"></i>国籍：<span>{{ country }}</span></p>
+            <p><i class="fa fa-calendar"></i>出生日期：<span>{{ birth }}</span></p>
+            <p><i class="fa fa-drivers-license-o"></i>护照号：<span>{{ passportID }}</span></p>
+          </div>
+          <div class="info-score">
+            <div class="circle circle-5">
+              <img src="~assets/images/circle-5.png" alt="">
+            </div>
+            <div class="circle circle-4">
+              <img src="~assets/images/circle-4.png" alt="">
+            </div>
+            <div class="circle circle-3">
+              <img src="~assets/images/circle-3.png" alt="">
+            </div>
+            <div class="circle circle-2">
+              <img src="~assets/images/circle-2.png" alt="">
+            </div>
+            <div class="circle circle-1">
+              <!-- <img src="~assets/images/circle-1.png" alt=""> -->
+              <span :class="{'risk-middle': riskMiddle, 'risk-height': riskHeight }">{{ riskIndex }}</span>
+            </div>
+          </div>
+          <div class="info-detail">
+            <p><strong>活动信息：</strong></p>
+            <p><i class="fa fa-map-marker"></i>本次出发地：<span>{{ departure }}</span></p>
+            <p><i class="fa fa-location-arrow"></i>本次目的地：<span>{{ destination }}</span></p>
+            <p><i class="fa fa-calendar "></i>本次入境时间：<span>{{ intime }}</span></p>
+            <p><i class="fa fa-plane"></i>最近一年入境次数：{{ warningTourist_arrival_number }}</p>
+            <p><i class="fa fa-plane"></i>高风险入境次数：{{ warningTourist_arrival_risknumber }}</p>
+          </div>
         </div>
-        <div class="circle circle-4">
-          <img src="~assets/images/circle-4.png" alt="">
+        <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category" v-for="label in category">{{ label }}</span></p>
+        <div class="guest-charts clearfix">
+          <div class="con-box left-box">
+            <Echarts theme="ring" :option="left_option" className="chart" ></Echarts>
+          </div>
+          <div class="con-box center-box">
+            <Echarts theme="ring" :option="center_option" className="chart" ></Echarts>
+          </div>
+          <div class="con-box right-box">
+            <Echarts theme="ring" :option="right_option" className="chart" ></Echarts>
+          </div>
         </div>
-        <div class="circle circle-3">
-          <img src="~assets/images/circle-3.png" alt="">
+      </div>
+    </transition>
+    <transition name="fade">
+      <div class="device" v-show="!toggle_flag">
+        <div class="con-box" v-for="(item, index) in this.deviceStatus" :key="index">
+          <div class="box-cont">
+            <h3 class="box-title">{{item.title}}</h3>
+            <div class="box-img">
+              <img src="~assets/images/device-img.png" alt="">
+            </div>
+          </div>
+          <div class="box-status" :class="item.status"></div>
         </div>
-        <div class="circle circle-2">
-          <img src="~assets/images/circle-2.png" alt="">
-        </div>
-        <div class="circle circle-1">
-          <!-- <img src="~assets/images/circle-1.png" alt=""> -->
-          <span :class="{'risk-middle': riskMiddle, 'risk-height': riskHeight }">{{ riskIndex }}</span>
-        </div>
       </div>
-      <div class="info-detail">
-        <p><strong>活动信息：</strong></p>
-        <p><i class="fa fa-map-marker"></i>本次出发地：<span>{{ departure }}</span></p>
-        <p><i class="fa fa-location-arrow"></i>本次目的地：<span>{{ destination }}</span></p>
-        <p><i class="fa fa-calendar "></i>本次入境时间：<span>{{ intime }}</span></p>
-        <p><i class="fa fa-plane"></i>最近一年入境次数：{{ warningTourist_arrival_number }}</p>
-        <p><i class="fa fa-plane"></i>高风险入境次数：{{ warningTourist_arrival_risknumber }}</p>
-      </div>
-    </div>
-    <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category" v-for="label in category">{{ label }}</span></p>
-    <div class="guest-charts clearfix">
-      <div class="con-box left-box">
-        <Echarts theme="ring" :option="left_option" className="chart" ></Echarts>
-      </div>
-      <div class="con-box center-box">
-        <Echarts theme="ring" :option="center_option" className="chart" ></Echarts>
-      </div>
-      <div class="con-box right-box">
-        <Echarts theme="ring" :option="right_option" className="chart" ></Echarts>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -219,6 +236,7 @@ export default {
           label: {
             normal: {
               show: true,
+              fontSize: 20,
               position: 'right',
               offset: [5, 0],
               formatter: '{b}'
@@ -286,7 +304,7 @@ export default {
               normal: {
                 show: true,
                 textStyle: {
-                  fontSize: 12
+                  fontSize: 20
                 },
               }
             },
@@ -350,16 +368,40 @@ export default {
             }
           }
         ]
-      }
+      },
+      toggle_flag: true,
+      deviceStatus: [
+        {
+          title: '设备一',
+          status: 'warining'
+        },
+        {
+          title: '设备二',
+          status: 'normal'
+        },
+        {
+          title: '设备三',
+          status: 'offline'
+        }
+      ],
     }
   },
   created () {
     this.updateData()
     this.intervalID = setInterval(() => {
-      this.updateData()
-    }, 60 * 1000);
+      this.updateData();
+      this.updateLayout();
+    }, 10 * 1000);
   },
   methods: {
+    // 切换页面
+    updateLayout: function () {
+      this.updateDevice();
+      this.toggle_flag = !this.toggle_flag;
+    },
+    updateDevice: function () {
+      // 获取数据
+    },
     updateData: function () {
       if (this.number_all <= 0 || this.number_now >= this.number_all) {
         axios.get('/api/getTourist', {}).then(response => {
@@ -492,6 +534,13 @@ export default {
     align-items: center
     justify-content: center
     margin-bottom: 2rem
+    position: relative
+  .basic
+    position: absolute
+    width: calc(100% - 5rem)
+    height: calc(100% - 5rem)
+    z-index: 20
+    // display: none
   .tags
     font-size: 1.6rem
     text-align: center
@@ -508,8 +557,9 @@ export default {
       // border-radius: 5px
       color: #fff
       padding: 3px 7px
-      background-color: #eb7350
+      background-color: #e63c3c
       margin-right: 2.2rem
+      text-shadow: 1px 1px 1px #222
       // background-image: url("~assets/images/tag-bg.png")
       background-size: 100% 100%
       // border: 2px solid #fff
@@ -519,7 +569,7 @@ export default {
         position: absolute
         right: -.95rem
         top: .4rem
-        background-color: #eb7350
+        background-color: #e63c3c
         width: 1.9rem
         height: 1.9rem
         z-index: -1
@@ -598,5 +648,70 @@ export default {
         width: 27%
         margin-left: 1%
         background-image: url("~assets/images/page2-left-bg.png")
-
+  .device
+    position: absolute
+    z-index: 10
+    width: calc(100% - 5rem)
+    height: calc(100% - 5rem)
+    display: flex
+    justify-content: space-between
+    align-items: center
+    .con-box
+      width: 30%
+      .box-cont
+        width: 100%
+        height: 350px
+        padding: .7rem 1rem .8rem
+        background-image: url("~assets/images/page2-device-bg.png")
+        background-size: 100% 100%
+        .box-title
+          font-size: 24px
+          font-weight: bold
+          color: #fff
+          text-align: center
+        .box-img
+          width: 100%
+          text-align: center
+          height: calc(100% - 50px)
+          img
+            max-width: 100%
+            max-height: 100%
+      .box-status
+        width: 80px
+        height: 80px
+        border-radius: 50%
+        margin: 1.5rem auto 0
+        color: #d0d7e0
+        background-color: #d0d7e0
+        position: relative
+        z-index: 100
+        &:after
+          border: 15px solid 
+          position: absolute
+          left: -10px
+          top: -10px
+          content: ""
+          display: block
+          width: 100px
+          height: 100px
+          border-radius: 50%
+          animation: sk-scaleout 1.5s infinite linear
+        &.normal
+          color: #14d11f
+          background-color: #14d11f
+        &.warining
+          color: #fde01e
+          background-color: #fde01e
+  // 定义闪烁动画
+  @keyframes sk-scaleout 
+    0%  
+      transform: scale(0);
+    100% 
+      transform: scale(1.25);
+      opacity: 0.05;
+  // 页面切换效果
+  .fade-enter-active, .fade-leave-active
+    transition: opacity .8s;
+  .fade-enter, .fade-leave-to
+    opacity: 0;
 </style>
