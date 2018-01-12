@@ -26,42 +26,6 @@
     </context:component-scan>
     <context:annotation-config/>
 
-    <!-- Jpa Entity Manager 配置 -->
-    <bean
-            id="entityManagerFactory"
-            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property
-                name="dataSource"
-                ref="dataSource"/>
-        <property
-                name="jpaVendorAdapter"
-                ref="hibernateJpaVendorAdapter"/>
-        <property
-                name="packagesToScan"
-                value="airport.web.restful"/>
-        <property name="jpaProperties">
-            <props>
-                <!-- 命名规则 My_NAME->MyName -->
-                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy
-                </prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.format_sql">true</prop>
-            </props>
-        </property>
-    </bean>
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource">
-        </property>
-    </bean>
-    <bean
-            id="hibernateJpaVendorAdapter"
-            class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property
-                name="databasePlatform"
-                value="org.hibernate.dialect.MySQL5Dialect">
-        </property>
-    </bean>
     <bean
             id="messageSource"
             class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -72,25 +36,6 @@
                 name="useCodeAsDefaultMessage"
                 value="true"/>
     </bean>
-    <!-- Spring Data Jpa配置 -->
-    <jpa:repositories
-            base-package="airport.web.restful.repository"
-            transaction-manager-ref="transactionManager"
-            entity-manager-factory-ref="entityManagerFactory"/>
-
-    <!-- Jpa 事务配置 -->
-    <bean
-            id="transactionManager"
-            class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property
-                name="entityManagerFactory"
-                ref="entityManagerFactory"/>
-    </bean>
-
-    <!-- 使用annotation定义事务 -->
-    <tx:annotation-driven
-            transaction-manager="transactionManager"
-            proxy-target-class="true"/>
 
     <!-- JSR303 Validator定义 -->
     <bean
@@ -119,61 +64,5 @@
         <context:property-placeholder
                 ignore-unresolvable="true"
                 location="classpath*:/application.properties"/>
-        <!--</bean>-->
-        <bean
-                id="dataSource"
-                class="org.apache.tomcat.jdbc.pool.DataSource"
-                destroy-method="close">
-            <!--Connection Info-->
-            <property
-                    name="driverClassName"
-                    value="${jdbc.driver}"/>
-            <property
-                    name="url"
-                    value="${jdbc.url}"/>
-            <property
-                    name="username"
-                    value="${jdbc.username}"/>
-            <property
-                    name="password"
-                    value="${jdbc.password}"/>
-
-            <!--Connection Pooling Info-->
-            <property
-                    name="maxActive"
-                    value="${jdbc.pool.maxActive}"/>
-            <property
-                    name="maxIdle"
-                    value="${jdbc.pool.maxIdle}"/>
-            <property
-                    name="validationQuery"
-                    value="SELECT 1"/>
-            <property
-                    name="testWhileIdle"
-                    value="true"/>
-            <property
-                    name="defaultAutoCommit"
-                    value="false"/>
-            <!--连接Idle一个小时后超时-->
-            <property
-                    name="timeBetweenEvictionRunsMillis"
-                    value="3600000"/>
-            <property
-                    name="removeAbandoned"
-                    value="true"/>
-            <property
-                    name="removeAbandonedTimeout"
-                    value="180"/>
-            <property
-                    name="minEvictableIdleTimeMillis"
-                    value="3600000"/>
-            <property
-                    name="numTestsPerEvictionRun"
-                    value="4"/>
-        </bean>
-
-        <!-- 数据源配置,使用应用服务器的数据库连接池 -->
-        <!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/ExampleDB"
-            /> -->
     </beans>
 </beans>
