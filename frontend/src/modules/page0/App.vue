@@ -1,34 +1,41 @@
 <template>
   <div id="app" class="real-body">
     <h1 class="main-title">
-      <img src="~assets/images/page0-title.png">
+      <!-- <img src="~assets/images/page0-title.png"> -->
     </h1>
     <div class="con-container">
-      <div class="con clearfix">
-        <div class="con-chart">
-          <Echarts theme="ring" :option="t_option" className="chart" ></Echarts>
+      <div class="con-box">
+        <div class="con clearfix">
+          <div class="con-chart">
+            <Echarts theme="ring" :option="t_option" className="chart" ></Echarts>
+          </div>
+          <div class="con-txt">
+            <!-- <h3>近<span>24</span>小时</h3> -->
+            <h3>近一周</h3>
+            <p class="para">查获物品<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong>批，风险旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人</p>
+            <p class="para">
+              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span>0</span></strong>架
+            </p>
+            <p class="para">监管人员<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>人</p>
+            <!-- <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
+            <p class="para">监管人员总数<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>设备查验总数<strong class="txt-block"><span v-for="one in devicecount_number.toString()">{{ one }}</span></strong>次</p> -->
+          </div>
         </div>
-        <div class="con-txt">
-          <!-- <h3>近<span>24</span>小时</h3> -->
-          <h3>近一周</h3>
-          <p class="para">查获物品<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong>批，风险旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人</p>
-          <p class="para">
-            入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span>0</span></strong>架
-          </p>
-          <p class="para">监管人员<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>人</p>
-          <!-- <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
-          <p class="para">监管人员总数<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>设备查验总数<strong class="txt-block"><span v-for="one in devicecount_number.toString()">{{ one }}</span></strong>次</p> -->
+        <div class="con clearfix">
+          <div class="con-chart last">
+            <Echarts theme="ring" :option="b_option" className="chart" ></Echarts>
+          </div>
+          <div class="con-txt">
+            <p class="para">外网舆情<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>条</p>
+            <p class="para">媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家（{{ yuqing_media_top1 }}<strong class="txt-block"><span v-for="one in yuqing_media_top1Count.toString()">{{ one }}</span></strong>条、{{ yuqing_media_top2 }}<strong class="txt-block"><span v-for="one in yuqing_media_top2Count.toString()">{{ one }}</span></strong>条）</p>
+            <p class="para">微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（{{ yuqing_gzh_top1 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条，{{ yuqing_gzh_top2 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条）</p>
+          </div>
         </div>
       </div>
-      <div class="con clearfix">
-        <div class="con-chart last">
-          <Echarts theme="ring" :option="b_option" className="chart" ></Echarts>
-        </div>
-        <div class="con-txt">
-          <p class="para">外网舆情<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>条</p>
-          <p class="para">媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家（{{ yuqing_media_top1 }}<strong class="txt-block"><span v-for="one in yuqing_media_top1Count.toString()">{{ one }}</span></strong>条、{{ yuqing_media_top2 }}<strong class="txt-block"><span v-for="one in yuqing_media_top2Count.toString()">{{ one }}</span></strong>条）</p>
-          <p class="para">微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（{{ yuqing_gzh_top1 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条，{{ yuqing_gzh_top2 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条）</p>
-        </div>
+      <div class="con-title">
+        <p><img src="~assets/images/chayan-img.png" alt=""></p>
+        <p><img src="~assets/images/taishi-img.png" alt=""></p>
+        <p><img src="~assets/images/ganzhi-img.png" alt=""></p>
       </div>
     </div>
   </div>
@@ -253,18 +260,30 @@
   @import "~assets/sass/common"
 
   .real-body
-    background-image: url("~assets/images/page0-bg.png")
+    // background-image: url("~assets/images/page0-bg.png")
+    background-color: #013660
     background-size: 100% 100%
     overflow-y: auto
     padding-bottom: 1rem
+    position: relative
+    padding-top: 250px
   .main-title
+    position: absolute
+    top: 0
+    left: 2.5rem
+    background-image: url("~assets/images/page0-topbg.png")
     text-align: center
-    max-width: 60%
-    margin: 0 auto 2rem
+    height: 172px
+    width: 100%
+    max-width: 100%
+    margin: 0 -2.5rem
     img
       width: 100%
   .con-container
-    padding-left: 16%
+    // padding-left: 16%
+    display: flex
+  .con-box
+    width: 78%
   .con
     display: flex
     justify-content: flex-start
@@ -276,9 +295,11 @@
     width: 15rem
     height: 16rem
     padding-top: 0
+    flex: 0 0 15rem
     &.last
       padding-top: 0
   .con-txt
+    line-height: 2
     color: #fff
     text-align: left
     display: block
@@ -318,4 +339,11 @@
           display: inline-block
           background-image: url("~assets/images/word-bg.png")
           background-size: 100% 100%
+  .con-title
+    width: 22%
+    text-align: center
+    padding: 4rem 0
+    display: flex
+    flex-direction: column
+    justify-content: space-between
 </style>
