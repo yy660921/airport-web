@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,10 +30,21 @@ import static airport.web.restful.service.Constant.initial;
  * Created by Machenike on 2017/12/20.
  * 读取新闻Json文件
  */
+@Service
 public class NewsService implements Runnable{
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
+    private static ThreadLocal<SimpleDateFormat> timeFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
     private static Pattern DataPattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$");
     private static Pattern TimePattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9] [0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]:[0-5]{0,1}[0-9]$");
 
@@ -71,13 +84,13 @@ public class NewsService implements Runnable{
                                     .matcher(News.get("date").toString().replace("\"", ""))
                                     .find()) {
                                     d =
-                                        dateFormat
+                                        dateFormat.get()
                                             .parse(News.get("date").toString().replace("\"", ""));
                                 } else if (TimePattern
                                     .matcher(News.get("date").toString().replace("\"", ""))
                                     .find()) {
                                     d =
-                                        timeFormat
+                                        timeFormat.get()
                                             .parse(News.get("date").toString().replace("\"", ""));
                                 }
                                 if (d.after(Constant.LastDay) && d.before(new Date())) {
@@ -105,10 +118,10 @@ public class NewsService implements Runnable{
                             d = new Date(0);
                             if (DataPattern.matcher(News.get("date").toString().replace("\"", ""))
                                 .find()) {
-                                d = dateFormat.parse(News.get("date").toString().replace("\"", ""));
+                                d = dateFormat.get().parse(News.get("date").toString().replace("\"", ""));
                             } else if (TimePattern
                                 .matcher(News.get("date").toString().replace("\"", "")).find()) {
-                                d = timeFormat.parse(News.get("date").toString().replace("\"", ""));
+                                d = timeFormat.get().parse(News.get("date").toString().replace("\"", ""));
                             }
                             if (d.after(Constant.LastDay) && d.before(new Date())) {
                                 Constant.initial();
@@ -145,10 +158,10 @@ public class NewsService implements Runnable{
                             AcceptNews.put("keyword", News.get("keyword").asText());
                         }
                         if(News.has("date")){
-                            AcceptNews.put("date", dateFormat.format(d));
+                            AcceptNews.put("date", dateFormat.get().format(d));
                         }
                         else{
-                            AcceptNews.put("date", dateFormat.format(d));
+                            AcceptNews.put("date", dateFormat.get().format(d));
                         }
                         if(AcceptNews.fieldNames().hasNext()){
                             NewsList.add(AcceptNews);
@@ -221,8 +234,8 @@ public class NewsService implements Runnable{
                 System.out.println(subDirectory);
                 if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
                     .find()) {
-                    if (dateFormat.parse(subDirectory.getName()).after(Newest)) {
-                        Newest = dateFormat.parse(subDirectory.getName());
+                    if (dateFormat.get().parse(subDirectory.getName()).after(Newest)) {
+                        Newest = dateFormat.get().parse(subDirectory.getName());
                         newest = subDirectory;
                     }
                 }

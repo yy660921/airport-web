@@ -2,15 +2,11 @@ package airport.web.data.bean;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.regex.Pattern;
 
 import airport.web.restful.service.Constant;
 
@@ -20,25 +16,29 @@ import airport.web.restful.service.Constant;
  */
 public class News {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
 
     private long Total;
 
     private ObjectNode Count;
-    private static int CountDays = 365;
+    private static int CountDays = 1825;
 
     public News(){
         Count = new ObjectMapper().createObjectNode();
         GregorianCalendar gc=new GregorianCalendar();
         try {
-            gc.setTime(dateFormat.parse(dateFormat.format(new Date())));
+            gc.setTime(dateFormat.get().parse(dateFormat.get().format(new Date())));
             gc.add(5,-CountDays);
         }catch (Exception e){
 
         }
         for(int i=0;i<CountDays;i++){
-            Count.put(dateFormat.format(gc.getTime()),0);
+            Count.put(dateFormat.get().format(gc.getTime()), 0);
             gc.add(5,1);
         }
         Total = 0;
@@ -54,8 +54,8 @@ public class News {
 
     public void CountDays(Date d){
         try {
-            if (Count.has(dateFormat.format(d))) {
-                Count.put(dateFormat.format(d), (Count.get(dateFormat.format(d)).asLong() + 1));
+            if (Count.has(dateFormat.get().format(d))) {
+                Count.put(dateFormat.get().format(d), (Count.get(dateFormat.get().format(d)).asLong() + 1));
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class News {
     }
 
     public int getLastDay(){
-        return Count.get(dateFormat.format(Constant.LastDay)).asInt();
+        return Count.get(dateFormat.get().format(Constant.LastDay)).asInt();
     }
 
     public int getDays(){
@@ -79,17 +79,17 @@ public class News {
         int Now = 0;
         int Max = 1;
         try {
-            gc.setTime(dateFormat.parse(dateFormat.format(Constant.LastDay)));
+            gc.setTime(dateFormat.get().parse(dateFormat.get().format(Constant.LastDay)));
             gc.add(5,-20);
         }catch (Exception e){
 
         }
         for(int i=0;i<20;i++){
-            if(Max<Count.get(dateFormat.format(gc.getTime())).asInt()){
-                Max = Count.get(dateFormat.format(gc.getTime())).asInt();
+            if(Max < Count.get(dateFormat.get().format(gc.getTime())).asInt()){
+                Max = Count.get(dateFormat.get().format(gc.getTime())).asInt();
             }
             if(i==19){
-                Now = Count.get(dateFormat.format(gc.getTime())).asInt();
+                Now = Count.get(dateFormat.get().format(gc.getTime())).asInt();
             }
             gc.add(5,1);
         }
