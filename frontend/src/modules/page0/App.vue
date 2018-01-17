@@ -271,7 +271,7 @@
     position: absolute
     top: 0
     left: 2.5rem
-    background-image: url("~assets/images/page0-topbg.png")
+    background-image: url("~assets/images/page0-bg.jpg")
     text-align: center
     height: 172px
     width: 100%
