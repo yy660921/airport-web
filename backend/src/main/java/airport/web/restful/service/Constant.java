@@ -1,14 +1,11 @@
 package airport.web.restful.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import airport.web.data.bean.News;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -17,9 +14,13 @@ import airport.web.data.bean.News;
 public class Constant {
 
     public static void initial(){
-        Media = new HashMap<>();
-        Gzh = new HashMap<>();
         LastDay = new Date(0);
+        ObjectMapper objectMapper = new ObjectMapper();
+        yuqing_mediatop1 = objectMapper.createObjectNode();
+        yuqing_mediatop2 = objectMapper.createObjectNode();
+        yuqing_gzhtop1 = objectMapper.createObjectNode();
+        yuqing_gzhtop2 = objectMapper.createObjectNode();
+        yuqing_Count = objectMapper.createObjectNode();
     }
 
     public static String IP;
@@ -30,15 +31,16 @@ public class Constant {
 
     public static HashSet<String > CityList;
 
-    public static News Baidu;
-    public static News Weixin;
     public static ArrayNode news;
-    public static Long newsSize;
 
-    public static HashMap<String, Integer> Media;
-    public static HashMap<String, Integer> Gzh;
-    public static List<Map.Entry<String,Integer>> MediaList;
-    public static List<Map.Entry<String,Integer>> GzhList;
+    public static int yuqing_index;
+    public static int yuqing_media;
+    public static ObjectNode yuqing_mediatop1;
+    public static ObjectNode yuqing_mediatop2;
+    public static int yuqing_gzh;
+    public static ObjectNode yuqing_gzhtop1;
+    public static ObjectNode yuqing_gzhtop2;
+    public static ObjectNode yuqing_Count;
 
     public static Date LastDay;
 

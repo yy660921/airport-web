@@ -19,21 +19,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import airport.web.restful.service.Constant;
+import airport.web.restful.service.News.NewsOutputService;
 import airport.web.restful.service.News.NewsService;
+
+import static airport.web.restful.service.sql.Query.getNewsDetail;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -52,6 +51,11 @@ public class NewsController {
             0,
             1,
             TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(
+            new NewsOutputService(),
+            0,
+            1,
+            TimeUnit.HOURS);
     }
     private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
         @Override
@@ -68,40 +72,7 @@ public class NewsController {
     })
 
     public LinkedList<JsonNode> getNews() {
-        LinkedList<JsonNode> news = new LinkedList<>();
-        HashSet<Integer> ID = new HashSet<>();
-        Random r = new Random();
-        while (ID.size()<10){
-            ID.add(r.nextInt(Constant.news.size()));
-        }
-        Iterator<Integer> I = ID.iterator();
-        int i=0;
-        while(I.hasNext()){
-            ObjectNode n = (ObjectNode) Constant.news.get(I.next());
-            n.put("ID",i);
-            news.add(n);
-            i++;
-        }
-        Collections.sort(news, new Comparator<JsonNode>(){
-            public int compare(JsonNode arg0, JsonNode arg1) {
-                int result = 0;
-                try{
-                    if(dateFormat.get().parse(arg0.get("date").asText()).after(dateFormat.get().parse(arg1.get("date").asText()))){
-                        return -1;
-                    }
-                    else if(dateFormat.get().parse(arg0.get("date").asText()).before(dateFormat.get().parse(arg1.get("date").asText()))){
-                        return 1;
-                    }
-                    else{
-                        return 0;
-                    }
-                }catch (Exception e){
-
-                }
-                return result;
-            }
-        });
-        return news;
+        return getNewsDetail();
     }
 
     @ResponseBody
@@ -114,26 +85,9 @@ public class NewsController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "haiguan_results.json");
-        Date Newest = new Date(0);
-        File newest = null;
         String Result = "";
-        try {
-            File directory = new File("./yuqing");
-            for(File subDirectory:directory.listFiles()) {
-                if (subDirectory.isDirectory() && DataPattern.matcher(subDirectory.getName())
-                    .find()) {
-                    if (dateFormat.get().parse(subDirectory.getName()).after(Newest)) {
-                        Newest = dateFormat.get().parse(subDirectory.getName());
-                        newest = subDirectory;
-                    }
-                }
-            }
-        }catch (Exception e){
-            System.out.println("路径错误");
-            e.printStackTrace();
-        }
         try{
-            File file = new File(newest.getCanonicalPath() + "/haiguan_results.json");
+            File file = new File("./haiguan_results.json");
             Long filelength = file.length();
             byte[] filecontent = new byte[filelength.intValue()];
             FileInputStream in = new FileInputStream(file);
@@ -154,21 +108,13 @@ public class NewsController {
     public JsonNode getCount() {
         ObjectNode Count = new ObjectMapper().createObjectNode();
         try {
-            JsonNode Baidu = Constant.Baidu.getCount();
-            JsonNode Weixin = Constant.Weixin.getCount();
             ArrayNode Date = new ObjectMapper().createArrayNode();
             ArrayNode count = new ObjectMapper().createArrayNode();
-            GregorianCalendar gc=new GregorianCalendar();
-            try {
-                gc.setTime(dateFormat.get().parse(dateFormat.get().format(Constant.LastDay)));
-                gc.add(5,-30);
-            }catch (Exception e){
-
-            }
-            for(int i=0;i<30;i++){
-                Date.add(dateFormat.get().format(gc.getTime()).replaceAll("\\d{4}-",""));
-                count.add(Baidu.get(dateFormat.get().format(gc.getTime())).asLong() + Weixin.get(dateFormat.get().format(gc.getTime())).asLong());
-                gc.add(5,1);
+            Iterator<String> dates = Constant.yuqing_Count.fieldNames();
+            while(dates.hasNext()){
+                String date = dates.next();
+                Date.add(date.replaceAll("\\d{4}-",""));
+                count.add(Constant.yuqing_Count.get(date));
             }
             Count.replace("Date",Date);
             Count.replace("count",count);

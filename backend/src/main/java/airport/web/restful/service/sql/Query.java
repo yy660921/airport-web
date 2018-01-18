@@ -139,6 +139,30 @@ public class Query {
         return getFirstPageCountBySQL(sql);
     }
 
+    /*
+     * @description: 查询最新的首页新闻信息
+     */
+    public static JsonNode getFirstPageNewsCount(){
+        String sql = "SELECT COUNT(*) AS count,SUM(count) AS sum,category AS source FROM (SELECT COUNT(*) AS count,source,category FROM customs_news GROUP BY source,category) a GROUP BY category;";
+        return getFirstPageNewsCountBySQL(sql);
+    }
+
+    /*
+     * @description: 查询随机的10条新闻信息
+     */
+    public static LinkedList<JsonNode> getNewsDetail(){
+        String sql = "SELECT * FROM (SELECT * FROM customs_news WHERE id >= ((SELECT MAX(id) FROM customs_news)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news)  LIMIT 10) AS a ORDER BY time DESC;";
+        return getNewsDetailBySQL(sql);
+    }
+
+    /*
+     * @description: 查询全部的新闻信息
+     */
+    public static ArrayNode getTotalNewsDetail(){
+        String sql = "SELECT title,content,ID,time FROM customs_news";
+        return getTotalNewsDetailBySQL(sql);
+    }
+
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -577,53 +601,8 @@ public class Query {
                 result.put("highTax_number", rs.getInt("highTax_number"));
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
-                result.put("yuqing_index",(Constant.Baidu.getDays() + Constant.Weixin.getDays()));
-                result.put("yuqing_total", (Constant.Baidu.getsize() + Constant.Weixin.getsize() + Constant.newsSize));
-                result.put("yuqing_media", Constant.Media.size());
-                Iterator<Map.Entry<String, Integer>> it = Constant.MediaList.iterator();
-                if(it.hasNext()){
-                    ObjectNode MediaCount = objectMapper.createObjectNode();
-                    MediaCount.put(it.next().getKey(),it.next().getValue());
-                    result.replace("yuqing_mediatop1", MediaCount);
-                }
-                else{
-                    ObjectNode MediaCount = objectMapper.createObjectNode();
-                    result.replace("yuqing_mediatop1", MediaCount);
-                }
-                if(it.hasNext()){
-                    ObjectNode MediaCount = objectMapper.createObjectNode();
-                    MediaCount.put(it.next().getKey(),it.next().getValue());
-                    result.replace("yuqing_mediatop2", MediaCount);
-                }
-                else{
-                    ObjectNode MediaCount = objectMapper.createObjectNode();
-                    result.replace("yuqing_mediatop2", MediaCount);
-                }
-                result.put("yuqing_gzh", Constant.Gzh.size());
-                it = Constant.GzhList.iterator();
-                if(it.hasNext()){
-                    ObjectNode GzhCount = objectMapper.createObjectNode();
-                    GzhCount.put(it.next().getKey(),it.next().getValue());
-                    result.replace("yuqing_gzhtop1", GzhCount);
-                }
-                else{
-                    ObjectNode GzhCount = objectMapper.createObjectNode();
-                    result.replace("yuqing_gzhtop1", GzhCount);
-                }
-                if(it.hasNext()){
-                    ObjectNode GzhCount = objectMapper.createObjectNode();
-                    GzhCount.put(it.next().getKey(),it.next().getValue());
-                    result.replace("yuqing_gzhtop2", GzhCount);
-                }
-                else{
-                    ObjectNode GzhCount = objectMapper.createObjectNode();
-                    result.replace("yuqing_gzhtop2", GzhCount);
-                }
             }
-        }catch (NullPointerException e){
-            System.out.println("Load File Not Finish!");
-        }
-        catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
             System.out.println(sql);
         } finally {
@@ -638,4 +617,115 @@ public class Query {
         }
     }
 
+    private static JsonNode getFirstPageNewsCountBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            result.put("yuqing_index", Constant.yuqing_index);
+            long yuqing_total = 0;
+            while (rs.next()) {
+                String source = rs.getString("source");
+                if(source.equals("多媒体")){
+                    Constant.yuqing_media = rs.getInt("count");
+                }
+                else if(source.equals("公众号")){
+                    Constant.yuqing_gzh = rs.getInt("count");
+                }
+                yuqing_total += rs.getInt("sum");
+            }
+            result.put("yuqing_total", yuqing_total);
+            result.put("yuqing_media", Constant.yuqing_media);
+            result.replace("yuqing_mediatop1", Constant.yuqing_mediatop1);
+            result.replace("yuqing_mediatop2", Constant.yuqing_mediatop2);
+            result.put("yuqing_gzh", Constant.yuqing_gzh);
+            result.replace("yuqing_gzhtop1", Constant.yuqing_gzhtop1);
+            result.replace("yuqing_gzhtop2", Constant.yuqing_gzhtop2);
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    private static LinkedList<JsonNode> getNewsDetailBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        LinkedList<JsonNode> result = new LinkedList<>();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            int ID = 0;
+            while (rs.next()) {
+                ObjectNode News = objectMapper.createObjectNode();
+                News.put("title",rs.getString("title"));
+                News.put("content",rs.getString("content"));
+                News.put("ID",ID++);
+                News.put("date",dateFormat.format(new Date(rs.getLong("time")*1000)));
+                result.add(News);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    private static ArrayNode getTotalNewsDetailBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode result = objectMapper.createArrayNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            int ID = 0;
+            while (rs.next()) {
+                ObjectNode News = objectMapper.createObjectNode();
+                News.put("title",rs.getString("title"));
+                News.put("content",rs.getString("content"));
+                News.put("ID",ID++);
+                News.put("date",dateFormat.format(new Date(rs.getLong("time")*1000)));
+                result.add(News);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
 }

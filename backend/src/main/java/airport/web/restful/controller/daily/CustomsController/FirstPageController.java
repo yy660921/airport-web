@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static airport.web.restful.service.sql.Query.getFirstPageCount;
+import static airport.web.restful.service.sql.Query.getFirstPageNewsCount;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -27,5 +28,14 @@ public class FirstPageController {
 
     public JsonNode getFirstPage() {
         return getFirstPageCount();
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = {
+        "/api/getFirstPageNews",
+    })
+
+    public JsonNode getFirstPageNews() {
+        return getFirstPageNewsCount();
     }
 }

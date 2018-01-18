@@ -45,7 +45,6 @@ public class MySQL {
         try {
             properties.load(stream);
             String driver = properties.getProperty("jdbc.driver");
-            System.out.println(Constant.IP);
             if(Constant.IP==null) {
                 url = properties.getProperty("jdbc.url");
                 username = properties.getProperty("jdbc.username");
