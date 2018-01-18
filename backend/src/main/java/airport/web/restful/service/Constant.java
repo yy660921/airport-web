@@ -29,9 +29,7 @@ public class Constant {
     public static String Username;
     public static String Password;
 
-    public static HashSet<String > CityList;
-
-    public static ArrayNode news;
+    public static HashSet<String> CityList;
 
     public static int yuqing_index;
     public static int yuqing_media;

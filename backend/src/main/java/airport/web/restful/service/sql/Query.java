@@ -140,7 +140,7 @@ public class Query {
     }
 
     /*
-     * @description: 查询最新的首页新闻信息
+     * @description: 查询最新的首页新闻统计信息
      */
     public static JsonNode getFirstPageNewsCount(){
         String sql = "SELECT COUNT(*) AS count,SUM(count) AS sum,category AS source FROM (SELECT COUNT(*) AS count,source,category FROM customs_news GROUP BY source,category) a GROUP BY category;";

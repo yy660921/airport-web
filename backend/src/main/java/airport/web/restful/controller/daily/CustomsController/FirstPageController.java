@@ -16,6 +16,7 @@ import static airport.web.restful.service.sql.Query.getFirstPageNewsCount;
  * Created by Machenike on 2017/12/20.
  * 首页内容接口
  * /api/getFirstPage接口获取首页统计内容
+ * /api/getFirstPageNews接口获取首页新闻统计内容
  */
 @Controller
 public class FirstPageController {
