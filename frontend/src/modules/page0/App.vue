@@ -28,7 +28,7 @@
           <div class="con-txt">
             <p class="para">外网舆情<strong class="txt-block"><span v-for="one in yuqing_total.toString()">{{ one }}</span></strong>条</p>
             <p class="para">媒体<strong class="txt-block"><span v-for="one in yuqing_media.toString()">{{ one }}</span></strong>家（{{ yuqing_media_top1 }}<strong class="txt-block"><span v-for="one in yuqing_media_top1Count.toString()">{{ one }}</span></strong>条、{{ yuqing_media_top2 }}<strong class="txt-block"><span v-for="one in yuqing_media_top2Count.toString()">{{ one }}</span></strong>条）</p>
-            <p class="para">微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（{{ yuqing_gzh_top1 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条，{{ yuqing_gzh_top2 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条）</p>
+            <p class="para">微信公众号<strong class="txt-block"><span v-for="one in yuqing_gzh.toString()">{{ one }}</span></strong>个（{{ yuqing_gzh_top1 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top1Count.toString()">{{ one }}</span></strong>条，{{ yuqing_gzh_top2 }}<strong class="txt-block"><span v-for="one in yuqing_gzh_top2Count.toString()">{{ one }}</span></strong>条）</p>
           </div>
         </div>
       </div>
@@ -73,9 +73,9 @@
         yuqing_media_top2Count: 9,
         yuqing_gzh: 2345,
         yuqing_gzh_top1: '铜仁公安',
-        yuqing_gzh_top1Count: 230,
+        yuqing_gzh_top1Count: 56,
         yuqing_gzh_top2: '贵州日报',
-        yuqing_gzh_top2Count: 23,
+        yuqing_gzh_top2Count: 47,
         yuqingIndex: 80,
         redColor: '#ff5252',
         yellowColor: '#d37d1c',
@@ -97,7 +97,7 @@
             backgroundStyle: {
               color: 'rgba(255, 255, 255, 0)'
             },
-            name: '外网舆情指数',
+            name: '海关态势指数',
             label: {
               normal: {
                 show: true,
@@ -171,58 +171,68 @@
       this.updateData()
       this.intervalID = setInterval(() => {
         this.updateData()
-      }, 60 * 1000);
+      }, 10 * 1000);
     },
     methods: {
       updateData: function () {
         axios.get('/api/getFirstPage', {params: {}}).then(response => {
-          if (response.data.riskIndex > 0) {
-            this.riskIndex = response.data.riskIndex;
-            this.warningEvents_number = response.data.warningEvents_number;
-            this.tourist_warningEvents = response.data.tourist_warningEvents;
-            this.chinaTourist_warningEvents = response.data.chinaTourist_warningEvents;
-            this.overseasTourist_warningEvents = response.data.overseasTourist_warningEvents;
-            this.seizure_number = response.data.seizure_number;
-            this.contraband_number = response.data.contraband_number;
-            this.highTax_number = response.data.highTax_number;
-            this.governpeople_number = response.data.governpeople_number;
-            this.devicecount_number = response.data.devicecount_number;
-            this.yuqing_total = response.data.yuqing_total;
-            this.yuqing_media = response.data.yuqing_media;
-            for (var tp in response.data.yuqing_mediatop1) {
-              this.yuqing_media_top1 = tp;
-              this.yuqing_media_top1Count = response.data.yuqing_mediatop1[tp];
+          this.riskIndex = _.isNull(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
+          this.warningEvents_number = _.isNull(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
+          this.tourist_warningEvents = _.isNull(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
+          this.chinaTourist_warningEvents = _.isNull(response.data.chinaTourist_warningEvents) ? this.chinaTourist_warningEvents : response.data.chinaTourist_warningEvents;
+          this.overseasTourist_warningEvents = _.isNull(response.data.overseasTourist_warningEvents) ? this.overseasTourist_warningEvents : response.data.overseasTourist_warningEvents;
+          this.seizure_number = _.isNull(response.data.seizure_number) ? this.seizure_number : response.data.seizure_number;
+          this.contraband_number = _.isNull(response.data.contraband_number) ? this.contraband_number : response.data.contraband_number;
+          this.highTax_number = _.isNull(response.data.highTax_number) ? this.highTax_number : response.data.highTax_number;
+          this.governpeople_number = _.isNull(response.data.governpeople_number) ? this.governpeople_number : response.data.governpeople_number;
+          this.devicecount_number = _.isNull(response.data.devicecount_number) ? this.devicecount_number : response.data.devicecount_number;
+          var t_option_data_value = this.riskIndex / 100;
+          this.t_option.series[0].data[0].value = t_option_data_value;
+          // 将分数值改为中文显示
+          this.t_option.series[0].label.normal.formatter = this.decideScoreColor(t_option_data_value).score;
+          // 更改top_echarts颜色
+          this.t_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(t_option_data_value).color;
+          this.t_option.series[0].label.normal.color = this.decideScoreColor(t_option_data_value).color;
+          this.t_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(t_option_data_value).color;
+          // 更改bottom_echarts颜色
+        });
+        axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
+          this.yuqingIndex = _.isNull(response.data.yuqingIndex) ? this.yuqingIndex : response.data.yuqing_index;
+          this.yuqing_total = _.isNull(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
+          this.yuqing_media = _.isNull(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
+          this.yuqing_gzh = _.isNull(response.data.yuqing_gzh) || response.data.yuqing_gzh === 0 ? this.yuqing_gzh : response.data.yuqing_gzh;
+          if (!_.isEmpty(response.data.yuqing_mediatop1)) {
+            for (var tmpK in response.data.yuqing_mediatop1) {
+              this.yuqing_media_top1 = tmpK;
+              this.yuqing_media_top1Count = response.data.yuqing_mediatop1[tmpK];
             }
-            for (tp in response.data.yuqing_mediatop2) {
-              this.yuqing_media_top2 = tp;
-              this.yuqing_media_top2Count = response.data.yuqing_mediatop2[tp];
-            }
-            this.yuqing_gzh = response.data.yuqing_gzh;
-            for (tp in response.data.yuqing_gzhtop1) {
-              this.yuqing_gzh_top1 = tp;
-              this.yuqing_gzh_top1Count = response.data.yuqing_gzhtop1[tp];
-            }
-            for (tp in response.data.yuqing_gzhtop2) {
-              this.yuqing_gzh_top2 = tp;
-              this.yuqing_gzh_top2Count = response.data.yuqing_gzhtop2[tp];
-            }
-            this.yuqingIndex = response.data.yuqing_index;
-            var t_option_data_value = this.riskIndex / 100;
-            var b_option_data_value = this.yuqingIndex / 100;
-            this.t_option.series[0].data[0].value = t_option_data_value;
-            this.b_option.series[0].data[0].value = b_option_data_value;
-            // 将分数值改为中文显示
-            this.t_option.series[0].label.normal.formatter = this.decideScoreColor(t_option_data_value).score;
-            this.b_option.series[0].label.normal.formatter = this.decideScoreColor(b_option_data_value).score;
-            // 更改top_echarts颜色
-            this.t_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(t_option_data_value).color;
-            this.t_option.series[0].label.normal.color = this.decideScoreColor(t_option_data_value).color;
-            this.t_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(t_option_data_value).color;
-            // 更改bottom_echarts颜色
-            this.b_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(b_option_data_value).color;
-            this.b_option.series[0].label.normal.color = this.decideScoreColor(b_option_data_value).color;
-            this.b_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(b_option_data_value).color;
           }
+          if (!_.isEmpty(response.data.yuqing_mediatop2)) {
+            for (tmpK in response.data.yuqing_mediatop2) {
+              this.yuqing_media_top2 = tmpK;
+              this.yuqing_media_top2Count = response.data.yuqing_mediatop2[tmpK];
+            }
+          }
+          if (!_.isEmpty(response.data.yuqing_gzhtop1)) {
+            for (tmpK in response.data.yuqing_gzhtop1) {
+              this.yuqing_gzh_top1 = tmpK;
+              this.yuqing_gzh_top1Count = response.data.yuqing_gzhtop1[tmpK];
+            }
+          }
+          if (!_.isEmpty(response.data.yuqing_gzhtop2)) {
+            for (tmpK in response.data.yuqing_gzhtop2) {
+              this.yuqing_gzh_top2 = tmpK;
+              this.yuqing_gzh_top2Count = response.data.yuqing_gzhtop2[tmpK];
+            }
+          }
+          var b_option_data_value = this.yuqingIndex / 100;
+          this.b_option.series[0].data[0].value = b_option_data_value;
+          // 将分数值改为中文显示
+          this.b_option.series[0].label.normal.formatter = this.decideScoreColor(b_option_data_value).score;
+          // 更改bottom_echarts颜色
+          this.b_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(b_option_data_value).color;
+          this.b_option.series[0].label.normal.color = this.decideScoreColor(b_option_data_value).color;
+          this.b_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(b_option_data_value).color;
         });
       },
       decideScoreColor: function (value) {
