@@ -390,58 +390,69 @@ export default {
     this.updateData()
     this.intervalID = setInterval(() => {
       this.updateData();
-      this.updateLayout();
     }, 10 * 1000);
   },
   methods: {
     // 切换页面
-    updateLayout: function () {
-      this.updateDevice();
-      this.toggle_flag = !this.toggle_flag;
+    updateLayout: function (pageName) {
+      this.toggle_flag = pageName === 'person';
+      if (!this.toggle_flag) {
+        this.updateDevice();
+      }
     },
     updateDevice: function () {
       // 获取数据
     },
     updateData: function () {
-      if (this.number_all <= 0 || this.number_now >= this.number_all) {
+      if (this.number_all <= 0 || this.number_now > this.number_all) {
+        this.updateLayout('person');
         axios.get('/api/getTourist', {}).then(response => {
-          if (response.data.length > 0) {
+          if (!_.isEmpty(response.data)) {
             this.resData = response.data;
-            this.number_all = this.resData.length;
-            this.number_now = 0;
-            this.updatePerson();
           }
+          this.number_all = this.resData.length;
+          this.number_now = 0;
+          this.updatePerson();
         })
+      } else if (this.number_now === this.number_all) {
+        this.updateLayout('device');
+        this.number_now = this.number_now + 1
       } else {
-        this.updatePerson()
+          this.updatePerson()
       }
     },
     updatePerson: function () {
       var person = this.resData[this.number_now]
       this.number_now = this.number_now + 1
-      this.username = person.warningTourist_name;
+      this.username = _.isNull(person.warningTourist_name) ? this.username : person.warningTourist_name;
       // this.category = person.warningTourist_category;
-      this.sex = person.warningTourist_sex;
-      this.country = person.warningTourist_country;
-      this.birth = person.warningTourist_birthday;
-      this.passportID = person.warningTourist_passport;
-      this.departure = person.warningTourist_departure;
-      this.destination = person.warningTourist_destination;
-      this.intime = person.warningTourist_time;
-      this.riskIndex = this.decideRiskIndex(person.warningTourist_riskIndex).score;
-      this.category = person.warningTourist_category;
-      this.warningTourist_arrival_number = person.warningTourist_arrival_number;
-      this.warningTourist_arrival_risknumber = person.warningTourist_arrival_risknumber;
-      this.update_left_option(person.warningTourist_historyTime);
-      this.update_center_option(person.warningTourist_place);
-      this.update_right_option(person.fellowTourist_list);
+      this.sex = _.isNull(person.warningTourist_sex) ? this.sex : person.warningTourist_sex;
+      this.country = _.isNull(person.warningTourist_country) ? this.country : person.warningTourist_country;
+      this.birth = _.isNull(person.warningTourist_birthday) ? this.birth : person.warningTourist_birthday;
+      this.passportID = _.isNull(person.warningTourist_passport) ? this.passportID : person.warningTourist_passport;
+      this.departure = _.isNull(person.warningTourist_departure) ? this.departure : person.warningTourist_departure;
+      this.destination = _.isNull(person.warningTourist_destination) ? this.destination : person.warningTourist_destination;
+      this.intime = _.isNull(person.warningTourist_time) ? this.intime : person.warningTourist_time;
+      this.riskIndex = this.decideRiskIndex(_.isNull(person.warningTourist_riskIndex) ? this.riskIndex : person.warningTourist_riskIndex).score;
+      this.category = _.isNull(person.warningTourist_category) ? this.category : person.warningTourist_category;
+      this.warningTourist_arrival_number = _.isNull(person.warningTourist_arrival_number) ? this.warningTourist_arrival_number : person.warningTourist_arrival_number;
+      this.warningTourist_arrival_risknumber = _.isNull(person.warningTourist_arrival_risknumber) ? this.warningTourist_arrival_risknumber : person.warningTourist_arrival_risknumber;
+      if (!_.isEmpty(person.warningTourist_historyTime)) {
+        this.update_left_option(person.warningTourist_historyTime);
+      }
+      if (!_.isEmpty(person.warningTourist_place)) {
+        this.update_center_option(person.warningTourist_place);
+      }
+      if (!_.isEmpty(person.fellowTourist_list)) {
+        this.update_right_option(person.fellowTourist_list);
+      }
     },
     decideRiskIndex: function (value) {
       // red: #ff5252
       // yellow: #d37d1c
       // blue: #1b6cc9
       var self = this;
-      console.log(value);
+      // console.log(value);
       if (value > 75) {
         self.riskHeight = true;
         return {
@@ -483,7 +494,7 @@ export default {
         cities.push({name: item.destination.CityName, value: item.destination.Coordinate});
       });
       let citycounts = _.countBy(cities, 'name');
-      console.log(citycounts);
+      // console.log(citycounts);
       _.each(cities, city => {
         city.value.push(citycounts[city.name]);
       });
@@ -686,7 +697,7 @@ export default {
         position: relative
         z-index: 100
         &:after
-          border: 15px solid 
+          border: 15px solid
           position: absolute
           left: -10px
           top: -10px
@@ -703,10 +714,10 @@ export default {
           color: #fde01e
           background-color: #fde01e
   // 定义闪烁动画
-  @keyframes sk-scaleout 
-    0%  
+  @keyframes sk-scaleout
+    0%
       transform: scale(0);
-    100% 
+    100%
       transform: scale(1.25);
       opacity: 0.05;
   // 页面切换效果
