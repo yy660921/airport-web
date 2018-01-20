@@ -390,7 +390,7 @@ export default {
     this.updateData()
     this.intervalID = setInterval(() => {
       this.updateData();
-    }, 10 * 1000);
+    }, 30 * 1000);
   },
   methods: {
     // 切换页面
