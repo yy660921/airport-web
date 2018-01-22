@@ -363,7 +363,7 @@
             type: 'scatter3D',
             coordinateSystem: 'globe',
             zlevel: 100,
-            animation: false,
+            animation: true,
             blendMode: 'lighter',
             symbol: 'pin',
             symbolSize: 30,
@@ -395,12 +395,11 @@
             name: '航线',
             lineStyle: {
               color: '#00abe0',
-              opacity: 0,
-              width: 1,
+              opacity: 1,
+              width: 4,
             },
             effect: {
-              // TODO:去除前部高亮颜色
-              show: true,
+              show: false,
               period: 4,
               // constantSpeed: 30,
               symbol: 'arrow',
@@ -419,7 +418,7 @@
       this.echartsGlobe();
     },
     created () {
-      this.updateData()
+      this.updateData();
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 30 * 1000);
@@ -441,6 +440,9 @@
       echartsGlobe () {
         this.globe = echarts.init(document.getElementById('echarts-globe'));
         this.globe.setOption(this.globe_t_option);
+        // this.globe.on('click', function (params) {
+        //   console.log(params);
+        // })
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {
@@ -497,7 +499,6 @@
             cities.push({name: item.destination.CityName, value: item.destination.Coordinate});
             lines.push([item.departure.Coordinate, item.destination.Coordinate]);
           });
-          console.log(cities);
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
           this.globe_t_option.globe.displacementScale = 0.1;
