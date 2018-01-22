@@ -9,15 +9,28 @@
       </div>
     </div>
     <div class="con-right">
-      <h3>热点新闻</h3>
-      <ul>
-        <li class="list" v-for="(msg, idx) in newsdata" :key="idx" :class="{active: activeID === msg['ID']}">
-          <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>[{{ msg['keyword'] }}]</span>{{ msg['title'] }}</a>
-          <i class="news-arrow fa fa-angle-double-down"></i>
-          <p class="news-detail" v-show="activeID === msg['ID']">{{ msg['content'] }}</p>
-        </li>
-      </ul>
-      <p class="load-all"><a href="#" title="加载全部">加载全部</a></p>
+      <div class="con-box">
+        <Echarts theme="ring" :option="word_cloud_option" className="chart" ></Echarts>
+      </div>
+      <div class="con-box">
+        <h3>热点新闻</h3>
+        <b-carousel 
+          id="carousel1"
+          controls
+          :interval="0"
+          v-model="slide"
+          @sliding-start="onSlideStart"
+          @sliding-end="onSlideEnd"
+        >
+          <b-carousel-slide v-for="(msg, idx) in newsdata">
+            <div class="list active" :key="idx">
+              <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#标签文字{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
+              <p class="news-detail" >{{ msg['content'] }}</p>
+            </div>
+          </b-carousel-slide>
+        </b-carousel>
+        <p class="load-all"><a href="#" title="加载全部">加载全部</a></p>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +40,9 @@
   import 'components/charts/theme/Ring.js'
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
+  import 'echarts-wordcloud'
+  import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
+  import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
 
   export default {
     name: 'app',
@@ -36,7 +52,10 @@
         intervalAc: null,
         activeID: 0,
         activeNewsIndex: 0,
-        newsdata: null,
+        newsdata: ['a', 'b'], // b-carousel请求的数据不能是空数组，会导致typeIdex无法设置
+        slide: 0,
+        sliding: null,
+        items: ['a', 'b'],
         top_option: {
           title: {
             text: '舆情走势',
@@ -133,6 +152,55 @@
             }
           }]
         },
+        word_cloud_option: {
+          title: {
+            text: '关键词云',
+          },
+          color: [
+            '#24adf1',
+            '#0e7fe2',
+            '#4465f6',
+            '#a06af5',
+            '#f48021',
+            '#f5d10c'
+          ],
+          series: [
+            {
+              type: 'wordCloud',
+              gridSize: 20,
+              sizeRange: [28, 60],
+              rotationRange: [0, 0],
+              shape: 'circle',
+              textStyle: {
+                normal: {
+                  color: function () {
+                    return 'rgb(' + [
+                      Math.round(100 + Math.random() * 80),
+                      Math.round(180 + Math.random() * 80),
+                      Math.round(170 + Math.random() * 80)
+                    ].join(',') + ')';
+                  }
+                },
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowColor: '#fff'
+                }
+              },
+              data: [
+                {
+                  name: 'Sam S Club',
+                  value: 10000
+                }, {
+                  name: 'Macys',
+                  value: 6181
+                }, {
+                  name: 'Amy Schumer',
+                  value: 4386
+                },
+              ]
+            }
+          ]
+        }
       };
     },
     created () {
@@ -145,10 +213,17 @@
         }, 5 * 1000);
     },
     methods: {
+      onSlideStart (slide) {
+        this.sliding = true
+      },
+      onSlideEnd (slide) {
+        this.sliding = false
+      },
       updateData () {
         this.update_top_option();
         this.update_bottom_option();
         this.update_right();
+        this.update_word_cloud_option();
       },
       update_top_option () {
         axios.get('/api/getCount').then(response => {
@@ -179,16 +254,22 @@
           this.bottom_option.series[0].data = dataValue;
         });
       },
+      update_word_cloud_option () {
+        axios.get('/api/getWordCloud').then(response => {
+          console.log(response.data);
+          this.word_cloud_option.series[0].data = response.data;
+        });
+      },
       update_right () {
         axios.get('/api/getNews').then(response => {
           this.activeNewsIndex = 0;
           this.newsdata = response.data;
-          this.activeID = response.data[this.activeNewsIndex]['ID'];
+          // this.activeID = response.data[this.activeNewsIndex]['ID'];
         });
       },
       changeActive () {
         this.activeNewsIndex = (this.activeNewsIndex + 1) % this.newsdata.length;
-        this.activeID = this.newsdata[this.activeNewsIndex]['ID'];
+        // this.activeID = this.newsdata[this.activeNewsIndex]['ID'];
       },
     },
     beforeDestroy () {
@@ -196,7 +277,9 @@
       clearInterval(this.intervalAc)
     },
     components: {
-      Echarts
+      Echarts,
+      'b-carousel': bCarousel,
+      'b-carousel-slide': bCarouselSlide
     },
   }
 </script>
@@ -219,72 +302,103 @@
     float: right
     width: 49%
     height: 100%
-    padding: 1rem 1rem .8rem
-    background-image: url("~assets/images/page3-right-bg.png")
+    // padding: 1rem 1rem .8rem
+    // background-image: url("~assets/images/page3-right-bg.png")
     background-size: 100% 100%
     overflow-y: hidden
     font-size: 1rem
+    .con-box
+      height: 48%
+      padding: .7rem 1rem .8rem
+      background-image: url("~assets/images/page3-left-bg.png")
+      background-size: 100% 100%
+      &:first-child
+        margin-bottom: 4%
     h3
       color: #ffffff
       font-size: 26px
       font-weight: bold
       text-align: center
       margin-bottom: 0
-    ul
-      margin-top: 1rem
-      margin-bottom: 1rem
-      padding: 0rem 1rem
-      height: calc(100% - 140px)
-      overflow-y: auto
-      li.list
-        position: relative
-        background: rgba(6, 22, 58, .5)
-        border: 1px solid #2052dd
-        padding: .5rem 1rem
-        margin-bottom: 1.1rem
-        .news-detail
-          margin-bottom: 0
-          color: #eee
-          display: none
-        &.active
-          background: rgba(32, 82, 211, .5)
-          max-height: 23rem
-          overflow: hidden
-          .link
-            color: #fff
-            padding-bottom: .4rem
-            margin-bottom: .4rem
-            border-bottom: 1px dashed #ccc
-          .news-arrow
-            &:before
-              content: "\F102"
-          .news-detail
-            display: block
+    .carousel
+      height: calc(100% - 88px)
+    .carousel-inner
+      height: 100%
+      width: calc(100% - 5rem)
+      margin: 0 2.5rem
+    .list-wrapper
+      height: 100%
+    .carousel-item
+      outline: none
+      height: 100%
+    .carousel-control-prev, .carousel-control-next
+      width: 2.5rem
+    .carousel-control-prev-icon, .carousel-control-next-icon
+      width: 40px
+      height: 40px
+    .carousel-caption
+      right: 0
+      left: 0
+      bottom: 0
+      top: 0
+      margin: 20px 0
+      padding: 0
+      overflow: hidden
+      border: 1px solid #2052dd
+      background: rgba(32, 82, 211, 0.5)
+    .list
+      position: relative
+      // background: rgba(6, 22, 58, .5)
+      // border: 1px solid #2052dd
+      padding: .5rem 1rem
+      margin-bottom: 1.1rem
+      .news-detail
+        margin-bottom: 0
+        color: #eee
+        text-align: left
+        // display: none
+      &.active
+        // background: rgba(32, 82, 211, .5)
+        max-height: 23rem
+        overflow: hidden
         .link
-          display: block
-          color: #b5eaff
-          padding-right: 1rem
-          white-space: nowrap
-          text-overflow: ellipsis
-          overflow: hidden
-          .news-icon
-            vertical-align: middle
-            margin-right: .4rem
-          span
-            margin-right: .2rem
+          color: #fff
+          padding-bottom: .4rem
+          margin-bottom: .4rem
+          border-bottom: 1px dashed #ccc
         .news-arrow
-          display: inline-block
-          position: absolute
-          width: 1.5rem
-          height: 1.5rem
-          line-height: 1.5rem
-          text-align: center
-          right: 1rem
-          font-size: 24px
-          color: #b5eaff
-          top: .35rem
+          &:before
+            content: "\F102"
+        .news-detail
           display: block
-          cursor: pointer
+      .link
+        display: block
+        color: #b5eaff
+        padding-right: 1rem
+        white-space: nowrap
+        text-overflow: ellipsis
+        overflow: hidden
+        .news-icon
+          vertical-align: middle
+          margin-right: .4rem
+        span
+          margin-right: .3rem
+          color: rgba(252, 143, 47, 1)
+          font-weight: bold
+
+      .news-arrow
+        display: inline-block
+        position: absolute
+        width: 1.5rem
+        height: 1.5rem
+        line-height: 1.5rem
+        text-align: center
+        right: 1rem
+        font-size: 24px
+        color: #b5eaff
+        top: .35rem
+        display: block
+        cursor: pointer
     p.load-all
       text-align: center
       margin-bottom: 0
