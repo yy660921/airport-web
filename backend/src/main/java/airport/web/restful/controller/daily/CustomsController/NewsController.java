@@ -33,6 +33,7 @@ import airport.web.restful.service.News.NewsOutputService;
 import airport.web.restful.service.News.NewsService;
 
 import static airport.web.restful.service.sql.Query.getNewsDetail;
+import static airport.web.restful.service.sql.Query.getWeeklyCountNum;
 
 /**
  * Created by Machenike on 2017/12/20.
@@ -122,5 +123,14 @@ public class NewsController {
             e.printStackTrace();
         }
         return Count;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = {
+        "/api/getWeeklyCount",
+    })
+
+    public JsonNode getWeeklyCount() {
+        return getWeeklyCountNum();
     }
 }
