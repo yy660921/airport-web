@@ -151,7 +151,7 @@ public class Query {
      * @description: 查询随机的10条新闻信息
      */
     public static LinkedList<JsonNode> getNewsDetail(){
-        String sql = "SELECT * FROM (SELECT * FROM customs_news WHERE id >= ((SELECT MAX(id) FROM customs_news)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news)  LIMIT 10) AS a ORDER BY time DESC;";
+        String sql = "SELECT * FROM (SELECT * FROM customs_news WHERE id >= ((SELECT MAX(id) FROM customs_news)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news) AND DATEDIFF((SELECT DATE_FORMAT(MAX(FROM_UNIXTIME(time)),\"%Y-%m-%d\") FROM customs_news),FROM_UNIXTIME(time)) < 7 LIMIT 10) AS a ORDER BY time DESC;";
         return getNewsDetailBySQL(sql);
     }
 
@@ -161,6 +161,30 @@ public class Query {
     public static ArrayNode getTotalNewsDetail(){
         String sql = "SELECT title,content,ID,time FROM customs_news";
         return getTotalNewsDetailBySQL(sql);
+    }
+
+    /*
+     * @description: 查询按周排序的趋势信息
+     */
+    public static ObjectNode getWeeklyCountNum(){
+        String sql = "SELECT tendency,time FROM customs_sentiment WHERE time = (SELECT MAX(time) FROM customs_sentiment)";
+        return getWeeklyCountNumBySQL(sql);
+    }
+
+    /*
+     * @description: 查询观点信息
+     */
+    public static ArrayNode getViewPointInfo(){
+        String sql = "SELECT viewpoint,time FROM customs_sentiment WHERE time = (SELECT MAX(time) FROM customs_sentiment)";
+        return getViewPointInfoBySQL(sql);
+    }
+
+    /*
+     * @description: 查询词图信息
+     */
+    public static ArrayNode getWordCloud(){
+        String sql = "SELECT cloud,time FROM customs_sentiment WHERE time = (SELECT MAX(time) FROM customs_sentiment)";
+        return getWordCloudBySQL(sql);
     }
 
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
@@ -713,6 +737,108 @@ public class Query {
                 News.put("ID",ID++);
                 News.put("date",dateFormat.format(new Date(rs.getLong("time")*1000)));
                 result.add(News);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    private static ObjectNode getWeeklyCountNumBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            int ID = 0;
+            ArrayNode dates = objectMapper.createArrayNode();
+            ArrayNode tendency = objectMapper.createArrayNode();
+            if (rs.next()) {
+                ObjectNode Tendency = (ObjectNode) objectMapper.readTree(rs.getString("tendency"));
+                Iterator<String> TI = Tendency.fieldNames();
+                while (TI.hasNext()) {
+                    String Date = TI.next();
+                    dates.add(Date);
+                    tendency.add(Tendency.get(Date));
+                }
+            }
+            result.replace("date",dates);
+            result.replace("tendency",tendency);
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    private static ArrayNode getViewPointInfoBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode result = objectMapper.createArrayNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                ArrayNode viewPoint = (ArrayNode) objectMapper.readTree(rs.getString("viewpoint"));
+                for(JsonNode view:viewPoint){
+                    ObjectNode v = objectMapper.createObjectNode();
+                    v.put("value",view.get("docs_count").asInt());
+                    v.put("name",view.get("key_words").asText());
+                    result.add(v);
+                }
+
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(sql);
+        } finally {
+            try {
+                conn.close();
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                System.out.println("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    private static ArrayNode getWordCloudBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode result = objectMapper.createArrayNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                result = (ArrayNode) objectMapper.readTree(rs.getString("cloud"));
             }
         }catch (Exception e) {
             e.printStackTrace();
