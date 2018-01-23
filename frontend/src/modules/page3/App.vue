@@ -14,10 +14,10 @@
       </div>
       <div class="con-box">
         <h3>热点新闻</h3>
-        <b-carousel 
+        <b-carousel
           id="carousel1"
           controls
-          :interval="0"
+          :interval="10000"
           v-model="slide"
           @sliding-start="onSlideStart"
           @sliding-end="onSlideEnd"
@@ -49,13 +49,10 @@
     data () {
       return {
         intervalID: null,
-        intervalAc: null,
-        activeID: 0,
-        activeNewsIndex: 0,
         newsdata: ['a', 'b'], // b-carousel请求的数据不能是空数组，会导致typeIdex无法设置
         slide: 0,
         sliding: null,
-        items: ['a', 'b'],
+        items: ['新年快乐', '新年快乐，上线顺利'],
         top_option: {
           title: {
             text: '舆情走势',
@@ -208,9 +205,6 @@
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 5 * 60 * 1000);
-      this.intervalAc = setInterval(() => {
-          this.changeActive()
-        }, 5 * 1000);
     },
     methods: {
       onSlideStart (slide) {
@@ -232,23 +226,14 @@
         });
       },
       update_bottom_option () {
-        axios.get('/static/data/haiguan_clustering_results.json').then(response => {
+        axios.get('/api/getViewPoint').then(response => {
           let legendData = [];
           let dataValue = [];
+          var total_num = _.sumBy(response.data, function (item) { return item.value })
           _.each(response.data, function (item, index) {
-            var keywords, emotion, docs_ratio;
-            if (item.key_words) {
-              keywords = item.key_words;
-            } else {
-              keywords = '暂无关键词';
-            }
-            //  emotion='（积极：'+item.emotions[0]+',中性：'+item.emotions[1]+',消极：'+item.emotions[2]+')';
-            docs_ratio = item.docs_ratio;
-            keywords += ' ' + docs_ratio
-            //  emotion = '（积极 '+item.emotions[0]+', 消极 '+item.emotions[2]+')';
-            //  keywords += emotion;
+            var keywords = item.name + (item.value / total_num).toFixed(2).toString();
             legendData.push(keywords);
-            dataValue.push({value: item.docs_count, name: keywords, text: item.docs})
+            dataValue.push({value: item.value, name: keywords, text: item.docs});
           });
           this.bottom_option.legend.data = legendData;
           this.bottom_option.series[0].data = dataValue;
@@ -266,10 +251,6 @@
           this.newsdata = response.data;
           // this.activeID = response.data[this.activeNewsIndex]['ID'];
         });
-      },
-      changeActive () {
-        this.activeNewsIndex = (this.activeNewsIndex + 1) % this.newsdata.length;
-        // this.activeID = this.newsdata[this.activeNewsIndex]['ID'];
       },
     },
     beforeDestroy () {
