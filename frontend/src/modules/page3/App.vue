@@ -305,15 +305,15 @@
       height: calc(100% - 88px)
     .carousel-inner
       height: 100%
-      width: calc(100% - 5rem)
-      margin: 0 2.5rem
+      width: 100%
+      margin: 0
     .list-wrapper
       height: 100%
     .carousel-item
       outline: none
       height: 100%
     .carousel-control-prev, .carousel-control-next
-      width: 2.5rem
+      width: 1.5rem
     .carousel-control-prev-icon, .carousel-control-next-icon
       width: 40px
       height: 40px
