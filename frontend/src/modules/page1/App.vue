@@ -27,6 +27,8 @@
   import echarts from 'echarts'
   require('echarts-gl')
 
+  import Common from 'components/Common.js'
+
   const baseTexture = new Image();
   baseTexture.src = require('../../assets/map-rc/data-1491890179041-Hkj-elqpe.jpg');
 
@@ -42,6 +44,7 @@
   export default {
     data () {
       return {
+        Common: Common,
         intervalID: null,
         l_t_option: {
           title: {
@@ -442,7 +445,8 @@
         this.globe.setOption(this.globe_t_option);
         // this.globe.on('click', function (params) {
         //   console.log(params);
-        // })
+        //   console.log(new Error().stack);
+        // });
       },
       update_l_t_option: function () {
         axios.get('/api/getRTAndSN', {params: {}}).then(response => {

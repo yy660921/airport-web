@@ -47,6 +47,8 @@
   import Echarts from 'vue-echarts-v3/src/full.js'
   import LiquidFill from 'echarts-liquidfill'
 
+  import Common from 'components/Common.js'
+
   /* Globally bus for Non Parent-Child Communication */
   window.bus = new Vue();
 
@@ -54,6 +56,7 @@
     name: 'app',
     data () {
       return {
+        Common: Common,
         intervalID: null,
         riskIndex: 50,
         warningEvents_number: 50,
