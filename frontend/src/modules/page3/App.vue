@@ -29,7 +29,7 @@
             </div>
           </b-carousel-slide>
         </b-carousel>
-        <p class="load-all"><a href="./api/getTotalNews" title="加载全部">加载全部</a></p>
+        <p class="load-all"><a href="/api/getTotalNews" title="加载全部">加载全部</a></p>
       </div>
     </div>
   </div>
