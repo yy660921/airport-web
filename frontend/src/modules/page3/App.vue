@@ -24,7 +24,7 @@
         >
           <b-carousel-slide v-for="(msg, idx) in newsdata">
             <div class="list active" :key="idx">
-              <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#标签文字{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
+              <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
               <p class="news-detail" >{{ msg['content'] }}</p>
             </div>
           </b-carousel-slide>
