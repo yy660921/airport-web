@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="real-body">
+  <div id="app" class="real-body" @click="goto">
     <h1 class="main-title">
       <!-- <img src="~assets/images/page0-title.png"> -->
     </h1>
@@ -258,6 +258,9 @@
             color: '#1b6cc9'
           }
         }
+      },
+      goto: function () {
+        document.location.href = Common.addr + Common.page0;
       }
     },
     beforeDestroy () {
@@ -280,6 +283,7 @@
     padding-bottom: 1rem
     position: relative
     padding-top: 250px
+    cursor: pointer
   .main-title
     position: absolute
     top: 0

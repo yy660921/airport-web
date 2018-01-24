@@ -40,13 +40,13 @@
         </div>
         <p class="tags"><i class="fa fa-tags"></i>标签：<span class="category" v-for="label in category">{{ label }}</span></p>
         <div class="guest-charts clearfix">
-          <div class="con-box left-box">
+          <div class="con-box left-box" @click="goto">
             <Echarts theme="ring" :option="left_option" className="chart" ></Echarts>
           </div>
-          <div class="con-box center-box">
+          <div class="con-box center-box" @click="goto">
             <Echarts theme="ring" :option="center_option" className="chart" ></Echarts>
           </div>
-          <div class="con-box right-box">
+          <div class="con-box right-box" @click="goto">
             <Echarts theme="ring" :option="right_option" className="chart" ></Echarts>
           </div>
         </div>
@@ -75,6 +75,7 @@ import 'components/charts/theme/Ring.js'
 import Graphic from 'echarts/lib/util/graphic'
 import Echarts from 'vue-echarts-v3/src/full'
 import 'echarts/map/js/world'
+import Common from 'components/Common.js'
 
 export default {
   name: 'app',
@@ -393,6 +394,9 @@ export default {
     }, 30 * 1000);
   },
   methods: {
+    goto: function () {
+      document.location.href = Common.addr + Common.page2;
+    },
     // 切换页面
     updateLayout: function (pageName) {
       this.toggle_flag = pageName === 'person';
@@ -647,6 +651,7 @@ export default {
       height: 20rem
       padding: .7rem 1rem .8rem
       background-size: 100% 100%
+      cursor: pointer
       &.left-box
         width: 27%
         margin-right: 1%

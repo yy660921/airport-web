@@ -1,18 +1,18 @@
 <template>
   <div id="app" class="real-body">
     <div class="con-left">
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <Echarts theme="ring" :option="top_option" className="chart" ></Echarts>
       </div>
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <Echarts theme="ring" :option="bottom_option" className="chart" ></Echarts>
       </div>
     </div>
     <div class="con-right">
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <Echarts theme="ring" :option="word_cloud_option" className="chart" ></Echarts>
       </div>
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <h3>热点新闻</h3>
         <b-carousel
           id="carousel1"
@@ -43,6 +43,7 @@
   import 'echarts-wordcloud'
   import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
   import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
+  import Common from 'components/Common.js'
 
   export default {
     name: 'app',
@@ -207,6 +208,9 @@
       }, 5 * 60 * 1000);
     },
     methods: {
+      goto () {
+        document.location.href = Common.addr + Common.page3;
+      },
       onSlideStart (slide) {
         this.sliding = true
       },
@@ -277,6 +281,7 @@
       padding: .7rem 1rem .8rem
       background-image: url("~assets/images/page3-left-bg.png")
       background-size: 100% 100%
+      cursor: pointer
       &:first-child
         margin-bottom: 4%
   .con-right
@@ -293,6 +298,7 @@
       padding: .7rem 1rem .8rem
       background-image: url("~assets/images/page3-left-bg.png")
       background-size: 100% 100%
+      cursor: pointer
       &:first-child
         margin-bottom: 4%
     h3
