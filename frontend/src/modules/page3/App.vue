@@ -281,12 +281,12 @@
   #wordcloud
     height: 100%
     width: 100%
+    overflow-y: hidden
 
     #div1
       position: relative
-      width: 100%
-      height: 100%
-      margin: 20px auto 0
+      width: height
+      height: 80%
 
     #div1 a
       position: absolute

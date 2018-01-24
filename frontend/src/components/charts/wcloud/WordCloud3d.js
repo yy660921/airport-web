@@ -143,6 +143,7 @@ function cloud (targetId, data) {
     items.push('<a href=#  style=font-size:' + val + 'px>' + key + '</a>');
   });
 
+  $('#' + targetId).empty();
   $('<div/>', {
     id: 'div1',
     ALIGN: 'center',
@@ -160,19 +161,22 @@ function cloud (targetId, data) {
   }
   sineCosine(0, 0, 0);
   positionAll();
-  oDiv.onmouseover = function () {
-    active = true;
-  };
-  oDiv.onmouseout = function () {
-    active = false;
-  };
-  oDiv.onmousemove = function (ev) {
-    var oEvent = window.event || ev;
-    mouseX = oEvent.clientX - (oDiv.offsetLeft + oDiv.offsetWidth / 2);
-    mouseY = oEvent.clientY - (oDiv.offsetTop + oDiv.offsetHeight / 2);
-    mouseX /= 5;
-    mouseY /= 5;
-  };
+  active = true;
+  // oDiv.onmouseover = function () {
+  //   active = true;
+  // };
+  // oDiv.onmouseout = function () {
+  //   active = false;
+  // };
+  // oDiv.onmousemove = function (ev) {
+  //   var oEvent = window.event || ev;
+  //   mouseX = oEvent.clientX - (oDiv.offsetLeft + oDiv.offsetWidth / 2);
+  //   mouseY = oEvent.clientY - (oDiv.offsetTop + oDiv.offsetHeight / 2);
+  //   mouseX /= 5;
+  //   mouseY /= 5;
+  // };
+  mouseX = 5;
+  mouseY = 5;
   setInterval(update, 30);
 }
 export default {
