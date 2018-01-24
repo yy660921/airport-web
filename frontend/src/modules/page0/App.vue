@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="real-body">
+  <div id="app" class="real-body" @click="goto">
     <h1 class="main-title">
       <!-- <img src="~assets/images/page0-title.png"> -->
     </h1>
@@ -14,7 +14,7 @@
             <h3>近一周</h3>
             <p class="para">查获物品<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong>批，风险旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人</p>
             <p class="para">
-              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span>0</span></strong>架
+              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span v-for="one in airplanesCounts.toString()">{{ one }}</span></strong>架
             </p>
             <p class="para">监管人员<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>人</p>
             <!-- <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
@@ -61,6 +61,7 @@
         riskIndex: 50,
         warningEvents_number: 50,
         tourist_warningEvents: 100,
+        airplanesCounts: 2,
         chinaTourist_warningEvents: 80,
         overseasTourist_warningEvents: 20,
         seizure_number: 200,
@@ -182,6 +183,7 @@
           this.riskIndex = _.isNull(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
           this.warningEvents_number = _.isNull(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
           this.tourist_warningEvents = _.isNull(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
+          this.airplanesCounts = _.isNull(response.data.airplanesCounts) ? this.airplanesCounts : response.data.airplanesCounts;
           this.chinaTourist_warningEvents = _.isNull(response.data.chinaTourist_warningEvents) ? this.chinaTourist_warningEvents : response.data.chinaTourist_warningEvents;
           this.overseasTourist_warningEvents = _.isNull(response.data.overseasTourist_warningEvents) ? this.overseasTourist_warningEvents : response.data.overseasTourist_warningEvents;
           this.seizure_number = _.isNull(response.data.seizure_number) ? this.seizure_number : response.data.seizure_number;
@@ -258,6 +260,9 @@
             color: '#1b6cc9'
           }
         }
+      },
+      goto: function () {
+        document.location.href = Common.addr + Common.page0;
       }
     },
     beforeDestroy () {
@@ -280,6 +285,7 @@
     padding-bottom: 1rem
     position: relative
     padding-top: 250px
+    cursor: pointer
   .main-title
     position: absolute
     top: 0

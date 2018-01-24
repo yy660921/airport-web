@@ -1,19 +1,18 @@
 <template>
   <div id="app" class="real-body">
     <div class="con-left">
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <Echarts theme="ring" :option="top_option" className="chart" ></Echarts>
       </div>
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <Echarts theme="ring" :option="bottom_option" className="chart" ></Echarts>
       </div>
     </div>
     <div class="con-right">
       <div class="con-box">
         <div class="chart" id="wordcloud"></div>
-        <!-- <Echarts theme="ring" :option="word_cloud_option" className="chart" ></Echarts> -->
       </div>
-      <div class="con-box">
+      <div class="con-box" @click="goto">
         <h3>热点新闻</h3>
         <b-carousel
           id="carousel1"
@@ -25,7 +24,7 @@
         >
           <b-carousel-slide v-for="(msg, idx) in newsdata">
             <div class="list active" :key="idx">
-              <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#标签文字{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
+              <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
               <p class="news-detail" >{{ msg['content'] }}</p>
             </div>
           </b-carousel-slide>
@@ -44,6 +43,7 @@
   import 'echarts-wordcloud'
   import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
   import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
+  import Common from 'components/Common.js'
 
   import WordCloud from 'components/charts/wcloud/WordCloud3d.js'
 
@@ -210,6 +210,9 @@
       }, 5 * 60 * 1000);
     },
     methods: {
+      goto () {
+        document.location.href = Common.addr + Common.page3;
+      },
       onSlideStart (slide) {
         this.sliding = true
       },
@@ -313,6 +316,7 @@
       padding: .7rem 1rem .8rem
       background-image: url("~assets/images/page3-left-bg.png")
       background-size: 100% 100%
+      cursor: pointer
       &:first-child
         margin-bottom: 4%
   .con-right
@@ -329,6 +333,7 @@
       padding: .7rem 1rem .8rem
       background-image: url("~assets/images/page3-left-bg.png")
       background-size: 100% 100%
+      cursor: pointer
       &:first-child
         margin-bottom: 4%
     h3

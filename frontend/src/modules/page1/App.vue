@@ -1,15 +1,15 @@
 <template>
   <div id="app" class="real-body">
-    <div class="con-box l-t-box">
+    <div class="con-box l-t-box" @click="goto">
       <Echarts theme="ring" :option="l_t_option" className="chart" ></Echarts>
     </div>
-    <div class="con-box r-t-box">
+    <div class="con-box r-t-box" @click="goto">
       <Echarts theme="ring" :option="r_t_option" className="chart" ></Echarts>
     </div>
-    <div class="con-box l-b-box">
+    <div class="con-box l-b-box" @click="goto">
       <Echarts theme="ring" :option="l_b_option" className="chart" ></Echarts>
     </div>
-    <div class="con-box r-b-box">
+    <div class="con-box r-b-box" @click="goto">
       <Echarts theme="ring" :option="r_b_option" className="chart" ></Echarts>
     </div>
     <div class="center-box">
@@ -431,8 +431,12 @@
             this.echartsGlobe();
           }
       }, 1 * 60 * 60 * 1000);
+      console.log(Common.addr + '');
     },
     methods: {
+      goto: function () {
+        document.location.href = Common.addr + Common.page1;
+      },
       updateData: function () {
         this.update_r_t_option();
         this.update_l_t_option();
@@ -533,6 +537,7 @@
     background-image: url("~assets/images/box-bg.png")
     background-size: 100% 100%
     z-index: 1000
+    cursor: pointer
     &.l-t-box
       left: 2.5rem
       top: 2.5rem
@@ -555,4 +560,5 @@
     .chart
       width: 100%
       height: 100%
+      cursor: pointer
 </style>

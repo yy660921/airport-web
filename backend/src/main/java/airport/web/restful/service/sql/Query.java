@@ -35,7 +35,18 @@ import airport.web.restful.service.Constant;
 
 public class Query {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
+    private static ThreadLocal<SimpleDateFormat> timeFormat = new ThreadLocal<SimpleDateFormat>(){
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+    };
 
     /*
      * @description: 查询从from到to时间段内的信息
@@ -47,12 +58,12 @@ public class Query {
         if(from.before(to)) {
             sql =
                 "SELECT tourist_warningEvents,seizure_number,createDate FROM customs_top WHERE DATE(createDate) BETWEEN \""
-                + dateFormat.format(from) + "\" AND \"" + dateFormat.format(to) + "\"";
+                + dateFormat.get().format(from) + "\" AND \"" + dateFormat.get().format(to) + "\"";
         }
         else{
             sql =
                 "SELECT tourist_warningEvents,seizure_number,createDate FROM customs_top WHERE DATE(createDate) BETWEEN \""
-                + dateFormat.format(to) + "\" AND \"" + dateFormat.format(from) + "\"";
+                + dateFormat.get().format(to) + "\" AND \"" + dateFormat.get().format(from) + "\"";
         }
         return getRiskTouristsAndSeizureNumberBySQL(sql);
     }
@@ -119,7 +130,7 @@ public class Query {
      * @param date: 查询日期
      */
     public static LinkedList<CustomsTouristMessage> getTouristMessage(Date date){
-        String sql = "SELECT * FROM customs_touristmessage WHERE createDate = \""+ dateFormat.format(date) + "\"";
+        String sql = "SELECT * FROM customs_touristmessage WHERE createDate = \""+ dateFormat.get().format(date) + "\"";
         return getTouristMessageBySQL(sql);
     }
 
@@ -151,7 +162,7 @@ public class Query {
      * @description: 查询随机的10条新闻信息
      */
     public static LinkedList<JsonNode> getNewsDetail(){
-        String sql = "SELECT * FROM (SELECT * FROM customs_news WHERE id >= ((SELECT MAX(id) FROM customs_news)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news) AND DATEDIFF((SELECT DATE_FORMAT(MAX(FROM_UNIXTIME(time)),\"%Y-%m-%d\") FROM customs_news),FROM_UNIXTIME(time)) < 7 LIMIT 10) AS a ORDER BY time DESC;";
+        String sql = "SELECT * FROM (SELECT * FROM customs_new_topic WHERE id >= ((SELECT MAX(id) FROM customs_new_topic)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news) AND DATEDIFF((SELECT DATE_FORMAT(MAX(date),\"%Y-%m-%d\") FROM customs_news),date) < 7 LIMIT 10) AS a ORDER BY date DESC;";
         return getNewsDetailBySQL(sql);
     }
 
@@ -159,7 +170,7 @@ public class Query {
      * @description: 查询全部的新闻信息
      */
     public static ArrayNode getTotalNewsDetail(){
-        String sql = "SELECT title,content,ID,time FROM customs_news";
+        String sql = "SELECT title,content,ID,date,topic FROM customs_new_topic";
         return getTotalNewsDetailBySQL(sql);
     }
 
@@ -203,7 +214,7 @@ public class Query {
             while (rs.next()) {
                 tourist_warningEvents.add(rs.getInt("tourist_warningEvents"));
                 seizure_number.add(rs.getInt("seizure_number"));
-                createDate.add(dateFormat.format(rs.getDate("createDate")).replaceAll("20\\d*-",""));
+                createDate.add(dateFormat.get().format(rs.getDate("createDate")).replaceAll("20\\d*-",""));
             }
             result.replace("tourist_warningEvents", tourist_warningEvents);
             result.replace("seizure_number", seizure_number);
@@ -701,7 +712,8 @@ public class Query {
                 News.put("title",rs.getString("title"));
                 News.put("content",rs.getString("content"));
                 News.put("ID",ID++);
-                News.put("date",dateFormat.format(new Date(rs.getLong("time")*1000)));
+                News.put("keyword",rs.getString("topic"));
+                News.put("date",timeFormat.get().format(rs.getDate("date")));
                 result.add(News);
             }
         }catch (Exception e) {
@@ -735,7 +747,8 @@ public class Query {
                 News.put("title",rs.getString("title"));
                 News.put("content",rs.getString("content"));
                 News.put("ID",ID++);
-                News.put("date",dateFormat.format(new Date(rs.getLong("time")*1000)));
+                News.put("keyword", rs.getString("topic"));
+                News.put("date",timeFormat.get().format(rs.getDate("date")));
                 result.add(News);
             }
         }catch (Exception e) {
