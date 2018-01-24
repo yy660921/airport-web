@@ -2,7 +2,7 @@
   <div id="app" class="real-body">
     <transition name="fade">
       <div class="basic" v-show='toggle_flag'>
-        <div class="guest-info">
+        <div class="guest-info" @click="goto">
           <div class="info-detail">
             <p><strong>基本信息：</strong></p>
             <p><i class="fa fa-user "></i>姓名：<span>{{ username }}</span></p>
@@ -55,7 +55,7 @@
     <transition name="fade">
       <div class="device" v-show="!toggle_flag">
         <div class="con-box" v-for="(item, index) in this.deviceStatus" :key="index">
-          <div class="box-cont">
+          <div class="box-cont" @click="goto">
             <h3 class="box-title">{{item.title}}</h3>
             <div class="box-img">
               <img src="~assets/images/device-img.png" alt="">
@@ -428,19 +428,19 @@ export default {
     updatePerson: function () {
       var person = this.resData[this.number_now]
       this.number_now = this.number_now + 1
-      this.username = _.isNull(person.warningTourist_name) ? this.username : person.warningTourist_name;
+      this.username = _.isUndefined(person.warningTourist_name) ? this.username : person.warningTourist_name;
       // this.category = person.warningTourist_category;
-      this.sex = _.isNull(person.warningTourist_sex) ? this.sex : person.warningTourist_sex;
-      this.country = _.isNull(person.warningTourist_country) ? this.country : person.warningTourist_country;
-      this.birth = _.isNull(person.warningTourist_birthday) ? this.birth : person.warningTourist_birthday;
-      this.passportID = _.isNull(person.warningTourist_passport) ? this.passportID : person.warningTourist_passport;
-      this.departure = _.isNull(person.warningTourist_departure) ? this.departure : person.warningTourist_departure;
-      this.destination = _.isNull(person.warningTourist_destination) ? this.destination : person.warningTourist_destination;
-      this.intime = _.isNull(person.warningTourist_time) ? this.intime : person.warningTourist_time;
-      this.riskIndex = this.decideRiskIndex(_.isNull(person.warningTourist_riskIndex) ? this.riskIndex : person.warningTourist_riskIndex).score;
-      this.category = _.isNull(person.warningTourist_category) ? this.category : person.warningTourist_category;
-      this.warningTourist_arrival_number = _.isNull(person.warningTourist_arrival_number) ? this.warningTourist_arrival_number : person.warningTourist_arrival_number;
-      this.warningTourist_arrival_risknumber = _.isNull(person.warningTourist_arrival_risknumber) ? this.warningTourist_arrival_risknumber : person.warningTourist_arrival_risknumber;
+      this.sex = _.isUndefined(person.warningTourist_sex) ? this.sex : person.warningTourist_sex;
+      this.country = _.isUndefined(person.warningTourist_country) ? this.country : person.warningTourist_country;
+      this.birth = _.isUndefined(person.warningTourist_birthday) ? this.birth : person.warningTourist_birthday;
+      this.passportID = _.isUndefined(person.warningTourist_passport) ? this.passportID : person.warningTourist_passport;
+      this.departure = _.isUndefined(person.warningTourist_departure) ? this.departure : person.warningTourist_departure;
+      this.destination = _.isUndefined(person.warningTourist_destination) ? this.destination : person.warningTourist_destination;
+      this.intime = _.isUndefined(person.warningTourist_time) ? this.intime : person.warningTourist_time;
+      this.riskIndex = this.decideRiskIndex(_.isUndefined(person.warningTourist_riskIndex) ? this.riskIndex : person.warningTourist_riskIndex).score;
+      this.category = _.isUndefined(person.warningTourist_category) ? this.category : person.warningTourist_category;
+      this.warningTourist_arrival_number = _.isUndefined(person.warningTourist_arrival_number) ? this.warningTourist_arrival_number : person.warningTourist_arrival_number;
+      this.warningTourist_arrival_risknumber = _.isUndefined(person.warningTourist_arrival_risknumber) ? this.warningTourist_arrival_risknumber : person.warningTourist_arrival_risknumber;
       if (!_.isEmpty(person.warningTourist_historyTime)) {
         this.update_left_option(person.warningTourist_historyTime);
       }

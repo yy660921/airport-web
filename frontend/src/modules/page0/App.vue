@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="real-body" @click="goto">
+  <div id="app" class="real-body">
     <h1 class="main-title">
       <!-- <img src="~assets/images/page0-title.png"> -->
     </h1>
-    <div class="con-container">
+    <div class="con-container" @click="goto">
       <div class="con-box">
         <div class="con clearfix">
           <div class="con-chart">
@@ -180,17 +180,17 @@
     methods: {
       updateData: function () {
         axios.get('/api/getFirstPage', {params: {}}).then(response => {
-          this.riskIndex = _.isNull(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
-          this.warningEvents_number = _.isNull(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
-          this.tourist_warningEvents = _.isNull(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
-          this.airplanesCounts = _.isNull(response.data.airplanesCounts) ? this.airplanesCounts : response.data.airplanesCounts;
-          this.chinaTourist_warningEvents = _.isNull(response.data.chinaTourist_warningEvents) ? this.chinaTourist_warningEvents : response.data.chinaTourist_warningEvents;
-          this.overseasTourist_warningEvents = _.isNull(response.data.overseasTourist_warningEvents) ? this.overseasTourist_warningEvents : response.data.overseasTourist_warningEvents;
-          this.seizure_number = _.isNull(response.data.seizure_number) ? this.seizure_number : response.data.seizure_number;
-          this.contraband_number = _.isNull(response.data.contraband_number) ? this.contraband_number : response.data.contraband_number;
-          this.highTax_number = _.isNull(response.data.highTax_number) ? this.highTax_number : response.data.highTax_number;
-          this.governpeople_number = _.isNull(response.data.governpeople_number) ? this.governpeople_number : response.data.governpeople_number;
-          this.devicecount_number = _.isNull(response.data.devicecount_number) ? this.devicecount_number : response.data.devicecount_number;
+          this.riskIndex = _.isUndefined(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
+          this.warningEvents_number = _.isUndefined(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
+          this.tourist_warningEvents = _.isUndefined(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
+          this.airplanesCounts = _.isUndefined(response.data.airplanesCounts) ? this.airplanesCounts : response.data.airplanesCounts;
+          this.chinaTourist_warningEvents = _.isUndefined(response.data.chinaTourist_warningEvents) ? this.chinaTourist_warningEvents : response.data.chinaTourist_warningEvents;
+          this.overseasTourist_warningEvents = _.isUndefined(response.data.overseasTourist_warningEvents) ? this.overseasTourist_warningEvents : response.data.overseasTourist_warningEvents;
+          this.seizure_number = _.isUndefined(response.data.seizure_number) ? this.seizure_number : response.data.seizure_number;
+          this.contraband_number = _.isUndefined(response.data.contraband_number) ? this.contraband_number : response.data.contraband_number;
+          this.highTax_number = _.isUndefined(response.data.highTax_number) ? this.highTax_number : response.data.highTax_number;
+          this.governpeople_number = _.isUndefined(response.data.governpeople_number) ? this.governpeople_number : response.data.governpeople_number;
+          this.devicecount_number = _.isUndefined(response.data.devicecount_number) ? this.devicecount_number : response.data.devicecount_number;
           var t_option_data_value = this.riskIndex / 100;
           this.t_option.series[0].data[0].value = t_option_data_value;
           // 将分数值改为中文显示
@@ -202,10 +202,10 @@
           // 更改bottom_echarts颜色
         });
         axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
-          this.yuqingIndex = _.isNull(response.data.yuqingIndex) ? this.yuqingIndex : response.data.yuqing_index;
-          this.yuqing_total = _.isNull(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
-          this.yuqing_media = _.isNull(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
-          this.yuqing_gzh = _.isNull(response.data.yuqing_gzh) || response.data.yuqing_gzh === 0 ? this.yuqing_gzh : response.data.yuqing_gzh;
+          this.yuqingIndex = _.isUndefined(response.data.yuqingIndex) ? this.yuqingIndex : response.data.yuqing_index;
+          this.yuqing_total = _.isUndefined(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
+          this.yuqing_media = _.isUndefined(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
+          this.yuqing_gzh = _.isUndefined(response.data.yuqing_gzh) || response.data.yuqing_gzh === 0 ? this.yuqing_gzh : response.data.yuqing_gzh;
           if (!_.isEmpty(response.data.yuqing_mediatop1)) {
             for (var tmpK in response.data.yuqing_mediatop1) {
               this.yuqing_media_top1 = tmpK;
