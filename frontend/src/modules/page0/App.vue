@@ -14,7 +14,7 @@
             <h3>近一周</h3>
             <p class="para">查获物品<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong>批，风险旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人</p>
             <p class="para">
-              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span>0</span></strong>架
+              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span>2</span></strong>架
             </p>
             <p class="para">监管人员<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>人</p>
             <!-- <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
