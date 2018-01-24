@@ -237,9 +237,11 @@
           let dataValue = [];
           var total_num = _.sumBy(response.data, function (item) { return item.value })
           _.each(response.data, function (item, index) {
-            var keywords = item.name + (item.value / total_num).toFixed(2).toString();
-            legendData.push(keywords);
-            dataValue.push({value: item.value, name: keywords, text: item.docs});
+            if (item.name.indexOf('暂无关键词') === -1) {
+              let keywords = item.name + (item.value / total_num).toFixed(2).toString();
+              legendData.push(keywords);
+              dataValue.push({value: item.value, name: keywords, text: item.docs});
+            }
           });
           this.bottom_option.legend.data = legendData;
           this.bottom_option.series[0].data = dataValue;
@@ -301,9 +303,9 @@
         color: red
 
     #div1 .blue
-      color: blue  
+      color: blue
     #div1 .red
-      color: red  
+      color: red
     #div1 .yellow
       color: yellow
 
