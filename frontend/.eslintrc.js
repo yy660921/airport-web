@@ -35,6 +35,7 @@ module.exports = {
   },
   // globally enabled plugins
   'globals': {
+    '$': true,
     '_': true,
     "axios": true,
     "d3": true,

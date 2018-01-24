@@ -1,7 +1,7 @@
 // for App.vue router-view
 import Vue from 'vue'
 import Router from 'vue-router'
-import Page2 from 'modules/page2/Page2.vue'
+import Page2 from 'modules/page3/Page3.vue'
 
 Vue.use(Router)
 

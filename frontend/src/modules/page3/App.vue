@@ -10,7 +10,8 @@
     </div>
     <div class="con-right">
       <div class="con-box">
-        <Echarts theme="ring" :option="word_cloud_option" className="chart" ></Echarts>
+        <div class="chart" id="wordcloud"></div>
+        <!-- <Echarts theme="ring" :option="word_cloud_option" className="chart" ></Echarts> -->
       </div>
       <div class="con-box">
         <h3>热点新闻</h3>
@@ -43,6 +44,8 @@
   import 'echarts-wordcloud'
   import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
   import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
+
+  import WordCloud from 'components/charts/wcloud/WordCloud3d.js'
 
   export default {
     name: 'app',
@@ -242,7 +245,11 @@
       update_word_cloud_option () {
         axios.get('/api/getWordCloud').then(response => {
           console.log(response.data);
-          this.word_cloud_option.series[0].data = response.data;
+          let words = {};
+          _.each(response.data, item => {
+            words[item.name] = parseInt(item.value);
+          })
+          WordCloud.cloud('wordcloud', words);
         });
       },
       update_right () {
@@ -267,6 +274,35 @@
 
 <style lang="sass">
   @import "~assets/sass/common"
+
+  #wordcloud
+    height: 100%
+    width: 100%
+
+    #div1
+      position: relative
+      width: 100%
+      height: 100%
+      margin: 20px auto 0
+
+    #div1 a
+      position: absolute
+      top: 0px
+      left: 0px
+      font-family: Microsoft YaHei
+      color: #0b85ff
+      font-weight: bold
+      text-decoration: none
+      padding: 3px 6px
+      &:hover
+        color: red
+
+    #div1 .blue
+      color: blue  
+    #div1 .red
+      color: red  
+    #div1 .yellow
+      color: yellow
 
   .con-left
     float: left
