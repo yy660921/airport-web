@@ -45,7 +45,7 @@
 
   import Vue from 'vue'
   import Echarts from 'vue-echarts-v3/src/full.js'
-  import LiquidFill from 'echarts-liquidfill'
+  // import LiquidFill from 'echarts-liquidfill'
 
   import Common from 'components/Common.js'
 
@@ -231,7 +231,6 @@
             }
           }
           var b_option_data_value = this.yuqingIndex / 100;
-          debugger
           this.b_option.series[0].data[0].value = b_option_data_value;
           // 将分数值改为中文显示
           this.b_option.series[0].label.normal.formatter = this.decideScoreColor(b_option_data_value).score;

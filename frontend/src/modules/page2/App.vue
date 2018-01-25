@@ -70,7 +70,7 @@
 
 <script type="text/ecmascript-6">
 
-import Vue from 'vue'
+// import Vue from 'vue'
 import 'components/charts/theme/Ring.js'
 import Graphic from 'echarts/lib/util/graphic'
 import Echarts from 'vue-echarts-v3/src/full'
@@ -183,7 +183,7 @@ export default {
           },
           roam: false,
           layoutCenter: ['50%', '53%'],
-          layoutSize: "150%",
+          layoutSize: '150%',
           itemStyle: {
             normal: {
               // color: 'rgba(8, 30, 67, .9)',
@@ -273,9 +273,9 @@ export default {
           }
         },
         legend: {
-          x: "center",
+          x: 'center',
           show: false,
-          data: ["朋友", "战友", '亲戚']
+          data: ['朋友', '战友', '亲戚']
         },
         grid: {
           top: 40,
@@ -319,7 +319,7 @@ export default {
                 textStyle: {
                   fontSize: 10
                 },
-                formatter: "{c}"
+                formatter: '{c}'
               }
             },
             data: [
@@ -422,7 +422,7 @@ export default {
         this.updateLayout('device');
         this.number_now = this.number_now + 1
       } else {
-          this.updatePerson()
+        this.updatePerson()
       }
     },
     updatePerson: function () {
