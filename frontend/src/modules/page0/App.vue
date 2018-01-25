@@ -202,7 +202,7 @@
           // 更改bottom_echarts颜色
         });
         axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
-          this.yuqingIndex = _.isUndefined(response.data.yuqingIndex) ? this.yuqingIndex : response.data.yuqing_index;
+          this.yuqingIndex = _.isUndefined(response.data.yuqing_index) ? this.yuqingIndex : response.data.yuqing_index;
           this.yuqing_total = _.isUndefined(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
           this.yuqing_media = _.isUndefined(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
           this.yuqing_gzh = _.isUndefined(response.data.yuqing_gzh) || response.data.yuqing_gzh === 0 ? this.yuqing_gzh : response.data.yuqing_gzh;
@@ -231,6 +231,7 @@
             }
           }
           var b_option_data_value = this.yuqingIndex / 100;
+          debugger
           this.b_option.series[0].data[0].value = b_option_data_value;
           // 将分数值改为中文显示
           this.b_option.series[0].label.normal.formatter = this.decideScoreColor(b_option_data_value).score;
