@@ -45,7 +45,7 @@
 
   import Vue from 'vue'
   import Echarts from 'vue-echarts-v3/src/full.js'
-  // import LiquidFill from 'echarts-liquidfill'
+  import LiquidFill from 'echarts-liquidfill'
 
   import Common from 'components/Common.js'
 
@@ -269,7 +269,8 @@
       clearInterval(this.intervalID)
     },
     components: {
-      Echarts
+      Echarts,
+      LiquidFill
     }
   }
 </script>
