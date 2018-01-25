@@ -46,6 +46,9 @@
       return {
         Common: Common,
         intervalID: null,
+        intervalRotate: null,
+        nowCityIndex: 0,
+        rotateCities: [],
         l_t_option: {
           title: {
             text: '风险走势',
@@ -431,7 +434,10 @@
             this.echartsGlobe();
           }
       }, 1 * 60 * 60 * 1000);
-      console.log(Common.addr + '');
+      // console.log(Common.addr + '');
+      this.intervalRotate = setInterval(() => {
+        this.rotate_globe()
+      }, 3 * 1000);
     },
     methods: {
       goto: function () {
@@ -513,12 +519,53 @@
           if (this.globe) {
             this.globe.setOption(this.globe_t_option);
           }
+          this.rotateCities = response.data;
         });
+      },
+      rotate_globe: function () {
+        if (!_.isEmpty(this.rotateCities)) {
+          let tmpx = Math.floor(this.nowCityIndex / 2);
+          let tmpy = this.nowCityIndex % 2;
+          // console.log(tmpx + "  " + tmpy + " length:" + this.rotateCities.length)
+          let centerl = [110, 33]
+          let cantern = '铜仁'
+          if (tmpy === 0) {
+            centerl = this.rotateCities[tmpx].departure.Coordinate;
+            cantern = this.rotateCities[tmpx].departure.CityName + " -> " + this.rotateCities[tmpx].destination.CityName;
+          } else {
+            centerl = this.rotateCities[tmpx].destination.Coordinate;
+            cantern = this.rotateCities[tmpx].departure.CityName + " -> " + this.rotateCities[tmpx].destination.CityName;
+          }
+          this.nowCityIndex = this.nowCityIndex + 1;
+          this.nowCityIndex = Math.floor(this.nowCityIndex / 2) >= this.rotateCities.length ? 0 : this.nowCityIndex;
+          this.globe.setOption({
+            title: {
+              left: 'center',
+              top: 'center',
+              text: cantern,
+              textStyle: {
+                color: '#fff',
+                padding: 5,
+                fontSize: 40,
+                borderWidth: 1,
+                borderColor: '#0775e4',
+                backgroundColor: 'rgba(29, 81, 203, .8)',
+              },
+              zlevel: 101
+            },
+            globe: {
+              viewControl: {
+                targetCoord: centerl
+              }
+            }
+          });
+        }
       }
     },
     beforeDestroy () {
       clearInterval(this.intervalID)
       clearInterval(this.intervalGlobe)
+      clearInterval(this.intervalRotate)
     },
     components: {
       'Echarts': Echarts,
