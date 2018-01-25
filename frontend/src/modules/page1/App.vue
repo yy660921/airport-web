@@ -276,7 +276,7 @@
             splitLine: {
               show: false,
             },
-            data: ["0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]
+            data: ['0:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']
           },
           yAxis: {
             type: 'value',
@@ -429,10 +429,10 @@
         this.updateData()
       }, 30 * 1000);
       this.intervalGlobe = setInterval(() => {
-          if (this.globe) {
-            this.globe.dispose();
-            this.echartsGlobe();
-          }
+        if (this.globe) {
+          this.globe.dispose();
+          this.echartsGlobe();
+        }
       }, 1 * 60 * 60 * 1000);
       // console.log(Common.addr + '');
       this.intervalRotate = setInterval(() => {
@@ -531,10 +531,10 @@
           let cantern = '铜仁'
           if (tmpy === 0) {
             centerl = this.rotateCities[tmpx].departure.Coordinate;
-            cantern = this.rotateCities[tmpx].departure.CityName + " -> " + this.rotateCities[tmpx].destination.CityName;
+            cantern = this.rotateCities[tmpx].departure.CityName + ' -> ' + this.rotateCities[tmpx].destination.CityName;
           } else {
             centerl = this.rotateCities[tmpx].destination.Coordinate;
-            cantern = this.rotateCities[tmpx].departure.CityName + " -> " + this.rotateCities[tmpx].destination.CityName;
+            cantern = this.rotateCities[tmpx].departure.CityName + ' -> ' + this.rotateCities[tmpx].destination.CityName;
           }
           this.nowCityIndex = this.nowCityIndex + 1;
           this.nowCityIndex = Math.floor(this.nowCityIndex / 2) >= this.rotateCities.length ? 0 : this.nowCityIndex;

@@ -37,7 +37,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Vue from 'vue'
+  // import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'

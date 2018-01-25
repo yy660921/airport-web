@@ -269,7 +269,8 @@
       clearInterval(this.intervalID)
     },
     components: {
-      Echarts
+      Echarts,
+      LiquidFill
     }
   }
 </script>
