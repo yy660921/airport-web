@@ -77,7 +77,7 @@
           },
           series: [
             {
-              name: '选项B',
+              name: '外网舆情',
               type: 'line',
               itemStyle: {
                 normal: {

@@ -69,7 +69,7 @@
           },
           series: [
             {
-              name: '选项B',
+              name: '查获物件',
               type: 'line',
               itemStyle: {
                 normal: {
@@ -90,7 +90,7 @@
               data: [20, 10, 20, 30, 35, 26, 36, 30]
             },
             {
-              name: '选项A',
+              name: '风险旅客',
               type: 'line',
               itemStyle: {
                 normal: {
