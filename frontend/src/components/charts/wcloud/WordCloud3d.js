@@ -156,12 +156,14 @@ function sineCosine (a, b, c) {
 }
 
 function cloud (targetId, data) {
+  $('#' + targetId).empty();
+  initialize();
+
   var items = [];
   _.each(data, function (val, key) {
     items.push('<a href=#  style=font-size:' + val + 'px>' + key + '</a>');
   });
 
-  $('#' + targetId).empty();
   $('<div/>', {
     id: 'div1',
     ALIGN: 'center',
