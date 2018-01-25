@@ -10,6 +10,7 @@
     </div>
     <div class="con-right">
       <div class="con-box">
+	    <h3>敏感词云</h3>
         <div class="chart" id="wordcloud"></div>
       </div>
       <div class="con-box" @click="goto">
