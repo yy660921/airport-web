@@ -247,10 +247,13 @@
       },
       update_word_cloud_option () {
         axios.get('/api/getWordCloud').then(response => {
-          console.log(response.data);
+          let sizes = _.map(response.data, item => parseInt(item.value));
+          let max = _.max(sizes);
+          let min = _.min(sizes);
+
           let words = {};
           _.each(response.data, item => {
-            words[item.name] = parseInt(item.value);
+            words[item.name] = (parseInt(item.value) - min) / (max - min + 1) * 50 + 25;
           })
           WordCloud.cloud('wordcloud', words);
         });
