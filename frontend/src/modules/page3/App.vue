@@ -22,7 +22,7 @@
           @sliding-start="onSlideStart"
           @sliding-end="onSlideEnd"
         >
-          <b-carousel-slide v-for="(msg, idx) in newsdata">
+          <b-carousel-slide v-for="(msg, idx) in newsdata" :key="idx">
             <div class="list active" :key="idx">
               <a href="#" class="link"><i class="news-icon fa fa-newspaper-o"></i><span>#{{ msg['keyword'] }}#</span>{{ msg['title'] }}</a>
               <p class="news-detail" >{{ msg['content'] }}</p>
