@@ -186,7 +186,7 @@ public class Query {
      * @description: 查询观点信息
      */
     public static ArrayNode getViewPointInfo(){
-        String sql = "SELECT viewpoint,time FROM customs_sentiment WHERE time = (SELECT MAX(time) FROM customs_sentiment)";
+        String sql = "SELECT viewpoint,time FROM customs_sentiment ORDER BY time DESC LIMIT 5";
         return getViewPointInfoBySQL(sql);
     }
 
@@ -815,19 +815,26 @@ public class Query {
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            if(rs.next()){
-                ArrayNode viewPoint = (ArrayNode) objectMapper.readTree(rs.getString("viewpoint"));
-                for(JsonNode view:viewPoint){
-                    ObjectNode v = objectMapper.createObjectNode();
-                    v.put("value",view.get("docs_count").asInt());
-                    v.put("name",view.get("key_words").asText());
-                    result.add(v);
+            while(rs.next()){
+                try {
+                    ArrayNode
+                        viewPoint =
+                        (ArrayNode) objectMapper.readTree(rs.getString("viewpoint"));
+                    for (JsonNode view : viewPoint) {
+                        ObjectNode v = objectMapper.createObjectNode();
+                        v.put("value", view.get("docs_count").asInt());
+                        v.put("name", view.get("key_words").asText());
+                        result.add(v);
+                    }
+                    break;
+                }catch(Exception e){
+                    e.printStackTrace();
+                    System.out.println(sql);
                 }
-
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            System.out.println("Connection Error");
         } finally {
             try {
                 conn.close();
