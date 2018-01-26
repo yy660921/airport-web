@@ -18,15 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import airport.web.restful.service.Constant;
 import airport.web.restful.service.News.NewsOutputService;
@@ -58,13 +55,6 @@ public class NewsController {
             1,
             TimeUnit.HOURS);
     }
-    private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>(){
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd");
-        }
-    };
-    private static Pattern DataPattern = Pattern.compile("^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$");
     private final static Logger LOG = LoggerFactory.getLogger(NewsController.class);
 
     @ResponseBody
@@ -92,13 +82,15 @@ public class NewsController {
             Long filelength = file.length();
             byte[] filecontent = new byte[filelength.intValue()];
             FileInputStream in = new FileInputStream(file);
-            in.read(filecontent);
+            if(in.read(filecontent)==0){
+                LOG.debug("Empty File.");
+            }
             in.close();
             Result = new String(filecontent, "utf8");
         }catch (Exception e){
             System.out.println("File Read Error");
         }
-        return new ResponseEntity<byte[]>(Result.getBytes(), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(Result.getBytes(), headers, HttpStatus.CREATED);
     }
 
     @ResponseBody

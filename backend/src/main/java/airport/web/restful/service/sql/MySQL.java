@@ -1,14 +1,16 @@
 package airport.web.restful.service.sql;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 
+import airport.web.restful.controller.daily.CustomsController.Top10TouristsAndRiskIndexController;
 import airport.web.restful.service.Constant;
 
 /**
@@ -20,6 +22,7 @@ public class MySQL {
     private static String url;
     private static String password;
     private static String username;
+    private final static Logger LOG = LoggerFactory.getLogger(Top10TouristsAndRiskIndexController.class);
 
     static {
         Properties properties = System.getProperties();
@@ -31,8 +34,7 @@ public class MySQL {
             Constant.Password = properties.getProperty("MySQL.Password");
         }catch (Exception e)
         {
-            System.out.println("Using Default MySQL Setting!");
-//            e.printStackTrace();
+            LOG.debug("Using Default MySQL Setting!");
         }
         InputStream stream = null;
         properties = null;
@@ -43,21 +45,24 @@ public class MySQL {
             e.printStackTrace();
         }
         try {
-            properties.load(stream);
-            String driver = properties.getProperty("jdbc.driver");
-            if(Constant.IP==null) {
-                url = properties.getProperty("jdbc.url");
-                username = properties.getProperty("jdbc.username");
-                password = properties.getProperty("jdbc.password");
+            if(properties!=null) {
+                properties.load(stream);
+                String driver = properties.getProperty("jdbc.driver");
+                if(Constant.IP==null) {
+                    url = properties.getProperty("jdbc.url");
+                    username = properties.getProperty("jdbc.username");
+                    password = properties.getProperty("jdbc.password");
+                }
+                else{
+                    url = "jdbc:mysql://"+Constant.IP+":"+Constant.Port+"/"+Constant.Database+"?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true";
+                    username = Constant.Username;
+                    password = Constant.Password;
+                }
+                Class.forName(driver).newInstance();
             }
-            else{
-                url = "jdbc:mysql://"+Constant.IP+":"+Constant.Port+"/"+Constant.Database+"?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true";
-                username = Constant.Username;
-                password = Constant.Password;
-            }
-            Class.forName(driver).newInstance();
         } catch (IOException | InstantiationException | IllegalAccessException
             | ClassNotFoundException | NullPointerException e) {
+            LOG.debug("Default Setting Reading Error");
             e.printStackTrace();
         }
     }

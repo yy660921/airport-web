@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sun.rmi.runtime.Log;
+
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,10 +26,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import javax.validation.constraints.Null;
-
 import airport.web.data.bean.CustomsTouristMessage;
 import airport.web.data.bean.TourTrips;
+import airport.web.restful.controller.daily.CustomsController.Top10TouristsAndRiskIndexController;
 import airport.web.restful.service.Constant;
 
 /**
@@ -47,6 +50,8 @@ public class Query {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
     };
+    private final static Logger LOG = LoggerFactory.getLogger(Top10TouristsAndRiskIndexController.class);
+
 
     /*
      * @description: 查询从from到to时间段内的信息
@@ -112,15 +117,19 @@ public class Query {
     /*
      * @description: 查询某条航线
      */
-    public static JsonNode getAirLine(Iterator<String> Places){
+    private static JsonNode getAirLine(Iterator<String> Places){
         String sql = "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"北京\")";
         if(Places.hasNext()) {
             sql =
-                "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"" + Places.next();
+                "SELECT cncity,lon,lat FROM city_longlati WHERE cncity in (\"";
+            StringBuilder stringBuilder = new StringBuilder(sql);
+            stringBuilder.append(Places.next());
             while(Places.hasNext()){
-                sql += "\",\"" + Places.next();
+                stringBuilder.append("\",\"");
+                stringBuilder.append(Places.next());
             }
-            sql += "\")";
+            stringBuilder.append("\")");
+            sql = stringBuilder.toString();
         }
         return getAirLineBySQL(sql);
     }
@@ -198,6 +207,7 @@ public class Query {
         return getWordCloudBySQL(sql);
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -221,19 +231,22 @@ public class Query {
             result.replace("createDate", createDate);
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!= null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getDepartureAndDestinationBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -290,19 +303,22 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getTop10TouristsAndRiskIndexBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -313,7 +329,7 @@ public class Query {
             conn = MySQL.getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
-            JsonNode TouristList = null;
+            JsonNode TouristList = objectMapper.createObjectNode();
             if (rs.next()) {
                 TouristList = objectMapper.readTree(rs.getString("warningTourist_nameList"));
             }
@@ -339,19 +355,22 @@ public class Query {
             result.replace("TouristRiskIndex", RiskIndex);
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getDeviceCountDistBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -377,19 +396,22 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static LinkedList<TourTrips> getAirwayTripBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -453,24 +475,26 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static LinkedList<CustomsTouristMessage> getTouristMessageBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
         ResultSet rs;
-        FileWriter writer;
         LinkedList<CustomsTouristMessage> result = new LinkedList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         HashSet<String> Places = new HashSet<>();
@@ -568,19 +592,22 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getAirLineBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -601,16 +628,19 @@ public class Query {
             e.printStackTrace();
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getFirstPageCountBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -639,19 +669,22 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static JsonNode getFirstPageNewsCountBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -683,19 +716,20 @@ public class Query {
             result.replace("yuqing_gzhtop2", Constant.yuqing_gzhtop2);
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
                 conn.close();
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static LinkedList<JsonNode> getNewsDetailBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -718,19 +752,20 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
                 conn.close();
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static ArrayNode getTotalNewsDetailBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -753,19 +788,20 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
                 conn.close();
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static ObjectNode getWeeklyCountNumBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -784,27 +820,30 @@ public class Query {
                 Iterator<String> TI = Tendency.fieldNames();
                 while (TI.hasNext()) {
                     String Date = TI.next();
-                    dates.add(Date);
-                    tendency.add(Tendency.get(Date));
+                    dates.add(Date.replaceAll("20[\\d]*-",""));
+                    tendency.add(Integer.parseInt(Tendency.get(Date).asText()));
                 }
             }
-            result.replace("date",dates);
-            result.replace("tendency",tendency);
+            result.replace("Date",dates);
+            result.replace("count",tendency);
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static ArrayNode getViewPointInfoBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -829,24 +868,27 @@ public class Query {
                     break;
                 }catch(Exception e){
                     e.printStackTrace();
-                    System.out.println(sql);
+                    LOG.debug(sql);
                 }
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Connection Error");
+            LOG.debug("Connection Error");
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }
     }
 
+    @SuppressWarnings("finally")
     private static ArrayNode getWordCloudBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -862,14 +904,16 @@ public class Query {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println(sql);
+            LOG.debug(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             }
             catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
-                System.out.println("MySQL Connection Error!!!!!\n");
+                LOG.debug("MySQL Connection Error!!!!!\n");
             }
             return result;
         }

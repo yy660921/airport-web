@@ -2,8 +2,6 @@ package airport.web.restful.controller.daily.CustomsController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +16,6 @@ import static airport.web.restful.service.sql.Query.getDeviceCountDist;
  */
 @Controller
 public class DeviceCountDistController {
-    private final static Logger LOG = LoggerFactory.getLogger(DeviceCountDistController.class);
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = {

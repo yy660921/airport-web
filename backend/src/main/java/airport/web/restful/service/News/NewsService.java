@@ -1,5 +1,7 @@
 package airport.web.restful.service.News;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -9,9 +11,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
+import airport.web.restful.controller.daily.CustomsController.Top10TouristsAndRiskIndexController;
 import airport.web.restful.service.Constant;
 import airport.web.restful.service.sql.MySQL;
 
@@ -30,18 +34,15 @@ public class NewsService implements Runnable{
             return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
-    private static ThreadLocal<SimpleDateFormat> timeFormat = new ThreadLocal<SimpleDateFormat>(){
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        }
-    };
+    private final static Logger LOG = LoggerFactory.getLogger(Top10TouristsAndRiskIndexController.class);
 
-    public static void UpdateCity(){
+    private static void UpdateCity(){
         FileWriter writer = null;
         try {
             File f = new File("./WrongCity.txt");
-            f.createNewFile();
+            if(!f.createNewFile()){
+                LOG.debug("Create WrongCity.txt Fail");
+            }
             writer = new FileWriter("./WrongCity.txt", true);
             if(Constant.CityList == null){
                 Constant.CityList = new HashSet<>();
@@ -54,32 +55,22 @@ public class NewsService implements Runnable{
             e.printStackTrace();
         }finally {
             try {
-                writer.close();
+                if(writer!=null) {
+                    writer.close();
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
 
-    public static void UpDateNews(){
+    private static void UpDateNews(){
         Connection conn = null;
         PreparedStatement ps;
         ResultSet rs;
         String sql = "";
         try{
             conn = MySQL.getConnection();
-            sql = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") AS date, COUNT(*) AS count FROM customs_news WHERE DATEDIFF((SELECT DATE_FORMAT(MAX(FROM_UNIXTIME(time)),\"%Y-%m-%d\") FROM customs_news),FROM_UNIXTIME(time)) < 20 GROUP BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") ORDER BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") DESC";
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            int Now = 0;
-            int Max = 1;
-            while(rs.next()){
-                Now = rs.getInt("count");
-                if(Now > Max){
-                    Max = Now;
-                }
-            }
-            Constant.yuqing_index = (int)(Now/(Max*1.2)*100);
             sql = "SELECT COUNT(source) AS count,source FROM customs_news WHERE category = \"多媒体\" GROUP BY source ORDER BY COUNT(source) DESC LIMIT 2;";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -105,27 +96,40 @@ public class NewsService implements Runnable{
                 GregorianCalendar gc=new GregorianCalendar();
                 try {
                     gc.setTime(dateFormat.get().parse(rs.getString("date")));
-                    gc.add(5,-30);
+                    gc.add(Calendar.DAY_OF_MONTH, -30);
                 }catch (Exception e){
-
+                    LOG.debug("Date Format Error from customs_news :" + rs.getString("date"));
                 }
                 for(int i=0;i<30;i++){
                     Constant.yuqing_Count.put(dateFormat.get().format(gc.getTime()), 0);
-                    gc.add(5,1);
+                    gc.add(Calendar.DAY_OF_MONTH,1);
                 }
             }
-            sql = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") AS date, COUNT(*) AS count FROM customs_news WHERE DATEDIFF((SELECT DATE_FORMAT(MAX(FROM_UNIXTIME(time)),\"%Y-%m-%d\") FROM customs_news),FROM_UNIXTIME(time)) < 30 GROUP BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") ORDER BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") DESC";
+            sql = "SELECT DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") AS date, COUNT(*) AS count FROM customs_news WHERE DATEDIFF((SELECT DATE_FORMAT(MAX(FROM_UNIXTIME(time)),\"%Y-%m-%d\") FROM customs_news),FROM_UNIXTIME(time)) < 30 GROUP BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") ORDER BY DATE_FORMAT(FROM_UNIXTIME(time),\"%Y-%m-%d\") DESC;";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
+            int Now = 0;
+            int Max = 1;
+            int Start = 0;
             while(rs.next()){
                 Constant.yuqing_Count.put(rs.getString("date"), rs.getInt("count"));
+                Now = rs.getInt("count");
+                if(Now > Max){
+                    Start += 1;
+                    if(Start > 10){
+                        Max = Now;
+                    }
+                }
             }
+            Constant.yuqing_index = (int)(Now/(Max*1.2)*100);
         }catch (Exception e) {
             e.printStackTrace();
             System.out.println(sql);
         } finally {
             try {
-                conn.close();
+                if(conn!=null) {
+                    conn.close();
+                }
             } catch (SQLException | NullPointerException e) {
                 e.printStackTrace();
                 System.out.println("MySQL Connection Error!!!!!\n");

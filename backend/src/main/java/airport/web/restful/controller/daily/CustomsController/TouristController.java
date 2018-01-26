@@ -27,7 +27,7 @@ public class TouristController {
 
     public LinkedList<CustomsTouristMessage> getTourist(
         @RequestParam(value = "date", defaultValue = "1509811200") long date) {
-        LinkedList Result = getTouristMessage(new Date(date));
+        LinkedList<CustomsTouristMessage> Result = getTouristMessage(new Date(date));
         if(Result.size() == 0){
             return getTouristMessage();
         }
