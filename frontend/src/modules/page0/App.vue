@@ -202,7 +202,7 @@
           // 更改bottom_echarts颜色
         });
         axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
-          this.yuqingIndex = _.isUndefined(response.data.yuqingIndex) ? this.yuqingIndex : response.data.yuqing_index;
+          this.yuqingIndex = _.isUndefined(response.data.yuqing_index) ? this.yuqingIndex : response.data.yuqing_index;
           this.yuqing_total = _.isUndefined(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
           this.yuqing_media = _.isUndefined(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
           this.yuqing_gzh = _.isUndefined(response.data.yuqing_gzh) || response.data.yuqing_gzh === 0 ? this.yuqing_gzh : response.data.yuqing_gzh;
@@ -269,7 +269,8 @@
       clearInterval(this.intervalID)
     },
     components: {
-      Echarts
+      Echarts,
+      LiquidFill
     }
   }
 </script>

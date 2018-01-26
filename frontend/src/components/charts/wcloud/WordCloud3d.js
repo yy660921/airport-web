@@ -18,6 +18,24 @@ var oDiv = null;
 
 var sa, ca, sb, cb, sc, cc;
 
+function initialize () {
+  radius = 180; // 3D 球的半径
+  dtr = Math.PI / 180;
+  d = 900;
+  mcList = [];
+  active = false;
+  lasta = 1;
+  lastb = 1;
+  distr = true;
+  tspeed = 20; // 文字移动速度
+  size = 500;
+  mouseX = 0;
+  mouseY = 0;
+  howElliptical = 1;
+  aA = null;
+  oDiv = null;
+}
+
 function update () {
   var a;
   var b;
@@ -138,12 +156,14 @@ function sineCosine (a, b, c) {
 }
 
 function cloud (targetId, data) {
+  $('#' + targetId).empty();
+  initialize();
+
   var items = [];
   _.each(data, function (val, key) {
     items.push('<a href=#  style=font-size:' + val + 'px>' + key + '</a>');
   });
 
-  $('#' + targetId).empty();
   $('<div/>', {
     id: 'div1',
     ALIGN: 'center',

@@ -10,6 +10,7 @@
     </div>
     <div class="con-right">
       <div class="con-box">
+	    <h3>敏感词云</h3>
         <div class="chart" id="wordcloud"></div>
       </div>
       <div class="con-box" @click="goto">
@@ -36,7 +37,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import Vue from 'vue'
+  // import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
   import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
@@ -76,7 +77,7 @@
           },
           series: [
             {
-              name: '选项B',
+              name: '外网舆情',
               type: 'line',
               itemStyle: {
                 normal: {
