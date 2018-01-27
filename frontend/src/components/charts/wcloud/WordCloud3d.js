@@ -155,9 +155,16 @@ function sineCosine (a, b, c) {
   cc = Math.cos(c * dtr);
 }
 
+var interval;
+
 function cloud (targetId, data) {
   $('#' + targetId).empty();
   initialize();
+
+  mcList = [];
+  if (interval) {
+    clearInterval(interval);
+  }
 
   var items = [];
   _.each(data, function (val, key) {
@@ -197,7 +204,7 @@ function cloud (targetId, data) {
   // };
   mouseX = 5;
   mouseY = 5;
-  setInterval(update, 30);
+  interval = setInterval(update, 30);
 }
 export default {
   cloud: cloud,
