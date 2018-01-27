@@ -336,6 +336,22 @@
         },
         globe_t_option: {
           backgroundColor: 'rgba(0, 0, 0, 0)',
+          title: {
+            text: '铜仁 -> 北京',
+            left: 'center',
+            bottom: '80',
+            textStyle: {
+              color: '#fff',
+              width: '200%',
+              fontSize: 40
+            },
+            padding: [20, 50],
+            borderWidth: 2,
+            borderColor: 'rgb(1, 241, 228)',
+            borderRadius: 10,
+            backgroundColor: 'rgba(29, 81, 203, .8)',
+            zlevel: 101
+          },
           globe: {
             globeRadius: 95,
             globeOuterRadius: 500,
@@ -540,18 +556,7 @@
           this.nowCityIndex = Math.floor(this.nowCityIndex / 2) >= this.rotateCities.length ? 0 : this.nowCityIndex;
           this.globe.setOption({
             title: {
-              left: 'center',
-              top: 'center',
-              text: cantern,
-              textStyle: {
-                color: '#fff',
-                padding: 5,
-                fontSize: 40,
-                borderWidth: 1,
-                borderColor: '#0775e4',
-                backgroundColor: 'rgba(29, 81, 203, .8)',
-              },
-              zlevel: 101
+              text: cantern
             },
             globe: {
               viewControl: {
