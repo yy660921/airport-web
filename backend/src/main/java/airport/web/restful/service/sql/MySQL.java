@@ -3,6 +3,7 @@ package airport.web.restful.service.sql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -10,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import airport.web.restful.controller.daily.CustomsController.Top10TouristsAndRiskIndexController;
 import airport.web.restful.service.Constant;
 
 /**
@@ -22,7 +22,7 @@ public class MySQL {
     private static String url;
     private static String password;
     private static String username;
-    private final static Logger LOG = LoggerFactory.getLogger(Top10TouristsAndRiskIndexController.class);
+    private final static Logger LOG = LoggerFactory.getLogger(MySQL.class);
 
     static {
         Properties properties = System.getProperties();
@@ -32,8 +32,20 @@ public class MySQL {
             Constant.Database = properties.getProperty("MySQL.Database");
             Constant.Username = properties.getProperty("MySQL.Username");
             Constant.Password = properties.getProperty("MySQL.Password");
-        }catch (Exception e)
-        {
+        }catch (Exception e) {
+            LOG.debug("Properties Read Error!");
+        }
+        try{
+            String FileName = properties.getProperty("Properties.File");
+            properties.load(new FileReader(FileName));
+            String driver = properties.getProperty("jdbc.driver");
+            if(Constant.IP==null) {
+                url = properties.getProperty("jdbc.url");
+                username = properties.getProperty("jdbc.username");
+                password = properties.getProperty("jdbc.password");
+            }
+            Class.forName(driver).newInstance();
+        }catch (Exception e){
             LOG.debug("Using Default MySQL Setting!");
         }
         InputStream stream = null;
@@ -45,7 +57,7 @@ public class MySQL {
             e.printStackTrace();
         }
         try {
-            if(properties!=null) {
+            if(properties!=null && url ==null) {
                 properties.load(stream);
                 String driver = properties.getProperty("jdbc.driver");
                 if(Constant.IP==null) {

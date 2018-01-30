@@ -23,7 +23,6 @@ public class NewsOutputService implements Runnable{
             }
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, TotalNews);
-            System.out.println(TotalNews.asText().length());
         }catch (Exception e){
             e.printStackTrace();
         }finally {
