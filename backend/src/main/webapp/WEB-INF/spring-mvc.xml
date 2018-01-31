@@ -57,6 +57,8 @@
                 <prop key="org.apache.shiro.authz.UnauthenticatedException">
                     redirect:/account/
                 </prop>
+                <!-- 其他500异常 -->
+                <prop key="java.lang.Throwable">error/500</prop>
             </props>
         </property>
     </bean>
