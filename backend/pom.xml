@@ -369,6 +369,17 @@
             <artifactId>jetty-jsp</artifactId>
             <version>${jetty.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.glassfish</artifactId>
+                    <groupId>javax.el</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b08</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
