@@ -18,8 +18,10 @@ public class NewsOutputService implements Runnable{
         ArrayNode TotalNews = getTotalNewsDetail();
         try {
             File file = new File("./haiguan_results.json");
-            if(!file.createNewFile()){
-                System.out.println("Create File Error!");
+            if(!file.exists()) {
+                if (!file.createNewFile()) {
+                    System.out.println("Create File Error!");
+                }
             }
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, TotalNews);
