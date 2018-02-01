@@ -226,7 +226,9 @@
       update_right () {
         axios.get('/api/getNews').then(response => {
           this.activeNewsIndex = 0;
-          this.newsdata = response.data;
+          if (response.data.length > 0) {
+            this.newsdata = response.data;
+          }
         });
       },
     },
