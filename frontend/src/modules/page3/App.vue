@@ -163,7 +163,7 @@
       };
     },
     watch: {
-      'words': function (words) {
+      words: function (words) {
         WordCloud.cloud('wordcloud', words);
       }
     },
