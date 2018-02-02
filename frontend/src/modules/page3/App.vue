@@ -172,6 +172,7 @@
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 5 * 60 * 1000);
+      WordCloud.cloud('wordcloud', this.words); // initial word cloud at start.
     },
     methods: {
       goto () {
