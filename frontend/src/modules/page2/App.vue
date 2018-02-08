@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="real-body">
-    <transition name="fade">
-      <div class="basic" v-show='toggle_flag'>
+    <transition name="fade" >
+      <div class="basic" v-if='toggle_flag' key="basic">
         <div class="guest-info" @click="goto">
           <div class="info-detail">
             <p><strong>基本信息：</strong></p>
@@ -25,7 +25,6 @@
               <img src="~assets/images/circle-2.png" alt="">
             </div>
             <div class="circle circle-1">
-              <!-- <img src="~assets/images/circle-1.png" alt=""> -->
               <span :class="{'risk-middle': riskMiddle, 'risk-height': riskHeight }">{{ riskIndex }}</span>
             </div>
           </div>
@@ -51,9 +50,7 @@
           </div>
         </div>
       </div>
-    </transition>
-    <transition name="fade">
-      <div class="device" v-show="!toggle_flag">
+      <div class="device" v-else key="device">
         <div class="con-box" v-for="(item, index) in this.deviceStatus" :key="index">
           <div class="box-cont" @click="goto">
             <h3 class="box-title">{{item.title}}</h3>
@@ -727,7 +724,7 @@ export default {
       opacity: 0.05;
   // 页面切换效果
   .fade-enter-active, .fade-leave-active
-    transition: opacity .8s;
+    transition: opacity .4s;
   .fade-enter, .fade-leave-to
     opacity: 0;
 </style>
