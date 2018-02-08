@@ -29,21 +29,31 @@
 
   import Common from 'components/Common.js'
 
+  import BaseTexture from 'components/texture/Base.js'
+  import HeightTexture from 'components/texture/Height.js'
+  import BlendTexture from 'components/texture/Blend.js'
+  // import OverlayTexture from 'components/texture/Overlay.js'
+
   const baseTexture = new Image();
-  baseTexture.crossOrigin = 'anonymous';
-  baseTexture.src = require('../../assets/map-rc/data-1491890179041-Hkj-elqpe.jpg');
+  baseTexture.src = BaseTexture.texture;
+  // baseTexture.crossOrigin = 'anonymous';
+  // baseTexture.src = require('../../assets/map-rc/data-1491890179041-Hkj-elqpe.jpg');
 
   const heightTexture = new Image();
-  heightTexture.crossOrigin = 'anonymous';
-  heightTexture.src = require('../../assets/map-rc/data-1491889019097-rJQYikcpl.jpg');
+  heightTexture.src = HeightTexture.texture;
+  // heightTexture.crossOrigin = 'anonymous';
+  // heightTexture.src = require('../../assets/map-rc/data-1491889019097-rJQYikcpl.jpg');
 
   const blendTexture = new Image();
-  blendTexture.crossOrigin = 'anonymous';
-  blendTexture.src = require('../../assets/map-rc/data-1491890291849-rJ2uee5ag.jpg')
+  blendTexture.src = BlendTexture.texture;
+  // blendTexture.crossOrigin = 'anonymous';
+  // blendTexture.src = require('../../assets/map-rc/data-1491890291849-rJ2uee5ag.jpg')
 
-  const overlayTexture = new Image();
-  overlayTexture.crossOrigin = 'anonymous';
-  overlayTexture.src = require('../../assets/map-rc/data-1491890092270-BJEhJg96l.png')
+  // This one is indeed not needed.
+  // const overlayTexture = new Image();
+  // overlayTexture.src = GlobeTexture.overlayTexture;
+  // // overlayTexture.crossOrigin = 'anonymous';
+  // // overlayTexture.src = require('../../assets/map-rc/data-1491890092270-BJEhJg96l.png')
 
   export default {
     data () {
