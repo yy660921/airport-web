@@ -30,19 +30,19 @@
   import Common from 'components/Common.js'
 
   const baseTexture = new Image();
-  baseTexture.crossOrigin = '';
+  baseTexture.crossOrigin = 'anonymous';
   baseTexture.src = require('../../assets/map-rc/data-1491890179041-Hkj-elqpe.jpg');
 
   const heightTexture = new Image();
-  heightTexture.crossOrigin = '';
+  heightTexture.crossOrigin = 'anonymous';
   heightTexture.src = require('../../assets/map-rc/data-1491889019097-rJQYikcpl.jpg');
 
   const blendTexture = new Image();
-  blendTexture.crossOrigin = '';
+  blendTexture.crossOrigin = 'anonymous';
   blendTexture.src = require('../../assets/map-rc/data-1491890291849-rJ2uee5ag.jpg')
 
   const overlayTexture = new Image();
-  overlayTexture.crossOrigin = '';
+  overlayTexture.crossOrigin = 'anonymous';
   overlayTexture.src = require('../../assets/map-rc/data-1491890092270-BJEhJg96l.png')
 
   export default {
