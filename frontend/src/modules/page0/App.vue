@@ -38,7 +38,7 @@
         <p><img src="~assets/images/ganzhi-img.png" alt=""></p>
       </div>
     </div>
-    <a href="./page1" class="next-page">
+    <a href="/page1" class="next-page">
       <img src="~assets/images/next-page.png" alt="">
     </a>
   </div>
