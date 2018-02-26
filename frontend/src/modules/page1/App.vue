@@ -15,6 +15,9 @@
     <div class="center-box">
       <div class="chart" id="echarts-globe"></div>
     </div>
+    <a href="./page2" class="next-page">
+      <img src="~assets/images/next-page.png" alt="">
+    </a>
   </div>
 </template>
 

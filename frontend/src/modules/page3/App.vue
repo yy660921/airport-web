@@ -33,6 +33,9 @@
         <p class="load-all"><a href="/api/getTotalNews" title="加载全部">加载全部</a></p>
       </div>
     </div>
+    <a href="./page0" class="next-page">
+      <img src="~assets/images/next-page.png" alt="">
+    </a>
   </div>
 </template>
 
