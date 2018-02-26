@@ -15,6 +15,9 @@
     <div class="center-box">
       <div class="chart" id="echarts-globe"></div>
     </div>
+    <a href="./page2" class="next-page">
+      <img src="~assets/images/next-page.png" alt="">
+    </a>
   </div>
 </template>
 
@@ -249,7 +252,7 @@
               data: ['3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000', '3000']
             },
             {
-              name: '旅客人数',
+              name: '风险值',
               type: 'bar',
               barWidth: 14,
               label: {

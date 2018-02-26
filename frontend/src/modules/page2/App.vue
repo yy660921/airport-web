@@ -62,6 +62,9 @@
         </div>
       </div>
     </transition>
+    <a href="./page3" class="next-page">
+      <img src="~assets/images/next-page.png" alt="">
+    </a>
   </div>
 </template>
 
