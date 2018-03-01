@@ -207,6 +207,11 @@ public class Query {
         return getWordCloudBySQL(sql);
     }
 
+    public static JsonNode getPageJumpDetail(){
+        String sql = "SELECT * FROM page_jump_settings";
+        return getPageJumpBySQL(sql);
+    }
+
     @SuppressWarnings("finally")
     private static JsonNode getRiskTouristsAndSeizureNumberBySQL(String sql){
         Connection conn = null;
@@ -901,6 +906,43 @@ public class Query {
             rs = ps.executeQuery();
             if(rs.next()){
                 result = (ArrayNode) objectMapper.readTree(rs.getString("cloud"));
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getPageJumpBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                String nowPage = rs.getString("now");
+                String toPage = rs.getString("to");
+                int pageDelay = rs.getInt("delay");
+                ObjectNode jumpNode = objectMapper.createObjectNode();
+                jumpNode.put("to", toPage);
+                jumpNode.put("delay", pageDelay);
+                result.replace(nowPage, jumpNode);
             }
         }catch (Exception e) {
             e.printStackTrace();
