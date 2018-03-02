@@ -33,8 +33,8 @@ public class RiskTouristsAndSeizureNumberController {
     })
 
     public JsonNode getRTAndSN(
-        @RequestParam(value = "from", defaultValue = "1509811200") long from,
-        @RequestParam(value = "to", defaultValue = "1512403200") long to) {
+        @RequestParam(value = "from", defaultValue = "0") long from,
+        @RequestParam(value = "to", defaultValue = "0") long to) {
         JsonNode Result = getRiskTouristsAndSeizureNumber(new Date(from * 1000), new Date(to * 1000));
         if(Result.get("createDate").size() == 0){
             return getRiskTouristsAndSeizureNumber();
