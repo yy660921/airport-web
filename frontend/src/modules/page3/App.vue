@@ -175,6 +175,10 @@
       this.intervalID = setInterval(() => {
         this.updateData()
       }, 5 * 60 * 1000);
+      axios.get('/api/getPageJump', {params: {}}).then(response => {
+        // alert(response.data.page0.to)
+        let timer = setTimeout(function () { location.href = response.data.page3.to; } , response.data.page3.delay * 1000);
+      })
     },
     mounted () {
       WordCloud.cloud('wordcloud', this.words); // initial word cloud at start.

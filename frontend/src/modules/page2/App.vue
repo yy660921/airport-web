@@ -392,6 +392,10 @@ export default {
     this.intervalID = setInterval(() => {
       this.updateData();
     }, 30 * 1000);
+    axios.get('/api/getPageJump', {params: {}}).then(response => {
+      // alert(response.data.page0.to)
+      let timer = setTimeout(function () { location.href = response.data.page2.to; } , response.data.page2.delay * 1000);
+    })
   },
   methods: {
     goto: function () {

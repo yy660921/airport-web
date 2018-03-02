@@ -471,6 +471,10 @@
       this.intervalRotate = setInterval(() => {
         this.rotate_globe()
       }, 3 * 1000);
+      axios.get('/api/getPageJump', {params: {}}).then(response => {
+        // alert(response.data.page0.to)
+        let timer = setTimeout(function () { location.href = response.data.page1.to; } , response.data.page1.delay * 1000);
+      })
     },
     methods: {
       goto: function () {
