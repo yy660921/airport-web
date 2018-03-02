@@ -340,6 +340,153 @@ const ChartLib = {
       });
     },
   },
+  '饼状图&test': {
+    option: {
+      title: {
+        text: '饼状图标题'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+    },
+  },
+  '饼状图&柱状图': {
+    option: {
+      title: {
+        text: '饼状图&柱状图'
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      xAxis: {
+        type: 'category',
+        splitLine: {
+          show: false,
+        },
+        data: ['1', '2', '3']
+      },
+      yAxis: {
+        type: 'value',
+        position: 'top',
+      },
+      grid: {
+        top: 50,
+        left: 40,
+        right: 20,
+        bottom: 25
+      },
+      series: [
+        // 柱状背景
+        {
+          name: '',
+          type: 'bar',
+          barWidth: 13,
+          barGap: '-100%',
+          itemStyle: {
+            normal: {
+              color: 'rgba(24, 50, 117, .8)',
+            }
+          },
+          tooltip: {
+            show: false,
+          },
+          data: [150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150]
+        },
+        {
+          name: '设备查验次数',
+          type: 'bar',
+          barWidth: 13,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              show: false,
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(38, 216, 255, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(32, 84, 221, 1)'
+              }]),
+              barBorderRadius: [10, 10, 0, 0],  // 圆角
+            }
+          },
+          data: [0,0,67,0,30,0,140,20,112,127,113,20,5,101,90,77,116,28,68,80,30,61,88,93]
+        },
+        // 饼状图
+        {
+          name: '饼状图name',
+          type: 'pie',
+          radius: '30%',
+          center: ['80%', '35%'],
+          tooltip: {trigger: 'axis',},
+          data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+          label: {
+            normal: {
+              fontSize: 16,
+            },
+          },
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    },
+    update: (option) => {},
+  },
 };
 
 export { ChartLib };
