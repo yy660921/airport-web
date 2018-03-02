@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
-import airport.web.restful.controller.daily.CustomsController.Top10TouristsAndRiskIndexController;
 import airport.web.restful.service.Constant;
 import airport.web.restful.service.sql.MySQL;
 
@@ -34,7 +33,7 @@ public class NewsService implements Runnable{
             return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
-    private final static Logger LOG = LoggerFactory.getLogger(Top10TouristsAndRiskIndexController.class);
+    private final static Logger LOG = LoggerFactory.getLogger(NewsService.class);
 
     private static void UpdateCity(){
         FileWriter writer = null;
