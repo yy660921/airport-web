@@ -207,9 +207,28 @@ public class Query {
         return getWordCloudBySQL(sql);
     }
 
+    /*
+     * @description: 查询页面跳转信息
+     */
     public static JsonNode getPageJumpDetail(){
         String sql = "SELECT * FROM page_jump_settings";
         return getPageJumpBySQL(sql);
+    }
+
+    /*
+     * @description: 查询显示图表信息
+     */
+    public static JsonNode getShowChartsDetail(){
+        String sql = "SELECT * FROM customs_control_echart";
+        return getShowChartsBySQL(sql);
+    }
+
+    /*
+     * @description: 查询首页显示信息
+     */
+    public static String getCountControlDetail(){
+        String sql = "SELECT * FROM customs_control_count";
+        return getCountControlBySQL(sql);
     }
 
     @SuppressWarnings("finally")
@@ -943,6 +962,73 @@ public class Query {
                 jumpNode.put("to", toPage);
                 jumpNode.put("delay", pageDelay);
                 result.replace(nowPage, jumpNode);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getShowChartsBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                String showCharts = rs.getString("show_echart");
+                String[] charts = showCharts.split("\\|");
+                result.put("left_up", charts[0]);
+                result.put("right_up", charts[1]);
+                result.put("left_down", charts[2]);
+                result.put("right_down", charts[3]);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static String getCountControlBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        String result = "";
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                result = rs.getString("show_count");
             }
         }catch (Exception e) {
             e.printStackTrace();
