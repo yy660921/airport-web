@@ -394,6 +394,7 @@ export default {
     }, 30 * 1000);
     axios.get('/api/getPageJump', {params: {}}).then(response => {
       // alert(response.data.page0.to)
+      // eslint-disable-next-line no-unused-vars
       let timer = setTimeout(function () { location.href = response.data.page2.to; } , response.data.page2.delay * 1000);
     })
   },
