@@ -155,7 +155,7 @@ public class Query {
      * @description: 查询最新的首页信息
      */
     public static JsonNode getFirstPageCount(){
-        String sql = "SELECT riskIndex,warningEvents_number,tourist_warningEvents,chinaTourist_warningEvents,overseasTourist_warningEvents,seizure_number,contraband_number,highTax_number,governpeople_number,devicecount_number FROM customs_index WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
+        String sql = "SELECT * FROM customs_index WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
         return getFirstPageCountBySQL(sql);
     }
 
@@ -678,18 +678,35 @@ public class Query {
             if (rs.next()) {
                 try {
                     result.put("riskIndex", Integer.parseInt(rs.getString("riskIndex")));
+                    result.put("riskIndex_year", Integer.parseInt(rs.getString("riskIndex_year")));
                 }catch (Exception e){
                     result.put("riskIndex", rs.getString("riskIndex"));
+                    result.put("riskIndex_year", rs.getString("riskIndex_year"));
                 }
-                result.put("warningEvents_number", rs.getInt("warningEvents_number"));
-                result.put("tourist_warningEvents", rs.getInt("tourist_warningEvents"));
-                result.put("chinaTourist_warningEvents", rs.getInt("chinaTourist_warningEvents"));
-                result.put("overseasTourist_warningEvents", rs.getInt("overseasTourist_warningEvents"));
-                result.put("seizure_number", rs.getInt("seizure_number"));
-                result.put("contraband_number", rs.getInt("contraband_number"));
-                result.put("highTax_number", rs.getInt("highTax_number"));
                 result.put("governpeople_number", rs.getInt("governpeople_number"));
                 result.put("devicecount_number", rs.getInt("devicecount_number"));
+                result.put("devicecount_year_number", rs.getInt("devicecount_year_number"));
+                result.put("traveler_number", rs.getInt("traveler_number"));
+                result.put("traveler_year_number", rs.getInt("traveler_year_number"));
+                result.put("flight_number", rs.getInt("flight_number"));
+                result.put("flight_year_number", rs.getInt("flight_year_number"));
+                result.put("warningEvents_number", rs.getInt("warningEvents_number"));
+                result.put("warningEvents_year_number", rs.getInt("warningEvents_year_number"));
+                result.put("tourist_warningEvents", rs.getInt("tourist_warningEvents"));
+                result.put("tourist_year_warningEvents", rs.getInt("tourist_year_warningEvents"));
+                result.put("overseasTourist_warningEvents", rs.getInt("overseasTourist_warningEvents"));
+                result.put("overseasTourist_year_warningEvents", rs.getInt("overseasTourist_year_warningEvents"));
+                result.put("chinaTourist_warningEvents", rs.getInt("chinaTourist_warningEvents"));
+                result.put("chinaTourist_year_warningEvents", rs.getInt("chinaTourist_year_warningEvents"));
+                result.put("seizure_number", rs.getInt("seizure_number"));
+                result.put("seizure_year_number", rs.getInt("seizure_year_number"));
+                result.put("contraband_number", rs.getInt("contraband_number"));
+                result.put("contraband_year_number", rs.getInt("contraband_year_number"));
+                result.put("highTax_number", rs.getInt("highTax_number"));
+                result.put("highTax_year_number", rs.getInt("highTax_year_number"));
+                result.put("danger_number", rs.getInt("danger_number"));
+                result.put("danger_year_number", rs.getInt("danger_year_number"));
+
             }
         }catch (Exception e) {
             e.printStackTrace();
