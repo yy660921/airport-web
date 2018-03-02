@@ -9,17 +9,16 @@
           <div class="con-chart">
             <Echarts theme="ring" :option="t_option" className="chart" ></Echarts>
           </div>
+
           <div class="con-txt">
-            <!-- <h3>近<span>24</span>小时</h3> -->
-            <h3>近一周</h3>
-            <p class="para">查获物品<strong class="txt-block"><span v-for="one in warningEvents_number.toString()">{{ one }}</span></strong>批，风险旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人</p>
-            <p class="para">
-              入境旅客<strong class="txt-block"><span v-for="one in tourist_warningEvents.toString()">{{ one }}</span></strong>人，航班<strong class="txt-block"><span v-for="one in airplanesCounts.toString()">{{ one }}</span></strong>架
+            <h3>{{ datetitle }}</h3>
+            <p class="para" v-for="(item, index) in dynamics">
+              <span v-for="(words, windex) in item.words">
+                {{ words }}
+                <strong class="txt-block"><span v-for="one in String(varlibs[item.keys[windex]])" v-if="windex < item.keys.length">{{ one }}</span></strong>
+              </span>
             </p>
-            <p class="para">监管人员<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>人</p>
-            <!-- <p class="para">查获物品<strong class="txt-block"><span v-for="one in seizure_number.toString()"> {{ one }}</span></strong>件（违禁品<strong class="txt-block"><span v-for="one in contraband_number.toString()">{{ one }}</span></strong>件，高价值税品<strong class="txt-block"><span v-for="one in highTax_number.toString()">{{ one }}</span></strong>件）</p>
-            <p class="para">监管人员总数<strong class="txt-block"><span v-for="one in governpeople_number.toString()">{{ one }}</span></strong>设备查验总数<strong class="txt-block"><span v-for="one in devicecount_number.toString()">{{ one }}</span></strong>次</p> -->
-          </div>
+           </div>
         </div>
         <div class="con clearfix">
           <div class="con-chart last">
@@ -87,6 +86,10 @@
         redColor: '#ff5252',
         yellowColor: '#d37d1c',
         blueColor: '#1b6cc9',
+
+        datetitle: '近一周',
+        varlibs: {},
+        dynamics: [],
 
         t_option: {
           series: [{
@@ -187,6 +190,7 @@
     methods: {
       updateData: function () {
         axios.get('/api/getFirstPage', {params: {}}).then(response => {
+          this.varlibs = response.data;
           this.riskIndex = _.isUndefined(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
           this.warningEvents_number = _.isUndefined(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
           this.tourist_warningEvents = _.isUndefined(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
@@ -208,7 +212,7 @@
           this.t_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(t_option_data_value).color;
           // 更改bottom_echarts颜色
         });
-        axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
+            axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
           this.yuqingIndex = _.isUndefined(response.data.yuqing_index) ? this.yuqingIndex : response.data.yuqing_index;
           this.yuqing_total = _.isUndefined(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
           this.yuqing_media = _.isUndefined(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
@@ -245,6 +249,19 @@
           this.b_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(b_option_data_value).color;
           this.b_option.series[0].label.normal.color = this.decideScoreColor(b_option_data_value).color;
           this.b_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(b_option_data_value).color;
+        });
+        axios.get('/api/getCountControl', {params: {}}).then(response => {
+          this.dynamics = []
+          let dytemp = response.data.split('|')
+          this.datetitle = dytemp[0]
+          console.log(this.dynamics)
+          for (let i = 1; i < dytemp.length; i++) {
+            let wk = dytemp[i].split('&')
+            let words = wk[0].split('$')
+            let keys = wk[1].split(',')
+            this.dynamics.push({'words': words, 'keys': keys})
+          }
+          console.log(this.dynamics)
         });
       },
       decideScoreColor: function (value) {
