@@ -85,7 +85,7 @@
             type: 'liquidFill',
             radius: '90%',
             data: [{
-              value: 0.5,
+              value: -0.1,
               itemStyle: {
                 normal: {
                   color: '#1b6cc9'
@@ -127,7 +127,7 @@
             type: 'liquidFill',
             radius: '90%',
             data: [{
-              value: 0.5,
+              value: -0.1,
               itemStyle: {
                 normal: {
                   color: '#1b6cc9'
@@ -222,6 +222,7 @@
             }
           }
           var b_option_data_value = this.yuqingIndex / 100;
+          console.log(b_option_data_value)
           this.b_option.series[0].data[0].value = b_option_data_value;
           // 将分数值改为中文显示
           this.b_option.series[0].label.normal.formatter = this.decideScoreColor(b_option_data_value).score;
