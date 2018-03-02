@@ -9,7 +9,6 @@
           <div class="con-chart">
             <Echarts theme="ring" :option="t_option" className="chart" ></Echarts>
           </div>
-
           <div class="con-txt">
             <h3>{{ datetitle }}</h3>
             <p class="para" v-for="(item, index) in dynamics">
@@ -61,16 +60,6 @@
         Common: Common,
         intervalID: null,
         riskIndex: 50,
-        warningEvents_number: 50,
-        tourist_warningEvents: 100,
-        airplanesCounts: 2,
-        chinaTourist_warningEvents: 80,
-        overseasTourist_warningEvents: 20,
-        seizure_number: 200,
-        contraband_number: 150,
-        highTax_number: 50,
-        governpeople_number: 30,
-        devicecount_number: 2000,
         yuqing_total: 10000,
         yuqing_media: 52,
         yuqing_media_top1: '新华网',
@@ -193,16 +182,6 @@
         axios.get('/api/getFirstPage', {params: {}}).then(response => {
           this.varlibs = response.data;
           this.riskIndex = _.isUndefined(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
-          this.warningEvents_number = _.isUndefined(response.data.warningEvents_number) ? this.warningEvents_number : response.data.warningEvents_number;
-          this.tourist_warningEvents = _.isUndefined(response.data.tourist_warningEvents) ? this.tourist_warningEvents : response.data.tourist_warningEvents;
-          this.airplanesCounts = _.isUndefined(response.data.airplanesCounts) ? this.airplanesCounts : response.data.airplanesCounts;
-          this.chinaTourist_warningEvents = _.isUndefined(response.data.chinaTourist_warningEvents) ? this.chinaTourist_warningEvents : response.data.chinaTourist_warningEvents;
-          this.overseasTourist_warningEvents = _.isUndefined(response.data.overseasTourist_warningEvents) ? this.overseasTourist_warningEvents : response.data.overseasTourist_warningEvents;
-          this.seizure_number = _.isUndefined(response.data.seizure_number) ? this.seizure_number : response.data.seizure_number;
-          this.contraband_number = _.isUndefined(response.data.contraband_number) ? this.contraband_number : response.data.contraband_number;
-          this.highTax_number = _.isUndefined(response.data.highTax_number) ? this.highTax_number : response.data.highTax_number;
-          this.governpeople_number = _.isUndefined(response.data.governpeople_number) ? this.governpeople_number : response.data.governpeople_number;
-          this.devicecount_number = _.isUndefined(response.data.devicecount_number) ? this.devicecount_number : response.data.devicecount_number;
           var t_option_data_value = this.riskIndex / 100;
           this.t_option.series[0].data[0].value = t_option_data_value;
           // 将分数值改为中文显示
@@ -213,7 +192,7 @@
           this.t_option.series[0].outline.itemStyle.borderColor = this.decideScoreColor(t_option_data_value).color;
           // 更改bottom_echarts颜色
         });
-            axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
+        axios.get('/api/getFirstPageNews', {params: {}}).then(response => {
           this.yuqingIndex = _.isUndefined(response.data.yuqing_index) ? this.yuqingIndex : response.data.yuqing_index;
           this.yuqing_total = _.isUndefined(response.data.yuqing_total) ? this.yuqing_total : response.data.yuqing_total;
           this.yuqing_media = _.isUndefined(response.data.yuqing_media) ? this.yuqing_media : response.data.yuqing_media;
@@ -255,14 +234,12 @@
           this.dynamics = []
           let dytemp = response.data.split('|')
           this.datetitle = dytemp[0]
-          console.log(this.dynamics)
           for (let i = 1; i < dytemp.length; i++) {
             let wk = dytemp[i].split('&')
             let words = wk[0].split('$')
             let keys = wk[1].split(',')
             this.dynamics.push({'words': words, 'keys': keys})
           }
-          console.log(this.dynamics)
         });
       },
       decideScoreColor: function (value) {
