@@ -95,6 +95,14 @@ public class Query {
     }
 
     /*
+     * @description: 查询高风险旅客来源国家
+     */
+    public static JsonNode getTouristCountryDetail(){
+        String sql = "SELECT warningTourist_country FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
+        return getTouristCountryBySQL(sql);
+    }
+
+    /*
      * @description: 查询最新旅客风险构成-性别比例
      */
     public static JsonNode getSexRatioDetail(){
@@ -127,11 +135,43 @@ public class Query {
     }
 
     /*
-     * @description: 查询内部情报风险来源
+     * @description: 查询航线风险要素构成
      */
     public static JsonNode getFlightWarningDetail(){
         String sql = "SELECT flightWarning FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
         return getFlightWarningBySQL(sql);
+    }
+
+    /*
+     * @description: 查询查获重点热门物品构成
+     */
+    public static JsonNode getHotGoodsDetail(){
+        String sql = "SELECT hotGoods FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
+        return getHotGoodsBySQL(sql);
+    }
+
+    /*
+     * @description: 查询查获禁限物品构成
+     */
+    public static JsonNode getContrabandGoodsDetail(){
+        String sql = "SELECT contrabandGoods FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
+        return getContrabandGoodsBySQL(sql);
+    }
+
+    /*
+     * @description: 查询年度监管航空器构成
+     */
+    public static JsonNode getYearsAircraftDetail(){
+        String sql = "SELECT yearsAircraft FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
+        return getYearsAircraftBySQL(sql);
+    }
+
+    /*
+     * @description: 查询年度进出境人员构成
+     */
+    public static JsonNode getYearsPeopleDetail(){
+        String sql = "SELECT yearsPeople FROM customs_top WHERE createTime = (SELECT MAX(createTime) FROM customs_top)";
+        return getYearsPeopleBySQL(sql);
     }
 
     /*
@@ -431,6 +471,47 @@ public class Query {
     }
 
     @SuppressWarnings("finally")
+    private static JsonNode getTouristCountryBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayNode Country = objectMapper.createArrayNode();
+                ArrayNode Count = objectMapper.createArrayNode();
+                JsonNode Device = objectMapper.readTree(rs.getString("warningTourist_country"));
+                Iterator<String> fields= Device.fieldNames();
+                while(fields.hasNext()){
+                    String field = fields.next();
+                    Country.add(field);
+                    Count.add(Long.parseLong(Device.get(field).toString().replaceAll("\\\"","")));
+                }
+                result.replace("Country",Country);
+                result.replace("Count",Count);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
     private static JsonNode getSexRatioDetailBySQL(String sql){
         Connection conn = null;
         PreparedStatement ps;
@@ -567,7 +648,7 @@ public class Query {
             if (rs.next()) {
                 ArrayNode Sex = objectMapper.createArrayNode();
                 ArrayNode Count = objectMapper.createArrayNode();
-                JsonNode Device = objectMapper.readTree(rs.getString("otherMessage"));
+                JsonNode Device = objectMapper.readTree(rs.getString("ownMessage"));
                 Iterator<String> fields= Device.fieldNames();
                 while(fields.hasNext()){
                     String field = fields.next();
@@ -617,6 +698,174 @@ public class Query {
                 }
                 result.replace("Content",Sex);
                 result.replace("Count",Count);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getHotGoodsBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayNode Sex = objectMapper.createArrayNode();
+                ArrayNode Count = objectMapper.createArrayNode();
+                JsonNode Device = objectMapper.readTree(rs.getString("hotGoods"));
+                Iterator<String> fields= Device.fieldNames();
+                while(fields.hasNext()){
+                    String field = fields.next();
+                    Sex.add(field);
+                    Count.add(Long.parseLong(Device.get(field).toString()));
+                }
+                result.replace("Goods",Sex);
+                result.replace("Count",Count);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getContrabandGoodsBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayNode Sex = objectMapper.createArrayNode();
+                ArrayNode Count = objectMapper.createArrayNode();
+                JsonNode Device = objectMapper.readTree(rs.getString("contrabandGoods"));
+                Iterator<String> fields= Device.fieldNames();
+                while(fields.hasNext()){
+                    String field = fields.next();
+                    Sex.add(field);
+                    Count.add(Long.parseLong(Device.get(field).toString()));
+                }
+                result.replace("Goods",Sex);
+                result.replace("Count",Count);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getYearsAircraftBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayNode Sex = objectMapper.createArrayNode();
+                ArrayNode Count = objectMapper.createArrayNode();
+                JsonNode Device = objectMapper.readTree(rs.getString("yearsAircraft"));
+                Iterator<String> fields= Device.fieldNames();
+                while(fields.hasNext()){
+                    String field = fields.next();
+                    Sex.add(field);
+                    Count.add(Long.parseLong(Device.get(field).toString()));
+                }
+                result.replace("Aircraft",Sex);
+                result.replace("Count",Count);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            LOG.debug(sql);
+        } finally {
+            try {
+                if(conn!=null) {
+                    conn.close();
+                }
+            }
+            catch (SQLException | NullPointerException e) {
+                e.printStackTrace();
+                LOG.debug("MySQL Connection Error!!!!!\n");
+            }
+            return result;
+        }
+    }
+
+    @SuppressWarnings("finally")
+    private static JsonNode getYearsPeopleBySQL(String sql){
+        Connection conn = null;
+        PreparedStatement ps;
+        ResultSet rs;
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode result = objectMapper.createObjectNode();
+        try{
+            conn = MySQL.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                ArrayNode Month = objectMapper.createArrayNode();
+                ArrayNode Tourist = objectMapper.createArrayNode();
+                ArrayNode Stuff = objectMapper.createArrayNode();
+                JsonNode TouristNode = objectMapper.readTree(rs.getString("yearsPeople")).get("旅客");
+                JsonNode StuffNode = objectMapper.readTree(rs.getString("yearsPeople")).get("机组人员");
+                Iterator<String> fields= TouristNode.fieldNames();
+                while(fields.hasNext()){
+                    String field = fields.next();
+                    Month.add(field);
+                    Tourist.add(Long.parseLong(TouristNode.get(field).toString()));
+                    Stuff.add(Long.parseLong(StuffNode.get(field).toString()));
+                }
+                result.replace("Month", Month);
+                result.replace("Tourist",Tourist);
+                result.replace("Stuff",Stuff);
             }
         }catch (Exception e) {
             e.printStackTrace();
