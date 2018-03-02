@@ -14,7 +14,7 @@
             <p class="para" v-for="(item, index) in dynamics">
               <span v-for="(words, windex) in item.words">
                 {{ words }}
-                <strong class="txt-block" v-for="one in String(varlibs[item.keys[windex]])" v-if="windex < item.keys.length"> <span>{{ one }}</span></strong>
+                <strong class="txt-block" v-if="windex < item.keys.length"><span v-for="one in String(varlibs[item.keys[windex]])">{{ one }}</span></strong>
               </span>
             </p>
            </div>
