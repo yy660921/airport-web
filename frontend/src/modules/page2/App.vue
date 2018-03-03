@@ -391,7 +391,7 @@ export default {
     this.updateData()
     this.intervalID = setInterval(() => {
       this.updateData();
-    }, 30 * 1000);
+    }, 10 * 1000);
     axios.get('/api/getPageJump', {params: {}}).then(response => {
       // alert(response.data.page0.to)
       // eslint-disable-next-line no-unused-vars
