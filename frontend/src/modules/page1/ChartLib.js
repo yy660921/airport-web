@@ -79,11 +79,11 @@ const ChartLib = {
       });
     },
   },
-  '热门城市&横向柱状图': {
+  '旅客风险构成-来源城市&横向柱状图': {
     option: {
       animation: true,
       title: {
-        text: '热门城市'
+        text: '旅客风险构成-来源城市'
       },
       tooltip: {
         trigger: 'axis',
@@ -256,11 +256,11 @@ const ChartLib = {
       });
     },
   },
-  '查获时段&柱状图': {
+  '查获风险构成-时段分布&柱状图': {
     option: {
       animation: true,
       title: {
-        text: '查获时段',
+        text: '查获风险构成-时段分布',
       },
       tooltip: {
         trigger: 'axis',
@@ -392,10 +392,10 @@ const ChartLib = {
     update: (option) => {
     },
   },
-  '饼状图&柱状图': {
+  '年度进出境人员构成&饼柱图': {
     option: {
       title: {
-        text: '饼状图&柱状图'
+        text: '年度进出境人员构成'
       },
       tooltip: {
         trigger: 'axis',
@@ -486,6 +486,735 @@ const ChartLib = {
       ]
     },
     update: (option) => {},
+  },
+  '旅客风险构成-国家&横向柱状图': {
+    option: {
+      animation: true,
+      title: {
+        text: '旅客风险构成-国家',
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      xAxis: {
+        type: 'value',
+        position: 'top',
+      },
+      yAxis: {
+        type: 'category',
+        splitLine: {
+          show: false,
+        },
+        axisLabel: {
+          rotate: 15,
+        },
+        data: ['巴西','印尼','美国','印度','德国','法国']
+      },
+      grid: {
+        top: 65,
+        left: 75,
+        right: 20,
+        bottom: 10
+      },
+      series: [
+        {
+          name: '',
+          type: 'bar',
+          barWidth: 14,
+          barGap: '-100%',
+          silent: true,
+          itemStyle: {
+            normal: {
+              color: 'rgba(42, 56, 144, .8)',
+            }
+          },
+          tooltip: {
+            show: false,
+          },
+          data: [630230, 630230, 630230, 630230, 630230, 630230]
+        },
+        {
+          name: '人次',
+          type: 'bar',
+          barWidth: 14,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                offset: 0,
+                color: 'rgba(129, 153, 255, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(18, 34, 134, 1)'
+              }]),
+              barBorderRadius: [0, 10, 10, 0],  // 圆角
+            }
+          },
+          data: [18203, 23489, 29034, 104970, 131744, 630230]
+        }
+      ]
+    },
+    update: (option) => {
+      axios.get('/api/getTouristCountry', {params: {}}).then(response => {
+        if (response.data.Country.length > 0 && response.data.Count.length > 0) {
+          option.yAxis.data = response.data.Country;
+          option.series[1].data = response.data.Count;
+          var maxd = _.max(response.data.Count);
+          option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+          option.xAxis.max = maxd;
+        }
+      });
+    },
+  },
+  '旅客风险构成-性别比例&饼图': {
+    option: {
+      title: {
+        text: '旅客风险构成-性别比例'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getSexRatio', {params: {}}).then(response => {
+        if (response.data.Sex.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Sex;
+          let res = []
+          _.each(response.data.Sex, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '旅客风险构成-风险标签接口&饼图': {
+    option: {
+      title: {
+        text: '旅客风险构成-风险标签接口'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getRiskLabel', {params: {}}).then(response => {
+        if (response.data.Label.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Label;
+          let res = []
+          _.each(response.data.Label, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '外部情报风险来源&饼图': {
+    option: {
+      title: {
+        text: '外部情报风险来源'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getOtherMessage', {params: {}}).then(response => {
+        if (response.data.Department.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Department;
+          let res = []
+          _.each(response.data.Department, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '内部情报风险来源&饼图': {
+    option: {
+      title: {
+        text: '内部情报风险来源'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getOwnMessage', {params: {}}).then(response => {
+        if (response.data.Department.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Department;
+          let res = []
+          _.each(response.data.Department, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '航线风险要素构成&饼图': {
+    option: {
+      title: {
+        text: '航线风险要素构成'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getFlightWarning', {params: {}}).then(response => {
+        if (response.data.Content.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Content;
+          let res = []
+          _.each(response.data.Content, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '查获重点热门物品构成&横向柱状图': {
+    option: {
+      animation: true,
+      title: {
+        text: '查获重点热门物品构成',
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      xAxis: {
+        type: 'value',
+        position: 'top',
+      },
+      yAxis: {
+        type: 'category',
+        splitLine: {
+          show: false,
+        },
+        axisLabel: {
+          rotate: 15,
+        },
+        data: ['巴西','印尼','美国','印度','德国','法国']
+      },
+      grid: {
+        top: 65,
+        left: 75,
+        right: 20,
+        bottom: 10
+      },
+      series: [
+        {
+          name: '',
+          type: 'bar',
+          barWidth: 14,
+          barGap: '-100%',
+          silent: true,
+          itemStyle: {
+            normal: {
+              color: 'rgba(42, 56, 144, .8)',
+            }
+          },
+          tooltip: {
+            show: false,
+          },
+          data: [630230, 630230, 630230, 630230, 630230, 630230]
+        },
+        {
+          name: '人次',
+          type: 'bar',
+          barWidth: 14,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                offset: 0,
+                color: 'rgba(129, 153, 255, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(18, 34, 134, 1)'
+              }]),
+              barBorderRadius: [0, 10, 10, 0],  // 圆角
+            }
+          },
+          data: [18203, 23489, 29034, 104970, 131744, 630230]
+        }
+      ]
+    },
+    update: (option) => {
+      axios.get('/api/getHotGoods', {params: {}}).then(response => {
+        if (response.data.Goods.length > 0 && response.data.Count.length > 0) {
+          option.yAxis.data = response.data.Goods;
+          option.series[1].data = response.data.Count;
+          var maxd = _.max(response.data.Count);
+          option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+          option.xAxis.max = maxd;
+        }
+      });
+    },
+  },
+  '查获禁限物品构成&横向柱状图': {
+    option: {
+      animation: true,
+      title: {
+        text: '查获禁限物品构成',
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      xAxis: {
+        type: 'value',
+        position: 'top',
+      },
+      yAxis: {
+        type: 'category',
+        splitLine: {
+          show: false,
+        },
+        axisLabel: {
+          rotate: 15,
+        },
+        data: ['巴西','印尼','美国','印度','德国','法国']
+      },
+      grid: {
+        top: 65,
+        left: 75,
+        right: 20,
+        bottom: 10
+      },
+      series: [
+        {
+          name: '',
+          type: 'bar',
+          barWidth: 14,
+          barGap: '-100%',
+          silent: true,
+          itemStyle: {
+            normal: {
+              color: 'rgba(42, 56, 144, .8)',
+            }
+          },
+          tooltip: {
+            show: false,
+          },
+          data: [630230, 630230, 630230, 630230, 630230, 630230]
+        },
+        {
+          name: '人次',
+          type: 'bar',
+          barWidth: 14,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(1, 0, 0, 0, [{
+                offset: 0,
+                color: 'rgba(129, 153, 255, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(18, 34, 134, 1)'
+              }]),
+              barBorderRadius: [0, 10, 10, 0],  // 圆角
+            }
+          },
+          data: [18203, 23489, 29034, 104970, 131744, 630230]
+        }
+      ]
+    },
+    update: (option) => {
+      axios.get('/api/getContrabandGoods', {params: {}}).then(response => {
+        if (response.data.Goods.length > 0 && response.data.Count.length > 0) {
+          option.yAxis.data = response.data.Goods;
+          option.series[1].data = response.data.Count;
+          var maxd = _.max(response.data.Count);
+          option.series[0].data = _.map(response.data.Count, (obj, idx) => { return maxd })
+          option.xAxis.max = maxd;
+        }
+      });
+    },
+  },
+  '年度监管航空器构成&饼图': {
+    option: {
+      title: {
+        text: '年度监管航空器构成'
+      },
+      tooltip: {
+        trigger: 'item',
+        enterable: true,
+        confine: true,
+        textStyle: {fontSize: 18},
+      },
+      color: [
+        '#24adf1',
+        '#f5d10c',
+        '#a06af5',
+        '#f48021',
+        '#0e7fe2',
+        '#4465f6',
+      ],
+      legend: {
+        orient: 'horizontal',
+        align: 'left',
+        bottom: '5',
+        data: ['类别1','类别2','类别3','类别4'],
+        itemGap: 15,
+        textStyle: {
+          color: '#ccc',
+          fontSize: '20',
+        }
+      },
+      series: [{
+        type: 'pie',
+        radius: '50%',
+        center: ['50%', '45%'],
+        data: [{value: 14, name: '类别1'},{value: 31, name: '类别2'},{value: 71, name: '类别3'},{value: 4, name: '类别4'}],
+        label: {
+          normal: {
+            fontSize: 20,
+          },
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }]
+    },
+    update: (option) => {
+      axios.get('/api/getYearsAircraft', {params: {}}).then(response => {
+        if (response.data.Aircraft.length > 0 && response.data.Count.length > 0) {
+          option.legend.data = response.data.Aircraft;
+          let res = []
+          _.each(response.data.Aircraft, function (value, index) {
+            res.push({value: response.data.Count[index], name: value})
+          })
+          option.series[0].data = res
+        }
+      });
+    },
+  },
+  '年度进出境人员构成&双柱图': {
+    option: {
+      animation: true,
+      title: {
+        text: '年度进出境人员构成',
+      },
+      tooltip: {
+        trigger: 'axis',
+      },
+      xAxis: {
+        type: 'category',
+        splitLine: {
+          show: false,
+        },
+        data: ['0:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']
+      },
+      yAxis: {
+        type: 'value',
+        position: 'top',
+        boundaryGap: [0, 0.01]
+      },
+      grid: {
+        top: 50,
+        left: 40,
+        right: 20,
+        bottom: 25
+      },
+      series: [
+        {
+          name: '机组成员',
+          type: 'bar',
+          // barWidth: 13,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              show: false,
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(38, 216, 255, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(32, 84, 221, 1)'
+              }]),
+              barBorderRadius: [10, 10, 0, 0],  // 圆角
+            }
+          },
+          data: [0,0,67,0,30,0,140,20,112,127,113,20,5,101,90,77,116,28,68,80,30,61,88,93]
+        },
+        {
+          name: '旅客',
+          type: 'bar',
+          // barWidth: 13,
+          label: {
+            normal: {
+              textStyle: {
+                color: '#682d19',
+              },
+              position: 'right',
+              show: false,
+              formatter: '{b}'
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: new Graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: 'rgba(255, 162, 82, 1)'
+              }, {
+                offset: 1,
+                color: 'rgba(241, 90, 34, 1)'
+              }]),
+              barBorderRadius: [10, 10, 0, 0],  // 圆角
+            }
+          },
+          data: [0,0,67,0,30,0,140,20,112,127,113,20,5,101,90,77,116,28,68,80,30,61,88,93]
+        }
+      ]
+    },
+    update: (option) => {
+      axios.get('/api/getYearsPeople', {params: {}}).then(response => {
+        if (response.data.Month.length > 0 && response.data.Tourist.length > 0 && response.data.Stuff.length > 0) {
+          option.xAxis.data = response.data.Month;
+          option.series[0].data = response.data.Stuff;
+          option.series[1].data = response.data.Tourist;
+        }
+      });
+    },
   },
 };
 
