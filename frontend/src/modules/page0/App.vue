@@ -294,7 +294,9 @@
     position: absolute
     top: 0
     left: 2.5rem
-    background-image: url("~assets/images/page0-bg.jpg")
+    background-image: url("~assets/images/page0-bg.jpg"), url('~assets/images/page0-bg-pure.jpg')
+    background-position: left, right
+    background-repeat: no-repeat, repeat
     text-align: center
     height: 172px
     width: 100%
