@@ -114,7 +114,8 @@
             viewControl: {
               // alpha: 30,
               // beta: -160,
-              autoRotate: false,
+              autoRotate: true,
+              autoRotateSpeed: 10,
               zoomSensitivity: 1,
               // rotateSensitivity: 0,
               targetCoord: [110, 33],
@@ -193,9 +194,9 @@
         }
       }, 1 * 60 * 60 * 1000);
       // console.log(Common.addr + '');
-      this.intervalRotate = setInterval(() => {
-        this.rotate_globe()
-      }, 4 * 1000);
+      // this.intervalRotate = setInterval(() => {
+      //   this.rotate_globe()
+      // }, 4 * 1000);
       axios.get('/api/getPageJump', {params: {}}).then(response => {
         // alert(response.data.page0.to)
         // eslint-disable-next-line no-unused-vars
