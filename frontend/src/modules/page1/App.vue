@@ -116,7 +116,8 @@
               // beta: -160,
               autoRotate: false,
               zoomSensitivity: 0,
-              targetCoord: [110, 33]
+              targetCoord: [110, 33],
+              animationDurationUpdate: 1250,
             },
           },
           series: [{
@@ -193,7 +194,7 @@
       // console.log(Common.addr + '');
       this.intervalRotate = setInterval(() => {
         this.rotate_globe()
-      }, 3 * 1000);
+      }, 4 * 1000);
       axios.get('/api/getPageJump', {params: {}}).then(response => {
         // alert(response.data.page0.to)
         // eslint-disable-next-line no-unused-vars
@@ -228,7 +229,7 @@
         // });
       },
       update_globe_option () {
-        this.globe_t_option.globe.displacementScale = 0.2;
+        this.globe_t_option.globe.displacementScale = 0.1249;
         axios.get('/api/getAirway', {params: {
           from: Math.floor(new Date().getTime() / 1000) - 24 * 3600,
           to: Math.floor(new Date().getTime() / 1000),
@@ -242,7 +243,7 @@
           });
           this.globe_t_option.series[0].data = cities; // _.uniqBy(cities, 'name');
           this.globe_t_option.series[1].data = lines;
-          this.globe_t_option.globe.displacementScale = 0.1;
+          this.globe_t_option.globe.displacementScale = 0.125;
           if (this.globe) {
             this.globe.setOption(this.globe_t_option);
           }
@@ -271,8 +272,8 @@
             },
             globe: {
               viewControl: {
-                targetCoord: centerl
-              }
+                targetCoord: centerl,
+              },
             }
           });
         }
