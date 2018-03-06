@@ -77,7 +77,7 @@
       margin-bottom: 10%
       .txt
         font-size: 55px
-        color: #fff
+        color: #c6e6ff
         margin-bottom: 0
         position: absolute
         top: 0
