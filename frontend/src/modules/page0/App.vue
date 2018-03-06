@@ -185,7 +185,8 @@
           var t_option_data_value = this.riskIndex / 100;
           this.t_option.series[0].data[0].value = t_option_data_value;
           // 将分数值改为中文显示
-          this.t_option.series[0].label.normal.formatter = this.decideScoreColor(t_option_data_value).score;
+          // this.t_option.series[0].label.normal.formatter = this.decideScoreColor(t_option_data_value).score;
+          this.t_option.series[0].label.normal.formatter = t_option_data_value;
           // 更改top_echarts颜色
           this.t_option.series[0].data[0].itemStyle.normal.color = this.decideScoreColor(t_option_data_value).color;
           this.t_option.series[0].label.normal.color = this.decideScoreColor(t_option_data_value).color;
