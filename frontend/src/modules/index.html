@@ -10,5 +10,29 @@
     <canvas id="bg"></canvas>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script type="text/javascript">
+      // 监控页面变化并刷新页面
+      (function() {
+        var throttle = function(type, name, obj) {
+          obj = obj || window;
+          var running = false;
+          var func = function() {
+            if (running) { return; }
+            running = true;
+            requestAnimationFrame(function() {
+              obj.dispatchEvent(new CustomEvent(name));
+              running = false;
+            });
+          };
+          obj.addEventListener(type, func);
+        };
+        throttle("resize", "optimizedResize");
+      })();
+
+      // handle event
+      window.addEventListener("optimizedResize", function() {
+        window.location.reload();
+      });
+    </script>
   </body>
 </html>
