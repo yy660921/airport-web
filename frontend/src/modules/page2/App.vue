@@ -65,6 +65,9 @@
     <a href="/page3" class="next-page">
       <img src="~assets/images/next-page.png" alt="">
     </a>
+    <a href="/" class="next-home">
+      <img src="~assets/images/next-home.png" alt="">
+    </a>
   </div>
 </template>
 

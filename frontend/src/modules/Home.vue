@@ -20,7 +20,7 @@
         <div class="child txt">监控指挥中心</div>
       </div>
       <div class="welcome-side">
-        <div class="platform">
+        <div class="platform" @click="goto">
           <p class="txt">智能分析平台</p>
         </div>
         <div class="platform">
@@ -35,6 +35,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import Common from 'components/Common.js'
   export default {
     data () {
       return {
@@ -45,7 +46,10 @@
     methods: {
       toCentre: function () {
         document.location.href = 'page0'
-      }
+      },
+      goto: function () {
+        document.location.href = Common.addr + Common.page0;
+      },
     }
   }
 </script>
@@ -76,7 +80,7 @@
       background-size: 100% 100%
       margin-bottom: 10%
       .txt
-        font-size: 55px
+        font-size: 40px
         color: #c6e6ff
         margin-bottom: 0
         position: absolute

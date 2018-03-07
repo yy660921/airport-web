@@ -18,6 +18,9 @@
     <a href="/page2" class="next-page">
       <img src="~assets/images/next-page.png" alt="">
     </a>
+    <a href="/" class="next-home">
+      <img src="~assets/images/next-home.png" alt="">
+    </a>
   </div>
 </template>
 
@@ -75,22 +78,22 @@
         },
         globe_t_option: {
           backgroundColor: 'rgba(0, 0, 0, 0)',
-          title: {
-            text: '铜仁 -> 北京',
-            left: 'center',
-            bottom: '80',
-            textStyle: {
-              color: '#fff',
-              width: '200%',
-              fontSize: 40
-            },
-            padding: [20, 50],
-            borderWidth: 2,
-            borderColor: 'rgb(1, 241, 228)',
-            borderRadius: 10,
-            backgroundColor: 'rgba(29, 81, 203, .8)',
-            zlevel: 101
-          },
+          //  title: {
+          //    text: '铜仁 -> 北京',
+          //    left: 'center',
+          //    bottom: '80',
+          //    textStyle: {
+          //      color: '#fff',
+          //      width: '200%',
+          //      fontSize: 40
+          //    },
+          //    padding: [20, 50],
+          //    borderWidth: 2,
+          //    borderColor: 'rgb(1, 241, 228)',
+          //    borderRadius: 10,
+          //    backgroundColor: 'rgba(29, 81, 203, .8)',
+          //    zlevel: 101
+          //  },
           globe: {
             globeRadius: 95,
             globeOuterRadius: 500,
@@ -115,7 +118,7 @@
               // alpha: 30,
               // beta: -160,
               autoRotate: true,
-              autoRotateSpeed: 10,
+              autoRotateSpeed: 20,
               zoomSensitivity: 1,
               // rotateSensitivity: 0,
               targetCoord: [110, 33],
@@ -185,7 +188,7 @@
       this.initOptions();
       this.intervalID = setInterval(() => {
         this.updateData()
-      }, 30 * 1000);
+      }, 35 * 1000);
 
       this.intervalGlobe = setInterval(() => {
         if (this.globe) {
