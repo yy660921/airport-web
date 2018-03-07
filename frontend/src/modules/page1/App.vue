@@ -188,7 +188,7 @@
       this.initOptions();
       this.intervalID = setInterval(() => {
         this.updateData()
-      }, 35 * 1000);
+      }, 100 * 1000);
 
       this.intervalGlobe = setInterval(() => {
         if (this.globe) {
