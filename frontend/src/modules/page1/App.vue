@@ -260,13 +260,13 @@
           let tmpx = Math.floor(this.nowCityIndex / 2);
           let tmpy = this.nowCityIndex % 2;
           // console.log(tmpx + "  " + tmpy + " length:" + this.rotateCities.length)
-          let centerl = [110, 33]
+          // let centerl = [110, 33]
           let cantern = '铜仁'
           if (tmpy === 0) {
-            centerl = this.rotateCities[tmpx].departure.Coordinate;
+          //  centerl = this.rotateCities[tmpx].departure.Coordinate;
             cantern = this.rotateCities[tmpx].departure.CityName + ' -> ' + this.rotateCities[tmpx].destination.CityName;
           } else {
-            centerl = this.rotateCities[tmpx].destination.Coordinate;
+          //  centerl = this.rotateCities[tmpx].destination.Coordinate;
             cantern = this.rotateCities[tmpx].departure.CityName + ' -> ' + this.rotateCities[tmpx].destination.CityName;
           }
           this.nowCityIndex = this.nowCityIndex + 1;
