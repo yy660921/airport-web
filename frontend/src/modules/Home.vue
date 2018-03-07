@@ -5,11 +5,11 @@
     </div>
     <div class="welcome-content" >
       <div class="welcome-side">
-        <div class="platform">
-          <p class="txt">智能服务平台</p>
+        <div class="platform" @click="go404">
+          <div class="txt">智能服务平台</div>
         </div>
-        <div class="platform">
-          <p class="txt">智能作业平台</p>
+        <div class="platform" @click="go404">
+          <div class="txt">智能作业平台</div>
         </div>
       </div>
       <div class="welcome-center" @click="toCentre">
@@ -21,10 +21,10 @@
       </div>
       <div class="welcome-side">
         <div class="platform" @click="goto">
-          <p class="txt">智能分析平台</p>
+          <a class="txt">智能分析平台</a>
         </div>
-        <div class="platform">
-          <p class="txt">智能管理平台</p>
+        <div class="platform" @click="go404">
+          <div class="txt">智能管理平台</div>
         </div>
       </div>
     </div>
@@ -49,6 +49,9 @@
       },
       goto: function () {
         document.location.href = Common.addr + Common.page0;
+      },
+      go404: function () {
+        document.location.href = 'notfound';
       },
     }
   }

@@ -1,7 +1,15 @@
 <template>
   <div id="app" class="real-body">
     <div class="horse">
+      <img src="~assets/images/x.svg" alt="">
+    </div>
+    <div class="horse-l">
       <p class="point">平台建设中，敬请期待</p>
+    </div>
+    <div class="horse-r">
+      <a href="/">
+        <img src="~assets/images/next-home.png" alt="">
+      </a>
     </div>
 
   </div>
@@ -10,14 +18,7 @@
 <script type="text/ecmascript-6">
   // import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
-  import Graphic from 'echarts/lib/util/graphic'
-  import Echarts from 'vue-echarts-v3/src/full.js'
-  import 'echarts-wordcloud'
-  import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
-  import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
   import Common from 'components/Common.js'
-
-  import WordCloud from 'components/charts/wcloud/WordCloud3d.js'
 
   export default {
     name: 'app',
@@ -49,12 +50,19 @@
   .horse
     ext-align: center
     valign: center
-    padding-left: 30%
+    padding-left: 45%
     padding-top: 10%
-    background-position: center
+  .horse-l
+    ext-align: center
+    valign: center
+    padding-left: 30%
     .point
       font-size: 4em
       font-family: 华文行楷
       color: white
+  .horse-r
+    ext-align: center
+    valign: center
+    padding-left: 47%
 
 </style>
