@@ -230,8 +230,11 @@ public class Query {
     /*
      * @description: 查询最新的首页信息
      */
-    public static JsonNode getFirstPageCount(){
+    public static JsonNode getFirstPageCount(String area){
         String sql = "SELECT * FROM customs_index WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
+        if(area.equals("铜仁")) {
+            sql = "SELECT * FROM customs_index_other WHERE createTime = (SELECT MAX(createTime) FROM customs_index)";
+        }
         return getFirstPageCountBySQL(sql);
     }
 

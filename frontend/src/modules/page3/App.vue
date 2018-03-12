@@ -33,8 +33,11 @@
         <p class="load-all"><a href="/api/getTotalNews" title="加载全部">加载全部</a></p>
       </div>
     </div>
-    <a href="/page0" class="next-page">
+    <a href="/page4" class="next-page">
       <img src="~assets/images/next-page.png" alt="">
+    </a>
+    <a href="/" class="next-home">
+      <img src="~assets/images/next-home.png" alt="">
     </a>
   </div>
 </template>
@@ -178,7 +181,7 @@
       axios.get('/api/getPageJump', {params: {}}).then(response => {
         // alert(response.data.page0.to)
         // eslint-disable-next-line no-unused-vars
-        let timer = setTimeout(function () { location.href = response.data.page3.to; } , response.data.page3.delay * 1000);
+        let timer = setTimeout(function () { location.href = '../' + response.data.page3.to; } , response.data.page3.delay * 1000);
       })
     },
     mounted () {
