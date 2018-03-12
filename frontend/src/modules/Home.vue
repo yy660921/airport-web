@@ -13,10 +13,10 @@
         </div>
       </div>
       <div class="welcome-center" @click="toCentre">
-        <div class="child bg1"><img src="../assets/images/welcome-center01.png" height="636" width="636" alt=""></div>
-        <div class="child bg2"><img src="../assets/images/welcome-center02.png" height="636" width="636" alt=""></div>
-        <div class="child bg3"><img src="../assets/images/welcome-center03.png" height="636" width="636" alt=""></div>
-        <div class="child bg4"><img src="../assets/images/welcome-center04.png" height="636" width="636" alt=""></div>
+        <div class="child bg1"><img src="../assets/images/welcome-center01.png" alt=""></div>
+        <div class="child bg2"><img src="../assets/images/welcome-center02.png" alt=""></div>
+        <div class="child bg3"><img src="../assets/images/welcome-center03.png" alt=""></div>
+        <div class="child bg4"><img src="../assets/images/welcome-center04.png" alt=""></div>
         <div class="child txt">监控指挥中心</div>
       </div>
       <div class="welcome-side">
@@ -97,13 +97,13 @@
         text-align: center
   .welcome-center
     width: 40%
-    height: 100%
+    padding-top: 40%
+    height: 0
     position: relative
     cursor: pointer
     .child
-      width: 92%
-      max-width: 636px
-      height: 636px
+      max-width: 90%
+      max-height: 90%
       position: absolute
       top: 0
       right: 0
@@ -111,7 +111,7 @@
       left: 0
       margin: auto
       img
-        max-width: 100%
+        width: 100%
     .bg2
       animation: bg_2 10s infinite linear
     .bg4
