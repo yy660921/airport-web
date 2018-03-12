@@ -10,7 +10,10 @@
             <Echarts theme="ring" :option="t_option" className="chart" ></Echarts>
           </div>
           <div class="con-txt">
-            <h3>{{ datetitle }}</h3>
+            <h3><!-- {{ datetitle }} -->
+              <b-form-select v-model="city_select" :options="city_options" class="city-select" />
+              <span>年度累计</span>
+            </h3>
             <p class="para" v-for="(item, index) in dynamics">
               <span v-for="(words, windex) in item.words">
                 {{ words }}
@@ -61,6 +64,11 @@
     data () {
       return {
         Common: Common,
+        city_select: '贵阳',
+        city_options: [
+          {value: '贵阳', text: '贵阳'},
+          {value: '铜仁', text: '铜仁'}
+        ],
         intervalID: null,
         riskIndex: 50,
         yuqing_total: 10000,
@@ -182,7 +190,7 @@
     },
     methods: {
       updateData: function () {
-        axios.get('/api/getFirstPage', {params: {}}).then(response => {
+        axios.get('/api/getFirstPage', {params: {area: this.city_select}}).then(response => {
           this.varlibs = response.data;
           this.riskIndex = _.isUndefined(response.data.riskIndex) ? this.riskIndex : response.data.riskIndex;
           var t_option_data_value = this.riskIndex / 100;
@@ -268,8 +276,17 @@
           }
         }
       },
-      goto: function () {
-        document.location.href = Common.addr + Common.page0;
+      goto: function (e) {
+        if (e.target.tagName === 'SELECT') {
+          e.stopPropagation();
+        } else {
+          document.location.href = Common.addr + Common.page0;
+        }
+      }
+    },
+    watch: {
+      city_select: function () {
+        this.updateData()
       }
     },
     beforeDestroy () {
@@ -334,6 +351,7 @@
     display: block
     margin-left: 2rem
     h3
+      position: relative
       padding: 0 .5rem 4px
       margin-bottom: .8rem
       font-size: 2.8rem
@@ -343,9 +361,7 @@
         border-color: #c8781c
       span
         color: #fff
-        margin: 0 .2rem
-        font-size: 3.2rem
-        font-weight: bold
+        margin-left: 175px
     .para
       font-size: 1.6rem
       margin-bottom: .6rem
@@ -375,4 +391,25 @@
     display: flex
     flex-direction: column
     justify-content: space-between
+  .city-select
+    cursor: pointer
+    position: absolute
+    z-index: 999
+    left: .5rem
+    max-width: 160px
+    height: 65px!important
+    line-height: 55px
+    font-size: 2.4rem
+    margin-right: 10px
+    background-color: #1b6cc9
+    color: #fff
+    padding: 1px 10px
+    border: 2px solid #1b6cc9
+    background: url("~assets/images/select_arrow_white.svg") no-repeat right .5rem center 
+    background-size: 18px 20px
+    option
+      color: black
+    &:focus
+      background-color: #1b6cc9
+      color: #fff
 </style>
