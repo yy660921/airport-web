@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static airport.web.restful.service.sql.Query.getFirstPageCount;
@@ -24,8 +25,10 @@ public class FirstPageController {
         "/api/getFirstPage",
     })
 
-    public JsonNode getFirstPage() {
-        return getFirstPageCount();
+    public JsonNode getFirstPage(
+        @RequestParam(value = "area", defaultValue = "贵阳") String area
+    ) {
+        return getFirstPageCount(area);
     }
 
     @ResponseBody
