@@ -14,20 +14,7 @@
             class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/demo.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/demo.%d{yyyy-MM-dd}.log</fileNamePattern>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-            </pattern>
-        </encoder>
-    </appender>
-
-    <appender
-            name="authRollingFile"
-            class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/demo-auth.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/demo-auth.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/airport-big.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
@@ -40,7 +27,7 @@
             class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/demo-trace.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/demo-trace.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/airport-big-trace.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
@@ -64,14 +51,6 @@
     <logger
             name="org.springframework.web"
             level="WARN"/>
-    <!--shiro -->
-    <logger
-            name="org.apache.shiro"
-            level="WARN"
-            additivity="false">
-        <appender-ref ref="console"/>
-        <appender-ref ref="authRollingFile"/>
-    </logger>
     <!--log4jdbc -->
     <logger
             name="jdbc.sqltiming"
