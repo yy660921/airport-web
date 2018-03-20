@@ -56,14 +56,9 @@
 <script type="text/ecmascript-6">
   // import Vue from 'vue'
   import 'components/charts/theme/Ring.js'
-  import Graphic from 'echarts/lib/util/graphic'
   import Echarts from 'vue-echarts-v3/src/full.js'
   import 'echarts-wordcloud'
-  import bCarousel from 'bootstrap-vue/es/components/carousel/carousel'
-  import bCarouselSlide from 'bootstrap-vue/es/components/carousel/carousel-slide'
-  import Common from 'components/Common.js'
 
-  import WordCloud from 'components/charts/wcloud/WordCloud3d.js'
   import { ChartLib } from '../page1/ChartLib.js'
 
   export default {

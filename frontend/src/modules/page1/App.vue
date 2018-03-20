@@ -192,7 +192,7 @@
 
       this.intervalGlobe = setInterval(() => {
         if (this.globe) {
-          this.globe.dispose();
+          this.globe.clear();
           this.echartsGlobe();
         }
       }, 1 * 60 * 60 * 1000);
