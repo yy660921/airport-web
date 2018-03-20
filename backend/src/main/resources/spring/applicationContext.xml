@@ -26,39 +26,6 @@
     </context:component-scan>
     <context:annotation-config/>
 
-    <bean
-            id="messageSource"
-            class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property
-                name="basename"
-                value="messages"/>
-        <property
-                name="useCodeAsDefaultMessage"
-                value="true"/>
-    </bean>
-
-    <!-- JSR303 Validator定义 -->
-    <bean
-            id="validator"
-            class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-    <bean
-            id="restTemplate"
-            class="org.springframework.web.client.RestTemplate">
-        <property name="messageConverters">
-            <list>
-                <bean
-                        class="org.springframework.http.converter.StringHttpMessageConverter">
-                    <constructor-arg value="UTF-8"/>
-                    <property name="supportedMediaTypes">
-                        <list>
-                            <value>text/html;charset=UTF-8</value>
-                            <value>*/*</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
     <!-- production环境 -->
     <beans profile="production">
         <context:property-placeholder

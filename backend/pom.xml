@@ -10,27 +10,13 @@
     <packaging>war</packaging>
     <properties>
         <spring.version>4.1.2.RELEASE</spring.version>
-        <hibernate.version>4.2.3.Final</hibernate.version>
-        <javassist.version>3.18.2-GA</javassist.version>
-        <spring-data-jpa.version>1.3.2.RELEASE</spring-data-jpa.version>
-        <tomcat-jdbc.version>7.0.42</tomcat-jdbc.version>
-        <sitemesh.version>2.4.2</sitemesh.version>
-        <shiro.version>1.3.2</shiro.version>
-        <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
         <jackson.version>2.6.7</jackson.version>
         <slf4j.version>1.7.5</slf4j.version>
         <logback.version>1.0.13</logback.version>
-        <hbase.version>0.98.3-hadoop2</hbase.version>
-        <hadoop.version>2.2.0</hadoop.version>
-        <es.version>2.3.1</es.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <guava.version>23.0</guava.version>
-        <junit.version>4.11</junit.version>
-        <mockito.version>1.9.5</mockito.version>
-        <selenium.version>2.33.0</selenium.version>
         <jetty.version>9.2.3.v20140905</jetty.version>
-        <data-access.version>0.0.36-SNAPSHOT</data-access.version>
         <!-- MySQL -->
         <jdbc.driver.groupId>mysql</jdbc.driver.groupId>
         <jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
@@ -89,17 +75,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.googlecode.rapid-framework</groupId>
-            <artifactId>rapid-core</artifactId>
-            <version>4.0.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- AOP begin -->
         <dependency>
@@ -114,88 +89,6 @@
             <scope>runtime</scope>
         </dependency>
         <!-- AOP end -->
-
-        <!-- PERSISTENCE begin -->
-        <!-- hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>javassist</artifactId>
-                    <groupId>javassist</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${javassist.version}</version>
-        </dependency>
-
-        <!-- spring data access -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring-data-jpa.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit-dep</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <!-- connection pool -->
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>${tomcat-jdbc.version}</version>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- jdbc driver -->
         <dependency>
@@ -213,59 +106,17 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- Spring Websocket -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-websocket</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
 
-        <!-- SECURITY begin -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-ehcache</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>2.6.6</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <!-- SECURITY end -->
-
         <!-- Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
-        <!-- JSR303 BeanValidator -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
 
         <!-- JSON begin -->
@@ -326,36 +177,7 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!--logback日志输出到logstash-->
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.10</version>
-        </dependency>
         <!-- LOGGING end -->
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.5</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- jetty -->
         <dependency>
@@ -379,34 +201,26 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
+            <scope>provided</scope>
             <version>3.0.1-b08</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
+            <scope>provided</scope>
             <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jstl</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-ant</artifactId>
-            <version>${jetty.version}</version>
             <scope>provided</scope>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlets</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
-            <version>${jetty.version}</version>
             <scope>provided</scope>
+            <version>${jetty.version}</version>
         </dependency>
     </dependencies>
 
