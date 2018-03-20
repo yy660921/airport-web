@@ -74,6 +74,7 @@
     padding: 50px 110px
   .welcome-side
     width: 30%
+    cursor: pointer
     .platform
       position: relative
       font-weight: bold
