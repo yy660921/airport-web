@@ -250,7 +250,7 @@ public class Query {
      * @description: 查询随机的10条新闻信息
      */
     public static LinkedList<JsonNode> getNewsDetail(){
-        String sql = "SELECT * FROM (SELECT * FROM customs_news WHERE id >= ((SELECT MAX(id) FROM customs_news)-(SELECT MIN(id) FROM customs_news)) * RAND() + (SELECT MIN(id) FROM customs_news) AND DATEDIFF((SELECT DATE_FORMAT(MAX(date),\"%Y-%m-%d\") FROM customs_news),date) < 7 LIMIT 10) AS a ORDER BY date DESC;";
+        String sql = "SELECT * FROM (SELECT * FROM customs_new_topic WHERE id >= ((SELECT MAX(id) FROM customs_new_topic)-(SELECT MIN(id) FROM customs_new_topic)) * RAND() + (SELECT MIN(id) FROM customs_new_topic) AND DATEDIFF((SELECT DATE_FORMAT(MAX(date),\"%Y-%m-%d\") FROM customs_new_topic),date) < 7 LIMIT 10) AS a ORDER BY date DESC;";
         return getNewsDetailBySQL(sql);
     }
 
