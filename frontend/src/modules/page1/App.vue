@@ -213,8 +213,10 @@
       initOptions: function () {
         axios.get('/api/getShowCharts').then(response => {
           _.each(response.data, (v, k) => {
-            this.options[k].option = _.cloneDeep(ChartLib[v].option);
-            this.options[k].update = ChartLib[v].update;
+            if (ChartLib[v]) {
+              this.options[k].option = _.cloneDeep(ChartLib[v].option);
+              this.options[k].update = ChartLib[v].update;
+            }
           });
           this.updateData();
         });
